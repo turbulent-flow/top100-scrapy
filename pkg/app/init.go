@@ -11,9 +11,23 @@ import (
 
 var (
   DBconn *sql.DB
+  env = os.Getenv("TOP100_ENV")
+  file *os.File
 )
 
 func init() {
+  switch env {
+  case "development":
+    file, err = logger.SetDevConfigs()
+    if err != nil {
+      // TODO: Add the error into logger.
+    }
+  case "staging":
+    logger.SetStagingConfigs()
+  case "production":
+    logger.SetProductionConfigs()
+  }
+
   DBconn, err = db.Open()
   if err != nil {
     // TODO: Add the error into logger.
