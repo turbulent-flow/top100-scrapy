@@ -22,7 +22,11 @@ type Factors map[string]interface{}
 //   logger.Error("The status of the code error occurs!", err, factors)
 // }
 func Error(msg string, err error, args ...Factors) {
-	NewFactorsEntry(args...).Panic(msg)
+	switchError(NewFactorsEntry(args...), msg)
+}
+
+func Info(msg string, args ...Factors) {
+	NewFactorsEntry(args...).Info(msg)
 }
 
 func NewFactorsEntry(args ...Factors) *log.Entry {
@@ -34,4 +38,12 @@ func NewFactorsEntry(args ...Factors) *log.Entry {
 		}
 	}
 	return log.WithFields(l)
+}
+
+func Debug(args ...interface{}) {
+	log.Debug(args...)
+}
+
+func Panic(args ...interface{}) {
+	log.Panic(args...)
 }
