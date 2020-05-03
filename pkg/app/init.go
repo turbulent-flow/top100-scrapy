@@ -5,10 +5,13 @@ package app
 
 import (
 	"database/sql"
+	"net/http"
 	"os"
+	"top100-scrapy/pkg/crawler"
 	"top100-scrapy/pkg/db"
 	"top100-scrapy/pkg/logger"
 
+	"github.com/PuerkitoBio/goquery"
 	_ "github.com/lib/pq"
 )
 
@@ -36,4 +39,25 @@ func init() {
 	if err != nil {
 		logger.Error("Failed to connect the DB.", err)
 	}
+}
+
+// Return a new instance of the crawler with the HTML document crawled from the seed URL.
+func InitCrawler(seedUrl string) *crawler.Crawler {
+	resp, err := http.Get(seedUrl)
+	if err != nil {
+		logger.Error("Failed to crawl the data from the seed URL.", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		factors := logger.Factors{"status_code": resp.StatusCode, "status": resp.Status}
+		logger.Error("The status of the code error occurs!", err, factors)
+	}
+
+	doc, err := goquery.NewDocumentFromReader(resp.Body)
+	if err != nil {
+		logger.Error("Failed to return a document.", err)
+	}
+
+	return crawler.New().WithDoc(doc)
 }
