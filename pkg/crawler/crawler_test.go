@@ -95,6 +95,6 @@ func TestScrapeProducts(t *testing.T) {
 		originalActualSet = append(originalActualSet, *post)
 	}
 	actual := originalActualSet[:5]
-	failedMsg := fmt.Sprintf("Fa`iled, expected the top 5 products: %v, got the `top 5 products: %v", expected, actual)
+	failedMsg := fmt.Sprintf("Failed, expected the top 5 products: %v, got the top 5 products: %v", expected, actual)
 	assert.Equal(t, expected, actual, failedMsg)
 }
