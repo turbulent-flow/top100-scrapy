@@ -2,7 +2,11 @@ package crawler
 
 // Scrape everything you want.
 
-import "github.com/PuerkitoBio/goquery"
+import (
+	"strings"
+
+	"github.com/PuerkitoBio/goquery"
+)
 
 type Crawler struct {
 	doc *goquery.Document
@@ -22,7 +26,7 @@ func (c *Crawler) WithDoc(doc *goquery.Document) *Crawler {
 func (c *Crawler) ScrapeProductNames() (names []string) {
 	c.doc.Find("ol#zg-ordered-list span.zg-text-center-align").Next().Each(func(i int, s *goquery.Selection) {
 		name := s.Text()
-		names = append(names, name)
+		names = append(names, strings.TrimSpace(name))
 	})
 	return names
 }
