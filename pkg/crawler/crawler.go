@@ -1,6 +1,6 @@
 package crawler
 
-// Crawl everything you want.
+// Scrape everything you want.
 
 import "github.com/PuerkitoBio/goquery"
 
