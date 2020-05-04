@@ -18,3 +18,11 @@ func (c *Crawler) WithDoc(doc *goquery.Document) *Crawler {
 	c.doc = doc
 	return c
 }
+
+func (c *Crawler) ScrapeProductNames() (names []string) {
+	c.doc.Find("ol#zg-ordered-list span.zg-text-center-align").Next().Each(func(i int, s *goquery.Selection) {
+		name := s.Text()
+		names = append(names, name)
+	})
+	return names
+}
