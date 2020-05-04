@@ -41,11 +41,11 @@ func init() {
 	}
 }
 
-// Return a new instance of the crawler with the HTML document crawled from the seed URL.
-func InitCrawler(seedUrl string) *crawler.Crawler {
-	resp, err := http.Get(seedUrl)
+// Return a new instance of the crawler with the HTML document fetched from the url.
+func InitCrawler(url string) *crawler.Crawler {
+	resp, err := http.Get(url)
 	if err != nil {
-		logger.Error("Failed to crawl the data from the seed URL.", err)
+		logger.Error("Failed to get the url.", err)
 	}
 	defer resp.Body.Close()
 

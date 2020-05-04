@@ -11,15 +11,15 @@ type Factors map[string]interface{}
 
 // args: Receive the factors as the first item of args, it's optional.
 // e.g.
-// resp, err := http.Get(seedURL)
+// resp, err := http.Get(url)
 // if err != nil {
-//   logger.Error("Failed to crawl the data from the seed URL.", err)
+// 	logger.Error("Failed to get the url.", err)
 // }
 // defer resp.Body.Close()
 //
 // if resp.StatusCode != 200 {
-//   factors := logger.Factors{"status_code": resp.StatusCode, "status": resp.Status}
-//   logger.Error("The status of the code error occurs!", err, factors)
+// 	factors := logger.Factors{"status_code": resp.StatusCode, "status": resp.Status}
+// 	logger.Error("The status of the code error occurs!", err, factors)
 // }
 func Error(msg string, err error, args ...Factors) {
 	switchError(NewFactorsEntry(args...), msg)
