@@ -18,6 +18,7 @@ import (
 var (
 	DBconn *sql.DB
 	env    = os.Getenv("TOP100_ENV")
+	AppUri = os.Getenv("TOP100_APP_URI")
 	file   *os.File
 	err    error
 )
