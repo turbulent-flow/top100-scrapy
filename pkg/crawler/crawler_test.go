@@ -3,7 +3,6 @@ package crawler_test
 import (
 	"fmt"
 	"net/http"
-	"strings"
 	"testing"
 	"top100-scrapy/pkg/app"
 	"top100-scrapy/pkg/crawler"
@@ -58,11 +57,7 @@ func TestScrapeProductNames(t *testing.T) {
 		"Echo Dot (3rd Gen) - Smart speaker with clock and Alexa - Sandstone",
 		"Echo Show 8 - HD 8\" smart display with Alexa  - Charcoal",
 	}
-	names := crawler.New().WithDoc(doc).ScrapeProductNames()[:5]
-	for i, s := range names {
-		names[i] = strings.TrimSpace(s)
-	}
-	actual := names
+	actual := crawler.New().WithDoc(doc).ScrapeProductNames()[:5]
 	failedMsg := fmt.Sprintf("Failed, expected the names of the top 5 products: %s, got the names of the top 5 products: %s", expected, actual)
 	assert.Equal(t, expected, actual, failedMsg)
 }
@@ -86,10 +81,6 @@ func TestScrapeProducts(t *testing.T) {
 	expected := originalExpectedSet
 
 	acutalProducts := crawler.New().WithDoc(doc).ScrapeProducts()
-	for i, s := range acutalProducts.Set {
-		acutalProducts.Set[i].Name = strings.TrimSpace(s.Name)
-		acutalProducts.Set[i].Rank = i + 1
-	}
 	originalActualSet := []crawler.Product{}
 	for _, post := range acutalProducts.Set {
 		originalActualSet = append(originalActualSet, *post)
