@@ -73,6 +73,7 @@ func TestScrapeProducts(t *testing.T) {
 		&crawler.Product{"Echo Show 8 - HD 8\" smart display with Alexa  - Charcoal", 5},
 	}
 
+	// TODO: Implement the shared method for removing the pointers.
 	// Access the data directily instead of going throuth the pointer.
 	originalExpectedSet := []crawler.Product{}
 	for _, post := range expectedProducts.Set {
