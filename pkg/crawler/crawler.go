@@ -26,3 +26,16 @@ func (c *Crawler) ScrapeProductNames() (names []string) {
 	})
 	return names
 }
+
+func (c *Crawler) ScrapeProducts() (products *Products) {
+	names := c.ScrapeProductNames()
+	products = NewProducts()
+	for i, name := range names {
+		product := &Product{
+			Name: name,
+			Rank: i + 1,
+		}
+		products.Set = append(products.Set, product)
+	}
+	return products
+}
