@@ -58,11 +58,11 @@ func TestScrapeProductNames(t *testing.T) {
 		"Echo Dot (3rd Gen) - Smart speaker with clock and Alexa - Sandstone",
 		"Echo Show 8 - HD 8\" smart display with Alexa  - Charcoal",
 	}
-	stringSlice := crawler.New().WithDoc(doc).ScrapeProductNames()[:5]
-	for i, s := range stringSlice {
-		stringSlice[i] = strings.TrimSpace(s)
+	names := crawler.New().WithDoc(doc).ScrapeProductNames()[:5]
+	for i, s := range names {
+		names[i] = strings.TrimSpace(s)
 	}
-	actual := stringSlice
+	actual := names
 	failedMsg := fmt.Sprintf("Failed, expected the names of the top 5 products: %s, got the names of the top 5 products: %s", expected, actual)
 	assert.Equal(t, expected, actual, failedMsg)
 }
