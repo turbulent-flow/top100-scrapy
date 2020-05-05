@@ -62,21 +62,9 @@ func TestScrapeProducts(t *testing.T) {
 	// Test the top 5 products
 	products := product.NewRows()
 	products.Set = test.CannedProductsSet
-
-	// TODO: Implement the shared method for removing the pointers.
-	// Access the data directily instead of going throuth the pointer.
-	rawSet := make([]product.Row, 0)
-	for _, post := range products.Set {
-		rawSet = append(rawSet, *post)
-	}
-	expected := rawSet
-
+	expected := products.RemovePointers(products.Set)
 	products = crawler.New().WithDoc(doc).ScrapeProducts()
-	rawSet = make([]product.Row, 0)
-	for _, post := range products.Set {
-		rawSet = append(rawSet, *post)
-	}
-	actual := rawSet[:5]
+	actual := products.RemovePointers(products.Set)[:5]
 	failedMsg := fmt.Sprintf("Failed, expected the top 5 products: %v, got the top 5 products: %v", expected, actual)
 	assert.Equal(t, expected, actual, failedMsg)
 }
