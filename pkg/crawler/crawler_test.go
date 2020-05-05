@@ -8,6 +8,7 @@ import (
 	"top100-scrapy/pkg/crawler"
 	"top100-scrapy/pkg/logger"
 	"top100-scrapy/pkg/model/product"
+	"top100-scrapy/pkg/test"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/dnaeon/go-vcr/recorder"
@@ -51,13 +52,7 @@ func init() {
 
 func TestScrapeProductNames(t *testing.T) {
 	// Test the names of the top 5 products.
-	expected := []string{
-		"Fire TV Stick streaming media player with Alexa built in, includes Alexa Voice Remote, HD, easy set-up, released 2019",
-		"Echo Dot (3rd Gen) - Smart speaker with Alexa - Charcoal",
-		"Fire TV Stick 4K streaming device with Alexa built in, Dolby Vision, includes Alexa Voice Remote, latest release",
-		"Echo Dot (3rd Gen) - Smart speaker with clock and Alexa - Sandstone",
-		"Echo Show 8 - HD 8\" smart display with Alexa  - Charcoal",
-	}
+	expected := test.CannedScrapedProducts
 	actual := crawler.New().WithDoc(doc).ScrapeProductNames()[:5]
 	failedMsg := fmt.Sprintf("Failed, expected the names of the top 5 products: %s, got the names of the top 5 products: %s", expected, actual)
 	assert.Equal(t, expected, actual, failedMsg)
@@ -66,13 +61,7 @@ func TestScrapeProductNames(t *testing.T) {
 func TestScrapeProducts(t *testing.T) {
 	// Test the top 5 products
 	products := product.NewRows()
-	products.Set = []*product.Row{
-		&product.Row{Name: "Fire TV Stick streaming media player with Alexa built in, includes Alexa Voice Remote, HD, easy set-up, released 2019", Rank: 1},
-		&product.Row{Name: "Echo Dot (3rd Gen) - Smart speaker with Alexa - Charcoal", Rank: 2},
-		&product.Row{Name: "Fire TV Stick 4K streaming device with Alexa built in, Dolby Vision, includes Alexa Voice Remote, latest release", Rank: 3},
-		&product.Row{Name: "Echo Dot (3rd Gen) - Smart speaker with clock and Alexa - Sandstone", Rank: 4},
-		&product.Row{Name: "Echo Show 8 - HD 8\" smart display with Alexa  - Charcoal", Rank: 5},
-	}
+	products.Set = test.CannedProductsSet
 
 	// TODO: Implement the shared method for removing the pointers.
 	// Access the data directily instead of going throuth the pointer.
