@@ -47,14 +47,11 @@ func (p *productSuite) TearDownSuite() {
 
 func (p *productSuite) TestBulkilyInsert() {
 	defer app.Finalize()
-	scrapedProducts := product.NewRows()
-	scrapedProducts.Set = test.CannedProductsSet
-	products := product.NewRows()
-	products, err := products.BulkilyInsert(scrapedProducts.Set, app.DBconn)
+	products, err := product.NewRows().BulkilyInsert(test.CannedProductsSet, app.DBconn)
 	if err != nil {
 		p.T().Errorf("Failed to inster the products, error: %v", err)
 	} else {
-		expected := scrapedProducts.RemovePointers(scrapedProducts.Set)
+		expected := product.NewRows().RemovePointers(test.CannedProductsSet)
 		actual := products.RemovePointers(products.Set)
 		failedMsg := fmt.Sprintf("Failed, expected the data inserted into the products: %v, got the data: %v", expected, actual)
 		assert.Equal(p.T(), expected, actual, failedMsg)
