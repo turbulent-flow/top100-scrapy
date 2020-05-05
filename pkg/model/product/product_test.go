@@ -49,7 +49,7 @@ func (p *productSuite) TestBulkilyInsert() {
 	defer app.Finalize()
 	products, err := product.NewRows().BulkilyInsert(test.CannedProductsSet, app.DBconn)
 	if err != nil {
-		p.T().Errorf("Failed to inster the products, error: %v", err)
+		p.T().Errorf("Failed to insert the data into the table `products`, error: %v", err)
 	} else {
 		expected := product.NewRows().RemovePointers(test.CannedProductsSet)
 		actual := products.RemovePointers(products.Set)
