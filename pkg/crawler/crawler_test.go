@@ -7,6 +7,8 @@ import (
 	"top100-scrapy/pkg/app"
 	"top100-scrapy/pkg/crawler"
 	"top100-scrapy/pkg/logger"
+	"top100-scrapy/pkg/model/product"
+	"top100-scrapy/pkg/test"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/dnaeon/go-vcr/recorder"
@@ -50,13 +52,7 @@ func init() {
 
 func TestScrapeProductNames(t *testing.T) {
 	// Test the names of the top 5 products.
-	expected := []string{
-		"Fire TV Stick streaming media player with Alexa built in, includes Alexa Voice Remote, HD, easy set-up, released 2019",
-		"Echo Dot (3rd Gen) - Smart speaker with Alexa - Charcoal",
-		"Fire TV Stick 4K streaming device with Alexa built in, Dolby Vision, includes Alexa Voice Remote, latest release",
-		"Echo Dot (3rd Gen) - Smart speaker with clock and Alexa - Sandstone",
-		"Echo Show 8 - HD 8\" smart display with Alexa  - Charcoal",
-	}
+	expected := test.CannedScrapedProducts
 	actual := crawler.New().WithDoc(doc).ScrapeProductNames()[:5]
 	failedMsg := fmt.Sprintf("Failed, expected the names of the top 5 products: %s, got the names of the top 5 products: %s", expected, actual)
 	assert.Equal(t, expected, actual, failedMsg)
@@ -64,29 +60,11 @@ func TestScrapeProductNames(t *testing.T) {
 
 func TestScrapeProducts(t *testing.T) {
 	// Test the top 5 products
-	expectedProducts := crawler.NewProducts()
-	expectedProducts.Set = []*crawler.Product{
-		&crawler.Product{"Fire TV Stick streaming media player with Alexa built in, includes Alexa Voice Remote, HD, easy set-up, released 2019", 1},
-		&crawler.Product{"Echo Dot (3rd Gen) - Smart speaker with Alexa - Charcoal", 2},
-		&crawler.Product{"Fire TV Stick 4K streaming device with Alexa built in, Dolby Vision, includes Alexa Voice Remote, latest release", 3},
-		&crawler.Product{"Echo Dot (3rd Gen) - Smart speaker with clock and Alexa - Sandstone", 4},
-		&crawler.Product{"Echo Show 8 - HD 8\" smart display with Alexa  - Charcoal", 5},
-	}
-
-	// TODO: Implement the shared method for removing the pointers.
-	// Access the data directily instead of going throuth the pointer.
-	originalExpectedSet := []crawler.Product{}
-	for _, post := range expectedProducts.Set {
-		originalExpectedSet = append(originalExpectedSet, *post)
-	}
-	expected := originalExpectedSet
-
-	acutalProducts := crawler.New().WithDoc(doc).ScrapeProducts()
-	originalActualSet := []crawler.Product{}
-	for _, post := range acutalProducts.Set {
-		originalActualSet = append(originalActualSet, *post)
-	}
-	actual := originalActualSet[:5]
+	products := product.NewRows()
+	products.Set = test.CannedProductsSet
+	expected := products.RemovePointers(products.Set)
+	products = crawler.New().WithDoc(doc).ScrapeProducts()
+	actual := products.RemovePointers(products.Set)[:5]
 	failedMsg := fmt.Sprintf("Failed, expected the top 5 products: %v, got the top 5 products: %v", expected, actual)
 	assert.Equal(t, expected, actual, failedMsg)
 }

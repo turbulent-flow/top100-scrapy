@@ -4,6 +4,7 @@ package crawler
 
 import (
 	"strings"
+	"top100-scrapy/pkg/model/product"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -31,11 +32,11 @@ func (c *Crawler) ScrapeProductNames() (names []string) {
 	return names
 }
 
-func (c *Crawler) ScrapeProducts() (products *Products) {
+func (c *Crawler) ScrapeProducts() (products *product.Rows) {
 	names := c.ScrapeProductNames()
-	products = NewProducts()
+	products = product.NewRows()
 	for i, name := range names {
-		product := &Product{
+		product := &product.Row{
 			Name: name,
 			Rank: i + 1,
 		}
