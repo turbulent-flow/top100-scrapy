@@ -1,6 +1,7 @@
 package product
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"strings"
@@ -23,6 +24,18 @@ type Row struct {
 type Rows struct {
 	Set      []*Row
 	RecordId int
+	Context  context.Context
+	Tx       *sql.Tx
+}
+
+func (r *Rows) WithContext(ctx context.Context) *Rows {
+	r.Context = ctx
+	return r
+}
+
+func (r *Rows) WithTx(tx *sql.Tx) *Rows {
+	r.Tx = tx
+	return r
 }
 
 // Access the data directily instead of going throuth the pointer.
@@ -47,5 +60,30 @@ func (r *Rows) BulkilyInsert(productSet []*Row, db *sql.DB) (*Rows, error) {
 	// Note: `RETURNIN ID` in this statement will return the id of the first row inserted into the DB.
 	stmt := fmt.Sprintf("INSERT INTO products (name, rank) VALUES %s RETURNING id", strings.Join(valueStrings, ","))
 	err := db.QueryRow(stmt, valueArgs...).Scan(&r.RecordId)
+	return r, err
+}
+
+func (r *Rows) ScanIdsFrom(id int, db *sql.DB) (*Rows, error) {
+	var err error
+	stmt := fmt.Sprintf("SELECT id FROM products where id >= %d", id)
+	rows := &sql.Rows{}
+	if r.Tx != nil {
+		rows, err = r.Tx.Query(stmt)
+	} else {
+		rows, err = db.Query(stmt)
+	}
+	defer rows.Close()
+	if err != nil {
+		return r, err
+	}
+	i := 0
+	for rows.Next() {
+		err = rows.Scan(&r.Set[i].Id)
+		if err != nil {
+			return r, err
+		}
+		i++
+	}
+	err = rows.Err()
 	return r, err
 }

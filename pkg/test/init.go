@@ -5,6 +5,7 @@ import (
 	"os"
 	"top100-scrapy/pkg/db"
 	"top100-scrapy/pkg/logger"
+	"top100-scrapy/pkg/model/pcategory"
 	"top100-scrapy/pkg/model/product"
 
 	_ "github.com/lib/pq"
@@ -15,6 +16,7 @@ import (
 // e.g. cannedProducts
 var (
 	DbUrl                 = os.Getenv("TOP100_DB_TEST_DSN")
+	FixturesUri           = os.Getenv("TOP100_FIXTURES_URI")
 	DBconn                *sql.DB
 	CannedScrapedProducts = []string{
 		"Fire TV Stick streaming media player with Alexa built in, includes Alexa Voice Remote, HD, easy set-up, released 2019",
@@ -37,6 +39,21 @@ var (
 		product.Row{Name: "Fire TV Stick 4K streaming device with Alexa built in, Dolby Vision, includes Alexa Voice Remote, latest release", Rank: 3},
 		product.Row{Name: "Echo Dot (3rd Gen) - Smart speaker with clock and Alexa - Sandstone", Rank: 4},
 		product.Row{Name: "Echo Show 8 - HD 8\" smart display with Alexa  - Charcoal", Rank: 5},
+	}
+	CannedCategoryId   = 1
+	CannedPcategorySet = []*pcategory.Row{
+		&pcategory.Row{ProductId: 1, CategoryId: 1},
+		&pcategory.Row{ProductId: 2, CategoryId: 1},
+		&pcategory.Row{ProductId: 3, CategoryId: 1},
+		&pcategory.Row{ProductId: 4, CategoryId: 1},
+		&pcategory.Row{ProductId: 5, CategoryId: 1},
+	}
+	CannedRawPcategorySet = []pcategory.Row{
+		pcategory.Row{ProductId: 1, CategoryId: 1},
+		pcategory.Row{ProductId: 2, CategoryId: 1},
+		pcategory.Row{ProductId: 3, CategoryId: 1},
+		pcategory.Row{ProductId: 4, CategoryId: 1},
+		pcategory.Row{ProductId: 5, CategoryId: 1},
 	}
 )
 
