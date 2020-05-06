@@ -2,9 +2,7 @@ package product_test
 
 import (
 	"fmt"
-	"os"
 	"testing"
-	"top100-scrapy/pkg/app"
 	"top100-scrapy/pkg/model/product"
 	"top100-scrapy/pkg/test"
 
@@ -16,7 +14,6 @@ import (
 
 var (
 	Cleaner = dbcleaner.New()
-	dsn     = os.Getenv("TOP100_DB_TEST_DSN")
 )
 
 type productSuite struct {
@@ -26,7 +23,7 @@ type productSuite struct {
 // Run before the tests in the suite are run.
 func (p *productSuite) SetupSuite() {
 	// Init and set db cleanup engine
-	psql := engine.NewPostgresEngine(dsn)
+	psql := engine.NewPostgresEngine(test.DbUrl)
 	Cleaner.SetEngine(psql)
 }
 
@@ -46,8 +43,8 @@ func (p *productSuite) TearDownSuite() {
 }
 
 func (p *productSuite) TestBulkilyInsert() {
-	defer app.Finalize()
-	products, err := product.NewRows().BulkilyInsert(test.CannedProductsSet, app.DBconn)
+	defer test.Finalize()
+	products, err := product.NewRows().BulkilyInsert(test.CannedProductsSet, test.DBconn)
 	if err != nil {
 		p.T().Errorf("Failed to insert the data into the table `products`, error: %v", err)
 	} else {
