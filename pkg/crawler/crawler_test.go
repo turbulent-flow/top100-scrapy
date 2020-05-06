@@ -62,7 +62,7 @@ func TestScrapeProductNames(t *testing.T) {
 func TestScrapeProducts(t *testing.T) {
 	// Test the top 5 products
 	products := product.NewRows()
-	products.Set = test.CannedProductsSet
+	products.Set = test.CannedProductSet
 	expected := products.RemovePointers(products.Set)
 	products = crawler.New().WithDoc(doc).ScrapeProducts()
 	actual := products.RemovePointers(products.Set)[:5]
