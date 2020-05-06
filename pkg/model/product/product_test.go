@@ -6,10 +6,10 @@ import (
 	"top100-scrapy/pkg/model/product"
 	"top100-scrapy/pkg/test"
 
-	"github.com/khaiql/dbcleaner"
-	"github.com/khaiql/dbcleaner/engine"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
+	"gopkg.in/khaiql/dbcleaner.v2"
+	"gopkg.in/khaiql/dbcleaner.v2/engine"
 )
 
 var (
