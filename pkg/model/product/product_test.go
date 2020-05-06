@@ -44,11 +44,11 @@ func (p *productSuite) TearDownSuite() {
 
 func (p *productSuite) TestBulkilyInsert() {
 	defer test.Finalize()
-	products, err := product.NewRows().BulkilyInsert(test.CannedProductsSet, test.DBconn)
+	products, err := product.NewRows().BulkilyInsert(test.CannedProductSet, test.DBconn)
 	if err != nil {
 		p.T().Errorf("Failed to insert the data into the table `products`, error: %v", err)
 	} else {
-		expected := product.NewRows().RemovePointers(test.CannedProductsSet)
+		expected := product.NewRows().RemovePointers(test.CannedProductSet)
 		actual := products.RemovePointers(products.Set)
 		failedMsg := fmt.Sprintf("Failed, expected the data inserted into the products: %v, got the data: %v", expected, actual)
 		assert.Equal(p.T(), expected, actual, failedMsg)
@@ -62,7 +62,7 @@ func TestRunSuite(t *testing.T) {
 func TestRemovePointers(t *testing.T) {
 	expected := test.CannedRawProductSet
 	products := product.NewRows()
-	products.Set = test.CannedProductsSet
+	products.Set = test.CannedProductSet
 	actual := products.RemovePointers(products.Set)
 	failedMsg := fmt.Sprintf("Failed, expected the raw set: %v, got the set: %v", expected, actual)
 	assert.Equal(t, expected, actual, failedMsg)
