@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"testing"
 	"top100-scrapy/pkg/crawler"
+	"top100-scrapy/pkg/model/category"
 	"top100-scrapy/pkg/model/product"
 	"top100-scrapy/pkg/test"
 
@@ -15,7 +16,6 @@ import (
 
 var (
 	cassetteName = "crawler/base"
-	url          = "https://www.amazon.com/Best-Sellers/zgbs/amazon-devices/ref=zg_bs_nav_0"
 	doc          *goquery.Document
 	t            *testing.T
 )
@@ -32,7 +32,7 @@ func init() {
 	client := &http.Client{
 		Transport: r, // Inject as transport!
 	}
-	resp, err := client.Get(url)
+	resp, err := client.Get(test.CannedCategory.Url)
 	if err != nil {
 		t.Errorf("Failed to get the url, error: %v", err)
 	}
@@ -68,5 +68,13 @@ func TestScrapeProducts(t *testing.T) {
 	products = crawler.New().WithDoc(doc).ScrapeProducts()
 	actual := products.RemovePointers(products.Set)[:5]
 	failedMsg := fmt.Sprintf("Failed, expected the top 5 products: %v, got the top 5 products: %v", expected, actual)
+	assert.Equal(t, expected, actual, failedMsg)
+}
+
+func TestScrapeCategories(t *testing.T) {
+	expected := test.CannedRawCategorySet
+	categories := crawler.New().WithDoc(doc).WithCategory(test.CannedCategory).ScrapeCategories()
+	actual := category.NewRows().RemovePointers(categories.Set)
+	failedMsg := fmt.Sprintf("Failed, expected the categories: %v, got the categories: %v", expected, actual)
 	assert.Equal(t, expected, actual, failedMsg)
 }
