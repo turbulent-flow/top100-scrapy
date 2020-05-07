@@ -39,7 +39,7 @@ func (r *Rows) WithTx(tx *sql.Tx) *Rows {
 }
 
 // Access the data directily instead of going throuth the pointer.
-func (p *Rows) RemovePointers(set []*Row) (rawSet []Row) {
+func (r *Rows) RemovePointers(set []*Row) (rawSet []Row) {
 	rawSet = make([]Row, 0)
 	for _, post := range set {
 		rawSet = append(rawSet, *post)
