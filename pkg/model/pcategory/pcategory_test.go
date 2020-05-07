@@ -24,6 +24,11 @@ type pcategorySuite struct {
 }
 
 func (p *pcategorySuite) SetupSuite() {
+	// Initialize the DB
+	msg, err := test.InitDB()
+	if err != nil {
+		p.T().Errorf("%s, error: %v", msg, err)
+	}
 	psql := engine.NewPostgresEngine(test.DbUrl)
 	Cleaner.SetEngine(psql)
 	// Populate the data into the table `product_categories`

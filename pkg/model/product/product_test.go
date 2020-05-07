@@ -22,6 +22,11 @@ type productSuite struct {
 
 // Run before the tests in the suite are run.
 func (p *productSuite) SetupSuite() {
+	// Initialize the DB
+	msg, err := test.InitDB()
+	if err != nil {
+		p.T().Errorf("%s, error: %v", msg, err)
+	}
 	// Init and set db cleanup engine
 	psql := engine.NewPostgresEngine(test.DbUrl)
 	Cleaner.SetEngine(psql)
