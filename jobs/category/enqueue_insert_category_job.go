@@ -13,5 +13,9 @@ func main() {
 }
 
 func performJob() {
-
+	ch, err := app.AMQPconn.Channel()
+	if err != nil {
+		logger.Error("Failed to open a channel.", err)
+	}
+	defer ch.Close()
 }
