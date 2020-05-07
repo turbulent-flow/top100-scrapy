@@ -39,16 +39,19 @@ func (p *pcategorySuite) SetupSuite() {
 }
 
 func (p *pcategorySuite) SetupTest() {
+	err := test.InitTable("products", test.DBconn)
+	if err != nil {
+		p.T().Errorf("Failed to truncate table `products` and restart the identity. Error: %v", err)
+	}
 	test.Cleaner.Acquire("products", "categories", "product_categories")
 }
 
 func (p *pcategorySuite) TearDownTest() {
-	test.Cleaner.Clean("products", "categories", "product_categories")
-	stmt := "truncate table products restart identity cascade"
-	_, err := test.DBconn.Exec(stmt)
+	err := test.InitTable("products", test.DBconn)
 	if err != nil {
 		p.T().Errorf("Failed to truncate table `products` and restart the identity. Error: %v", err)
 	}
+	test.Cleaner.Clean("products", "categories", "product_categories")
 }
 
 func (p *pcategorySuite) TearDownSuite() {

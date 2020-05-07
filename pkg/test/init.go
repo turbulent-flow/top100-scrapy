@@ -2,6 +2,7 @@ package test
 
 import (
 	"database/sql"
+	"fmt"
 	"os"
 	"top100-scrapy/pkg/db"
 	"top100-scrapy/pkg/model/pcategory"
@@ -71,4 +72,11 @@ func InitCleaner() {
 	Cleaner = dbcleaner.New()
 	psql := engine.NewPostgresEngine(dbUrl)
 	Cleaner.SetEngine(psql)
+}
+
+// Truncate the table, and restart the identity.
+func InitTable(name string, db *sql.DB) error {
+	stmt := fmt.Sprintf("truncate table %s restart identity cascade", name)
+	_, err := db.Exec(stmt)
+	return err
 }
