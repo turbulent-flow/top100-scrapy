@@ -2,22 +2,25 @@ package test
 
 import (
 	"database/sql"
+	"fmt"
 	"os"
 	"top100-scrapy/pkg/db"
-	"top100-scrapy/pkg/logger"
 	"top100-scrapy/pkg/model/pcategory"
 	"top100-scrapy/pkg/model/product"
 
 	_ "github.com/lib/pq"
+	"gopkg.in/khaiql/dbcleaner.v2"
+	"gopkg.in/khaiql/dbcleaner.v2/engine"
 )
 
 // Initialize the actions related the testing,
 // and share the variables with external test suite,
 // e.g. cannedProducts
 var (
-	DbUrl                 = os.Getenv("TOP100_DB_TEST_DSN")
+	dbUrl                 = os.Getenv("TOP100_DB_TEST_DSN")
 	FixturesUri           = os.Getenv("TOP100_FIXTURES_URI")
 	DBconn                *sql.DB
+	Cleaner               dbcleaner.DbCleaner
 	CannedScrapedProducts = []string{
 		"Fire TV Stick streaming media player with Alexa built in, includes Alexa Voice Remote, HD, easy set-up, released 2019",
 		"Echo Dot (3rd Gen) - Smart speaker with Alexa - Charcoal",
@@ -40,27 +43,40 @@ var (
 		product.Row{Name: "Echo Dot (3rd Gen) - Smart speaker with clock and Alexa - Sandstone", Rank: 4},
 		product.Row{Name: "Echo Show 8 - HD 8\" smart display with Alexa  - Charcoal", Rank: 5},
 	}
-	CannedCategoryId   = 1
+	CannedCategoryId   = 2
 	CannedPcategorySet = []*pcategory.Row{
-		&pcategory.Row{ProductId: 1, CategoryId: 1},
-		&pcategory.Row{ProductId: 2, CategoryId: 1},
-		&pcategory.Row{ProductId: 3, CategoryId: 1},
-		&pcategory.Row{ProductId: 4, CategoryId: 1},
-		&pcategory.Row{ProductId: 5, CategoryId: 1},
+		&pcategory.Row{ProductId: 1, CategoryId: 2},
+		&pcategory.Row{ProductId: 2, CategoryId: 2},
+		&pcategory.Row{ProductId: 3, CategoryId: 2},
+		&pcategory.Row{ProductId: 4, CategoryId: 2},
+		&pcategory.Row{ProductId: 5, CategoryId: 2},
 	}
 	CannedRawPcategorySet = []pcategory.Row{
-		pcategory.Row{ProductId: 1, CategoryId: 1},
-		pcategory.Row{ProductId: 2, CategoryId: 1},
-		pcategory.Row{ProductId: 3, CategoryId: 1},
-		pcategory.Row{ProductId: 4, CategoryId: 1},
-		pcategory.Row{ProductId: 5, CategoryId: 1},
+		pcategory.Row{ProductId: 1, CategoryId: 2},
+		pcategory.Row{ProductId: 2, CategoryId: 2},
+		pcategory.Row{ProductId: 3, CategoryId: 2},
+		pcategory.Row{ProductId: 4, CategoryId: 2},
+		pcategory.Row{ProductId: 5, CategoryId: 2},
 	}
 )
 
-func init() {
-	var err error
+func InitDB() (msg string, err error) {
 	DBconn, err = db.OpenTest()
 	if err != nil {
-		logger.Error("Failed to connect the DB.", err)
+		return "Failed to connect the DB", err
 	}
+	return "", err
+}
+
+func InitCleaner() {
+	Cleaner = dbcleaner.New()
+	psql := engine.NewPostgresEngine(dbUrl)
+	Cleaner.SetEngine(psql)
+}
+
+// Truncate the table, and restart the identity.
+func InitTable(name string, db *sql.DB) error {
+	stmt := fmt.Sprintf("truncate table %s restart identity cascade", name)
+	_, err := db.Exec(stmt)
+	return err
 }

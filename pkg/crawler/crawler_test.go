@@ -3,10 +3,8 @@ package crawler_test
 import (
 	"fmt"
 	"net/http"
-	"os"
 	"testing"
 	"top100-scrapy/pkg/crawler"
-	"top100-scrapy/pkg/logger"
 	"top100-scrapy/pkg/model/product"
 	"top100-scrapy/pkg/test"
 
@@ -19,14 +17,14 @@ var (
 	cassetteName = "crawler/base"
 	url          = "https://www.amazon.com/Best-Sellers/zgbs/amazon-devices/ref=zg_bs_nav_0"
 	doc          *goquery.Document
-	fixturesUri  = os.Getenv("TOP100_FIXTURES_URI")
+	t            *testing.T
 )
 
 func init() {
-	cassettePath := fmt.Sprintf("%s/%s", fixturesUri, cassetteName)
+	cassettePath := fmt.Sprintf("%s/%s", test.FixturesUri, cassetteName)
 	r, err := recorder.New(cassettePath)
 	if err != nil {
-		logger.Error("Could not instantiate a recorder.", err)
+		t.Errorf("Could not instantiate a recorder, error: %v", err)
 	}
 	defer r.Stop()
 
@@ -36,18 +34,21 @@ func init() {
 	}
 	resp, err := client.Get(url)
 	if err != nil {
-		logger.Error("Failed to get the url.", err)
+		t.Errorf("Failed to get the url, error: %v", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		factors := logger.Factors{"status_code": resp.StatusCode, "status": resp.Status}
-		logger.Error("The status of the code error occurs!", err, factors)
+		factors := map[string]interface{}{
+			"status_code": resp.StatusCode,
+			"status":      resp.Status,
+		}
+		t.Errorf("The status of the code error occurs! Error: %v, factors: %v", err, factors)
 	}
 
 	doc, err = goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
-		logger.Error("Failed to return a document.", err)
+		t.Errorf("Failed to return a document, error: %v", err)
 	}
 }
 

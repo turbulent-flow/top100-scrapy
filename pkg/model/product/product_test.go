@@ -8,12 +8,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
-	"gopkg.in/khaiql/dbcleaner.v2"
-	"gopkg.in/khaiql/dbcleaner.v2/engine"
-)
-
-var (
-	Cleaner = dbcleaner.New()
 )
 
 type productSuite struct {
@@ -22,28 +16,31 @@ type productSuite struct {
 
 // Run before the tests in the suite are run.
 func (p *productSuite) SetupSuite() {
-	// Init and set db cleanup engine
-	psql := engine.NewPostgresEngine(test.DbUrl)
-	Cleaner.SetEngine(psql)
+	// Initialize the DB
+	msg, err := test.InitDB()
+	if err != nil {
+		p.T().Errorf("%s, error: %v", msg, err)
+	}
+	/// Initialize the dbcleaner
+	test.InitCleaner()
 }
 
 // Run before each test in the suite.
 func (p *productSuite) SetupTest() {
-	Cleaner.Acquire("products")
+	test.Cleaner.Acquire("products")
 }
 
 // Run after each test in the suite.
 func (p *productSuite) TearDownTest() {
-	Cleaner.Clean("products")
+	test.Cleaner.Clean("products")
 }
 
 // Run after all the tests in the suite have been run.
 func (p *productSuite) TearDownSuite() {
-	Cleaner.Close()
+	test.Finalize()
 }
 
 func (p *productSuite) TestBulkilyInsert() {
-	defer test.Finalize()
 	products, err := product.NewRows().BulkilyInsert(test.CannedProductSet, test.DBconn)
 	if err != nil {
 		p.T().Errorf("Failed to insert the data into the table `products`, error: %v", err)
