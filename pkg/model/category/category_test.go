@@ -40,11 +40,11 @@ func (c *categorySuite) SetupTest() {
 }
 
 func (c *categorySuite) TearDownTest() {
-	test.Cleaner.Clean("categories")
 }
 
 func (c *categorySuite) TearDownSuite() {
-	test.Finalize()
+	defer test.Finalize()
+	test.Cleaner.Clean("categories")
 }
 
 func (c *categorySuite) TestFetchRow() {
@@ -56,6 +56,26 @@ func (c *categorySuite) TestFetchRow() {
 		actual := category.RemovePointer(category)
 		failedMsg := fmt.Sprintf("Failed, expected to query the data: %v, got the data: %v", expected, actual)
 		assert.Equal(c.T(), expected, actual, failedMsg)
+	}
+}
+
+func (c *categorySuite) TestBulkilyInsert() {
+	assert := assert.New(c.T())
+	// Test the case when categorySet passed into the method was empty set, expected to return empty set.
+	expected := category.NewRows()
+	actual, _ := category.NewRows().BulkilyInsert(category.NewRows().Set, test.DBconn)
+	failedMsg := fmt.Sprintf("Failed, expected the empty set: %v, got the set: %v", expected, actual)
+	assert.Equal(expected, actual, failedMsg)
+
+	// Test the data inserted into the talbe `Categories`.
+	categories, err := category.NewRows().BulkilyInsert(test.CannedCategorySet, test.DBconn)
+	if err != nil {
+		c.T().Errorf("Failed to insert the data into the table `categories`, error: %v", err)
+	} else {
+		expected := test.CannedRawCategorySet
+		actual := categories.RemovePointers(categories.Set)
+		failedMsg := fmt.Sprintf("Failed, expected the data inserted into the table `categories`: %v, got the data: %v", expected, actual)
+		assert.Equal(expected, actual, failedMsg)
 	}
 }
 
