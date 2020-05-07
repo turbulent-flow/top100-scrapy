@@ -12,10 +12,10 @@ import (
 )
 
 func main() {
-	logger.Debug("Debug starts - enqueue insert categories job.")
+	logger.Debug("Debug starts - enqueue categories insertion")
 	defer app.Finalize()
 	performJob()
-	logger.Debug("Debug stops -  enqueue insert categories job.")
+	logger.Debug("Debug stops -  enqueue categories insertion")
 }
 
 func performJob() {
