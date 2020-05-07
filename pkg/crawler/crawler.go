@@ -4,13 +4,15 @@ package crawler
 
 import (
 	"strings"
+	"top100-scrapy/pkg/model/category"
 	"top100-scrapy/pkg/model/product"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
 type Crawler struct {
-	doc *goquery.Document
+	doc      *goquery.Document
+	category *category.Row
 }
 
 func New() *Crawler {
@@ -21,6 +23,11 @@ func New() *Crawler {
 // e.g. crawler.New().WithDoc(doc).CrawlProducts()
 func (c *Crawler) WithDoc(doc *goquery.Document) *Crawler {
 	c.doc = doc
+	return c
+}
+
+func (c *Crawler) WithCategory(category *category.Row) *Crawler {
+	c.category = category
 	return c
 }
 
@@ -43,4 +50,26 @@ func (c *Crawler) ScrapeProducts() (products *product.Rows) {
 		products.Set = append(products.Set, product)
 	}
 	return products
+}
+
+func (c *Crawler) ScrapeCategories() (categories *category.Rows) {
+	categories = category.NewRows()
+	c.doc.Find("#zg_browseRoot .zg_selected").Parent().Next().Each(func(i int, s *goquery.Selection) {
+		if goquery.NodeName(s) == "ul" {
+			n := 0
+			c.doc.Find("#zg_browseRoot .zg_selected").Parent().Next().Find("li a").Each(func(i int, s *goquery.Selection) {
+				n++
+				url, _ := s.Attr("href")
+				path := category.NewRow().BuildPath(n, c.category)
+				category := &category.Row{
+					Name:     s.Text(),
+					Url:      url,
+					Path:     path,
+					ParentId: c.category.Id,
+				}
+				categories.Set = append(categories.Set, category)
+			})
+		}
+	})
+	return categories
 }

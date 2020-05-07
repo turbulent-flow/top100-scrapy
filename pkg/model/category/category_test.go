@@ -69,3 +69,10 @@ func TestRemovePointer(t *testing.T) {
 	failedMsg := fmt.Sprintf("Failed, expected the raw row: %v, got the row: %v", expected, acutal)
 	assert.Equal(t, expected, acutal, failedMsg)
 }
+
+func TestRemovePointers(t *testing.T) {
+	expected := test.CannedRawCategorySet
+	actual := category.NewRows().RemovePointers(test.CannedCategorySet)
+	failedMsg := fmt.Sprintf("Failed, expected the raw set: %v, got the set: %v", expected, actual)
+	assert.Equal(t, expected, actual, failedMsg)
+}

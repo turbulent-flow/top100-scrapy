@@ -42,3 +42,23 @@ func (r *Row) RemovePointer(row *Row) (rawRow Row) {
 	}
 	return rawRow
 }
+
+// n: The number of the row
+// parent: The parent row of the current row
+// path: The path of the current row
+func (r *Row) BuildPath(n int, parent *Row) (path string) {
+	if n < 10 {
+		path = fmt.Sprintf("%s.0%d", parent.Path, n)
+	} else {
+		path = fmt.Sprintf("%s.%d", parent.Path, n)
+	}
+	return path
+}
+
+func (r *Rows) RemovePointers(set []*Row) (rawSet []Row) {
+	rawSet = make([]Row, 0)
+	for _, post := range set {
+		rawSet = append(rawSet, *post)
+	}
+	return rawSet
+}
