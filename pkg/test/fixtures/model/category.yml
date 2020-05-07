@@ -9,3 +9,9 @@ categories:
     url: https://www.amazon.com/Best-Sellers/zgbs/ref=zg_bs_unv_0_amazon-devices_1
     path: 01
     parent_id: 0
+
+  - id: 2
+    name: Amazon Devices & Accessories
+    url: https://www.amazon.com/Best-Sellers/zgbs/amazon-devices/ref=zg_bs_nav_0
+    path: 01.01
+    parent_id: 1

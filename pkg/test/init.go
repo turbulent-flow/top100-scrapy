@@ -40,20 +40,20 @@ var (
 		product.Row{Name: "Echo Dot (3rd Gen) - Smart speaker with clock and Alexa - Sandstone", Rank: 4},
 		product.Row{Name: "Echo Show 8 - HD 8\" smart display with Alexa  - Charcoal", Rank: 5},
 	}
-	CannedCategoryId   = 1
+	CannedCategoryId   = 2
 	CannedPcategorySet = []*pcategory.Row{
-		&pcategory.Row{ProductId: 1, CategoryId: 1},
-		&pcategory.Row{ProductId: 2, CategoryId: 1},
-		&pcategory.Row{ProductId: 3, CategoryId: 1},
-		&pcategory.Row{ProductId: 4, CategoryId: 1},
-		&pcategory.Row{ProductId: 5, CategoryId: 1},
+		&pcategory.Row{ProductId: 1, CategoryId: 2},
+		&pcategory.Row{ProductId: 2, CategoryId: 2},
+		&pcategory.Row{ProductId: 3, CategoryId: 2},
+		&pcategory.Row{ProductId: 4, CategoryId: 2},
+		&pcategory.Row{ProductId: 5, CategoryId: 2},
 	}
 	CannedRawPcategorySet = []pcategory.Row{
-		pcategory.Row{ProductId: 1, CategoryId: 1},
-		pcategory.Row{ProductId: 2, CategoryId: 1},
-		pcategory.Row{ProductId: 3, CategoryId: 1},
-		pcategory.Row{ProductId: 4, CategoryId: 1},
-		pcategory.Row{ProductId: 5, CategoryId: 1},
+		pcategory.Row{ProductId: 1, CategoryId: 2},
+		pcategory.Row{ProductId: 2, CategoryId: 2},
+		pcategory.Row{ProductId: 3, CategoryId: 2},
+		pcategory.Row{ProductId: 4, CategoryId: 2},
+		pcategory.Row{ProductId: 5, CategoryId: 2},
 	}
 )
 
