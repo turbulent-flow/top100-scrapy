@@ -10,17 +10,20 @@ import (
 	"top100-scrapy/pkg/crawler"
 	"top100-scrapy/pkg/db"
 	"top100-scrapy/pkg/logger"
+	"top100-scrapy/pkg/rabbitmq"
 
 	"github.com/PuerkitoBio/goquery"
 	_ "github.com/lib/pq"
+	"github.com/streadway/amqp"
 )
 
 var (
-	DBconn *sql.DB
-	env    = os.Getenv("TOP100_ENV")
-	AppUri = os.Getenv("TOP100_APP_URI")
-	file   *os.File
-	err    error
+	DBconn   *sql.DB
+	env      = os.Getenv("TOP100_ENV")
+	AppUri   = os.Getenv("TOP100_APP_URI")
+	file     *os.File
+	err      error
+	AMQPconn *amqp.Connection
 )
 
 func init() {
@@ -39,6 +42,11 @@ func init() {
 	DBconn, err = db.Open()
 	if err != nil {
 		logger.Error("Failed to connect the DB.", err)
+	}
+
+	AMQPconn, err = rabbitmq.Open() // Initialize AMQP.
+	if err != nil {
+		logger.Error("Failed to connect the RabbitMQ.", err)
 	}
 }
 
