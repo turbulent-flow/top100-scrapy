@@ -8,15 +8,9 @@ import (
 	"top100-scrapy/pkg/model/product"
 	"top100-scrapy/pkg/test"
 
-	"github.com/khaiql/dbcleaner/engine"
 	"github.com/romanyx/polluter"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
-	"gopkg.in/khaiql/dbcleaner.v2"
-)
-
-var (
-	Cleaner = dbcleaner.New()
 )
 
 type pcategorySuite struct {
@@ -29,8 +23,8 @@ func (p *pcategorySuite) SetupSuite() {
 	if err != nil {
 		p.T().Errorf("%s, error: %v", msg, err)
 	}
-	psql := engine.NewPostgresEngine(test.DbUrl)
-	Cleaner.SetEngine(psql)
+	// Initialize the dbcleaner
+	test.InitCleaner()
 	// Populate the data into the table `product_categories`
 	seedPath := fmt.Sprintf("%s/model/category.yml", test.FixturesUri)
 	seed, err := os.Open(seedPath)
@@ -45,11 +39,11 @@ func (p *pcategorySuite) SetupSuite() {
 }
 
 func (p *pcategorySuite) SetupTest() {
-	Cleaner.Acquire("products", "categories", "product_categories")
+	test.Cleaner.Acquire("products", "categories", "product_categories")
 }
 
 func (p *pcategorySuite) TearDownTest() {
-	Cleaner.Clean("products", "categories", "product_categories")
+	test.Cleaner.Clean("products", "categories", "product_categories")
 	stmt := "truncate table products restart identity cascade"
 	_, err := test.DBconn.Exec(stmt)
 	if err != nil {
@@ -58,7 +52,6 @@ func (p *pcategorySuite) TearDownTest() {
 }
 
 func (p *pcategorySuite) TearDownSuite() {
-	Cleaner.Close()
 	test.Finalize()
 }
 

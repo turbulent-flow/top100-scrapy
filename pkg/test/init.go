@@ -8,15 +8,18 @@ import (
 	"top100-scrapy/pkg/model/product"
 
 	_ "github.com/lib/pq"
+	"gopkg.in/khaiql/dbcleaner.v2"
+	"gopkg.in/khaiql/dbcleaner.v2/engine"
 )
 
 // Initialize the actions related the testing,
 // and share the variables with external test suite,
 // e.g. cannedProducts
 var (
-	DbUrl                 = os.Getenv("TOP100_DB_TEST_DSN")
+	dbUrl                 = os.Getenv("TOP100_DB_TEST_DSN")
 	FixturesUri           = os.Getenv("TOP100_FIXTURES_URI")
 	DBconn                *sql.DB
+	Cleaner               dbcleaner.DbCleaner
 	CannedScrapedProducts = []string{
 		"Fire TV Stick streaming media player with Alexa built in, includes Alexa Voice Remote, HD, easy set-up, released 2019",
 		"Echo Dot (3rd Gen) - Smart speaker with Alexa - Charcoal",
@@ -62,4 +65,10 @@ func InitDB() (msg string, err error) {
 		return "Failed to connect the DB", err
 	}
 	return "", err
+}
+
+func InitCleaner() {
+	Cleaner = dbcleaner.New()
+	psql := engine.NewPostgresEngine(dbUrl)
+	Cleaner.SetEngine(psql)
 }
