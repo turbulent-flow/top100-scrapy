@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"os"
 	"top100-scrapy/pkg/db"
-	"top100-scrapy/pkg/logger"
 	"top100-scrapy/pkg/model/pcategory"
 	"top100-scrapy/pkg/model/product"
 
@@ -57,10 +56,10 @@ var (
 	}
 )
 
-func init() {
-	var err error
+func InitDB() (msg string, err error) {
 	DBconn, err = db.OpenTest()
 	if err != nil {
-		logger.Error("Failed to connect the DB.", err)
+		return "Failed to connect the DB", err
 	}
+	return "", err
 }

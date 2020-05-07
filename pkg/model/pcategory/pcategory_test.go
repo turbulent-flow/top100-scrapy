@@ -26,6 +26,11 @@ type pcategorySuite struct {
 func (p *pcategorySuite) SetupSuite() {
 	psql := engine.NewPostgresEngine(test.DbUrl)
 	Cleaner.SetEngine(psql)
+	// Initialize the DB
+	msg, err := test.InitDB()
+	if err != nil {
+		p.T().Errorf("%s, error: %v", msg, err)
+	}
 	// Populate the data into the table `product_categories`
 	seedPath := fmt.Sprintf("%s/model/category.yml", test.FixturesUri)
 	seed, err := os.Open(seedPath)
@@ -44,12 +49,13 @@ func (p *pcategorySuite) SetupTest() {
 }
 
 func (p *pcategorySuite) TearDownTest() {
-	Cleaner.Clean("products", "categories", "product_categories")
+	// Truncate the table `products`, and restart the identity.
 	stmt := "truncate table products restart identity cascade"
 	_, err := test.DBconn.Exec(stmt)
 	if err != nil {
 		p.T().Errorf("Failed to truncate table `products` and restart the identity. Error: %v", err)
 	}
+	Cleaner.Clean("products", "categories", "product_categories")
 }
 
 func (p *pcategorySuite) TearDownSuite() {

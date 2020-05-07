@@ -25,6 +25,11 @@ func (p *productSuite) SetupSuite() {
 	// Init and set db cleanup engine
 	psql := engine.NewPostgresEngine(test.DbUrl)
 	Cleaner.SetEngine(psql)
+	// Initialize the DB
+	msg, err := test.InitDB()
+	if err != nil {
+		p.T().Errorf("%s, error: %v", msg, err)
+	}
 }
 
 // Run before each test in the suite.
