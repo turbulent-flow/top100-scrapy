@@ -3,6 +3,7 @@ package category
 import (
 	"database/sql"
 	"fmt"
+	"strings"
 )
 
 func NewRow() *Row {
@@ -61,4 +62,24 @@ func (r *Rows) RemovePointers(set []*Row) (rawSet []Row) {
 		rawSet = append(rawSet, *post)
 	}
 	return rawSet
+}
+
+func (r *Rows) BulkilyInsert(categorySet []*Row, db *sql.DB) (*Rows, error) {
+	if len(categorySet) == 0 {
+		return r, nil
+	}
+
+	r.Set = categorySet
+	valueStrings := make([]string, 0, len(r.Set))
+	valueArgs := make([]interface{}, 0, len(r.Set)*4)
+	for i, post := range r.Set {
+		valueStrings = append(valueStrings, fmt.Sprintf("($%d, $%d, $%d, $%d)", i*4+1, i*4+2, i*4+3, i*4+4))
+		valueArgs = append(valueArgs, post.Name)
+		valueArgs = append(valueArgs, post.Path)
+		valueArgs = append(valueArgs, post.Url)
+		valueArgs = append(valueArgs, post.ParentId)
+	}
+	stmt := fmt.Sprintf("INSERT INTO categories (name, path, url, parent_id) VALUES %s", strings.Join(valueStrings, ","))
+	_, err := db.Exec(stmt, valueArgs...)
+	return r, err
 }
