@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"top100-scrapy/pkg/db"
+	"top100-scrapy/pkg/model/category"
 	"top100-scrapy/pkg/model/pcategory"
 	"top100-scrapy/pkg/model/product"
 
@@ -57,6 +58,20 @@ var (
 		pcategory.Row{ProductId: 3, CategoryId: 2},
 		pcategory.Row{ProductId: 4, CategoryId: 2},
 		pcategory.Row{ProductId: 5, CategoryId: 2},
+	}
+	CannedCategory = &category.Row{
+		Id:       2,
+		Name:     "Amazon Devices & Accessories",
+		Url:      "https://www.amazon.com/Best-Sellers/zgbs/amazon-devices/ref=zg_bs_nav_0",
+		Path:     "01.01",
+		ParentId: 1,
+	}
+	CannedRawCategory = category.Row{
+		Id:       2,
+		Name:     "Amazon Devices & Accessories",
+		Url:      "https://www.amazon.com/Best-Sellers/zgbs/amazon-devices/ref=zg_bs_nav_0",
+		Path:     "01.01",
+		ParentId: 1,
 	}
 )
 
