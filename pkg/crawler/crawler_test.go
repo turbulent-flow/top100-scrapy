@@ -3,7 +3,6 @@ package crawler_test
 import (
 	"fmt"
 	"net/http"
-	"os"
 	"testing"
 	"top100-scrapy/pkg/crawler"
 	"top100-scrapy/pkg/logger"
@@ -19,11 +18,10 @@ var (
 	cassetteName = "crawler/base"
 	url          = "https://www.amazon.com/Best-Sellers/zgbs/amazon-devices/ref=zg_bs_nav_0"
 	doc          *goquery.Document
-	fixturesUri  = os.Getenv("TOP100_FIXTURES_URI")
 )
 
 func init() {
-	cassettePath := fmt.Sprintf("%s/%s", fixturesUri, cassetteName)
+	cassettePath := fmt.Sprintf("%s/%s", test.FixturesUri, cassetteName)
 	r, err := recorder.New(cassettePath)
 	if err != nil {
 		logger.Error("Could not instantiate a recorder.", err)
