@@ -23,7 +23,8 @@ type Row struct {
 }
 
 type Rows struct {
-	Set []*Row
+	Set   []*Row
+	Count int
 }
 
 func (r *Row) FetchRow(id int, db *sql.DB) (*Row, error) {
