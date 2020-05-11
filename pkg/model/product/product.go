@@ -23,6 +23,7 @@ type Row struct {
 
 type Rows struct {
 	Set      []*Row
+	RawSet   []Row
 	RecordId int
 	Context  context.Context
 	Tx       *sql.Tx
@@ -36,15 +37,6 @@ func (r *Rows) WithContext(ctx context.Context) *Rows {
 func (r *Rows) WithTx(tx *sql.Tx) *Rows {
 	r.Tx = tx
 	return r
-}
-
-// Access the data directily instead of going throuth the pointer.
-func (r *Rows) RemovePointers(set []*Row) (rawSet []Row) {
-	rawSet = make([]Row, 0)
-	for _, post := range set {
-		rawSet = append(rawSet, *post)
-	}
-	return rawSet
 }
 
 func (r *Rows) BulkilyInsert(productSet []*Row, db *sql.DB) (*Rows, error) {

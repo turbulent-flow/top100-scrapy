@@ -3,6 +3,7 @@ package product_test
 import (
 	"fmt"
 	"testing"
+	"top100-scrapy/pkg/model"
 	"top100-scrapy/pkg/model/product"
 	"top100-scrapy/pkg/test"
 
@@ -45,22 +46,14 @@ func (p *productSuite) TestBulkilyInsert() {
 	if err != nil {
 		p.T().Errorf("Failed to insert the data into the table `products`, error: %v", err)
 	} else {
-		expected := product.NewRows().RemovePointers(test.CannedProductSet)
-		actual := products.RemovePointers(products.Set)
-		failedMsg := fmt.Sprintf("Failed, expected the data inserted into the products: %v, got the data: %v", expected, actual)
-		assert.Equal(p.T(), expected, actual, failedMsg)
+		expectedProducts := product.Rows{}
+		expectedProducts.RawSet = test.CannedRawProductSet
+		actualProducts := model.RemovePointers(products)
+		failedMsg := fmt.Sprintf("Failed, expected the data inserted into the products: %v, got the data: %v", expectedProducts, actualProducts)
+		assert.Equal(p.T(), expectedProducts, actualProducts, failedMsg)
 	}
 }
 
 func TestRunSuite(t *testing.T) {
 	suite.Run(t, new(productSuite))
-}
-
-func TestRemovePointers(t *testing.T) {
-	expected := test.CannedRawProductSet
-	products := product.NewRows()
-	products.Set = test.CannedProductSet
-	actual := products.RemovePointers(products.Set)
-	failedMsg := fmt.Sprintf("Failed, expected the raw set: %v, got the set: %v", expected, actual)
-	assert.Equal(t, expected, actual, failedMsg)
 }
