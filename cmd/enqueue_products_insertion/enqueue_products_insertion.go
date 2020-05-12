@@ -46,6 +46,10 @@ func performJob() {
 	lastId, _ := strconv.Atoi(c)
 
 	categories := category.NewRows()
+	// Start from the last id: 1
+	if lastId == 0 {
+		lastId = 1
+	}
 	stmt := fmt.Sprintf("SELECT count(id) as count from categories where id > %d", lastId)
 	// Count the rows from the query.
 	err = app.DBconn.QueryRow(stmt).Scan(&categories.Count)
