@@ -44,7 +44,7 @@ func (c *Crawler) ScrapeProducts() (products *product.Rows, err error) {
 	names := c.ScrapeProductNames()
 	if len(names) == 0 {
 		err := fmt.Errorf("The names scraped from the url `%s` are empty, the category id stored into the DB is %d", c.category.Url, c.category.Id)
-		return products, &EmptyError{err}
+		return products, &EmptyError{c.category, err}
 	}
 	products = product.NewRows()
 	for i, name := range names {
