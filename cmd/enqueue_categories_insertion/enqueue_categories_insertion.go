@@ -26,19 +26,19 @@ func performJob() {
 	defer ch.Close()
 
 	q, err := ch.QueueDeclare(
-		"insert_categories_queue", // name
-		true,                      // durable
-		false,                     // delete when unused
-		false,                     // exclusive
-		false,                     // no-wait
-		nil,                       // arguments
+		"categories_insertion", // name
+		true,                   // durable
+		false,                  // delete when unused
+		false,                  // exclusive
+		false,                  // no-wait
+		nil,                    // arguments
 	)
 	if err != nil {
 		logger.Error("Failed to declare a queue.", err)
 	}
 
 	// Read the last id from the file.
-	lastIdPath := fmt.Sprintf("%s/logs/last_id", app.AppUri)
+	lastIdPath := fmt.Sprintf("%s/logs/last_category_id_group_by_categories_insertion", app.AppUri)
 	c, err := file.Read(lastIdPath)
 	if err != nil {
 		logger.Error("Could not read file.", err)
