@@ -10,6 +10,7 @@ import (
 	"top100-scrapy/pkg/crawler"
 	"top100-scrapy/pkg/db"
 	"top100-scrapy/pkg/logger"
+	"top100-scrapy/pkg/model/category"
 	"top100-scrapy/pkg/rabbitmq"
 
 	"github.com/PuerkitoBio/goquery"
@@ -51,8 +52,8 @@ func init() {
 }
 
 // Return a new instance of the crawler with the HTML document fetched from the url.
-func InitCrawler(url string) *crawler.Crawler {
-	resp, err := http.Get(url)
+func InitCrawler(category *category.Row) *crawler.Crawler {
+	resp, err := http.Get(category.Url)
 	if err != nil {
 		logger.Error("Failed to get the url.", err)
 	}
@@ -68,5 +69,5 @@ func InitCrawler(url string) *crawler.Crawler {
 		logger.Error("Failed to return a document.", err)
 	}
 
-	return crawler.New().WithDoc(doc)
+	return crawler.New().WithDoc(doc).WithCategory(category)
 }

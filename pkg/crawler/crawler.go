@@ -3,6 +3,7 @@ package crawler
 // Scrape everything you want.
 
 import (
+	"fmt"
 	"strings"
 	"top100-scrapy/pkg/model/category"
 	"top100-scrapy/pkg/model/product"
@@ -39,8 +40,12 @@ func (c *Crawler) ScrapeProductNames() (names []string) {
 	return names
 }
 
-func (c *Crawler) ScrapeProducts() (products *product.Rows) {
+func (c *Crawler) ScrapeProducts() (products *product.Rows, err error) {
 	names := c.ScrapeProductNames()
+	if len(names) == 0 {
+		err := fmt.Errorf("The names scraped from the url `%s` are empty, the category id stored into the DB is %d", c.category.Url, c.category.Id)
+		return products, &EmptyError{err}
+	}
 	products = product.NewRows()
 	for i, name := range names {
 		product := &product.Row{
@@ -49,7 +54,7 @@ func (c *Crawler) ScrapeProducts() (products *product.Rows) {
 		}
 		products.Set = append(products.Set, product)
 	}
-	return products
+	return products, err
 }
 
 func (c *Crawler) ScrapeCategories() (categories *category.Rows) {
