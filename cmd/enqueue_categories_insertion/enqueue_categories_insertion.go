@@ -38,7 +38,7 @@ func performJob() {
 	}
 
 	// Read the last id from the file.
-	lastIdPath := fmt.Sprintf("%s/logs/last_id", app.AppUri)
+	lastIdPath := fmt.Sprintf("%s/logs/last_category_id_group_by_categories_insertion", app.AppUri)
 	c, err := file.Read(lastIdPath)
 	if err != nil {
 		logger.Error("Could not read file.", err)
