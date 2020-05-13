@@ -78,7 +78,10 @@ func performJob() {
 			if page == 2 {
 				category.Url = category.Url + fmt.Sprintf("?_encoding=UTF8&pg=%d", page)
 			}
-			products := app.InitCrawler(category.Url).ScrapeProducts()
+			products, err := app.InitCrawler(category).ScrapeProducts()
+			if err != nil {
+				logger.Error("An error occured: %s", err)
+			}
 			_, msg, err := pcategory.NewRows().BulkilyInsertRelations(products, categoryId, app.DBconn)
 			if pqErr, ok := err.(*pq.Error); ok {
 				factors := logger.Factors{

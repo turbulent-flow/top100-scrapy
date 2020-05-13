@@ -74,7 +74,7 @@ func performJob() {
 				if err != nil {
 					logger.Error("Failed to query on DB or failed to assign a value by the Scan.", err)
 				}
-				categories := app.InitCrawler(category.Url).WithCategory(category).ScrapeCategories()
+				categories := app.InitCrawler(category).ScrapeCategories()
 				_, err = categories.BulkilyInsert(categories.Set, app.DBconn)
 				if pqErr, ok := err.(*pq.Error); ok {
 					switch pqErr.Code {

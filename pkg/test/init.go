@@ -3,12 +3,17 @@ package test
 import (
 	"database/sql"
 	"fmt"
+	"net/http"
 	"os"
+	"top100-scrapy/pkg/crawler"
 	"top100-scrapy/pkg/db"
+	"top100-scrapy/pkg/logger"
 	"top100-scrapy/pkg/model/category"
 	"top100-scrapy/pkg/model/pcategory"
 	"top100-scrapy/pkg/model/product"
 
+	"github.com/PuerkitoBio/goquery"
+	"github.com/dnaeon/go-vcr/recorder"
 	_ "github.com/lib/pq"
 	"gopkg.in/khaiql/dbcleaner.v2"
 	"gopkg.in/khaiql/dbcleaner.v2/engine"
@@ -66,6 +71,13 @@ var (
 		Path:     "01.01",
 		ParentId: 1,
 	}
+	CannedCategory02 = &category.Row{
+		Id:       19,
+		Name:     "Digital Music",
+		Url:      "https://www.amazon.com/Best-Sellers-MP3-Downloads/zgbs/dmusic/ref=zg_bs_nav_0/144-3395590-4790907",
+		Path:     "01.18",
+		ParentId: 1,
+	}
 	CannedRawCategory = category.Row{
 		Id:       2,
 		Name:     "Amazon Devices & Accessories",
@@ -102,4 +114,37 @@ func InitTable(name string, db *sql.DB) error {
 	stmt := fmt.Sprintf("truncate table %s restart identity cascade", name)
 	_, err := db.Exec(stmt)
 	return err
+}
+
+func InitHttpRecorder(cassette string, category *category.Row) *crawler.Crawler {
+	cassettePath := fmt.Sprintf("%s/crawler/%s", FixturesUri, cassette)
+	r, err := recorder.New(cassettePath)
+	if err != nil {
+		logger.Error("Could not instantiate a recorder, error: %v", err)
+	}
+	defer r.Stop()
+
+	// Create an HTTP client and inject the transport with the recorder.
+	client := &http.Client{
+		Transport: r, // Inject as transport!
+	}
+	resp, err := client.Get(category.Url)
+	if err != nil {
+		logger.Error("Failed to get the url, error: %v", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		factors := map[string]interface{}{
+			"status_code": resp.StatusCode,
+			"status":      resp.Status,
+		}
+		logger.Error("The status of the code error occurs! Error: %v, factors: %v", err, factors)
+	}
+
+	doc, err := goquery.NewDocumentFromReader(resp.Body)
+	if err != nil {
+		logger.Error("Failed to return a document, error: %v", err)
+	}
+	return crawler.New().WithDoc(doc).WithCategory(category)
 }
