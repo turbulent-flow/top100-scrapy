@@ -26,12 +26,12 @@ func performJob() {
 	defer ch.Close()
 
 	q, err := ch.QueueDeclare(
-		"insert_categories_queue", // name
-		true,                      // durable
-		false,                     // delete when unused
-		false,                     // exclusive
-		false,                     // no-wait
-		nil,                       // arguments
+		"categories_insertion", // name
+		true,                   // durable
+		false,                  // delete when unused
+		false,                  // exclusive
+		false,                  // no-wait
+		nil,                    // arguments
 	)
 	if err != nil {
 		logger.Error("Failed to declare a queue.", err)
