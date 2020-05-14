@@ -20,6 +20,7 @@ func TestScrapeProductNames(t *testing.T) {
 }
 
 func TestScrapeProducts(t *testing.T) {
+	assert := assert.New(t)
 	// Case 01: Test the top 5 products
 	products := product.NewRows()
 	products.Set = test.CannedProductSet
@@ -30,7 +31,7 @@ func TestScrapeProducts(t *testing.T) {
 	}
 	actual := products.RemovePointers(products.Set)[:5]
 	failedMsg := fmt.Sprintf("Failed, expected the top 5 products: %v, got the top 5 products: %v", expected, actual)
-	assert.Equal(t, expected, actual, failedMsg)
+	assert.Equal(expected, actual, failedMsg)
 
 	// Case 02: Test the empty names scraped from the url.
 	products, err = test.InitHttpRecorder("case_02", test.CannedCategory02).ScrapeProducts()
