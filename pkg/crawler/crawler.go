@@ -11,9 +11,12 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+const UnavailbaleProduct = "This item is no longer available"
+
 type Crawler struct {
 	doc      *goquery.Document
 	category *category.Row
+	page     int
 }
 
 func New() *Crawler {
@@ -32,9 +35,29 @@ func (c *Crawler) WithCategory(category *category.Row) *Crawler {
 	return c
 }
 
+func (c *Crawler) WithPage(page int) *Crawler {
+	c.page = page
+	return c
+}
+
+func (c *Crawler) BuildRank(index int, page int) (rank int) {
+	if page == 2 {
+		rank = index + 51
+	} else {
+		rank = index + 1
+	}
+	return rank
+}
+
 func (c *Crawler) ScrapeProductNames() (names []string) {
-	c.doc.Find("ol#zg-ordered-list span.zg-text-center-align").Next().Each(func(i int, s *goquery.Selection) {
-		name := s.Text()
+	c.doc.Find("ol#zg-ordered-list li.zg-item-immersion").Each(func(i int, s *goquery.Selection) {
+		var name string
+		nameNode := s.Find("span.zg-text-center-align").Next()
+		if len(nameNode.Nodes) == 1 {
+			name = nameNode.Text()
+		} else {
+			name = UnavailbaleProduct
+		}
 		names = append(names, strings.TrimSpace(name))
 	})
 	return names
@@ -44,13 +67,13 @@ func (c *Crawler) ScrapeProducts() (products *product.Rows, err error) {
 	names := c.ScrapeProductNames()
 	if len(names) == 0 {
 		err := fmt.Errorf("The names scraped from the url `%s` are empty, the category id stored into the DB is %d", c.category.Url, c.category.Id)
-		return products, &EmptyError{err}
+		return products, &EmptyError{c.category, err}
 	}
 	products = product.NewRows()
 	for i, name := range names {
 		product := &product.Row{
 			Name: name,
-			Rank: i + 1,
+			Rank: c.BuildRank(i, c.page),
 		}
 		products.Set = append(products.Set, product)
 	}

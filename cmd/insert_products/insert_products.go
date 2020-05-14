@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 	"top100-scrapy/pkg/app"
+	"top100-scrapy/pkg/crawler"
 	"top100-scrapy/pkg/logger"
 	"top100-scrapy/pkg/model/category"
 	"top100-scrapy/pkg/model/pcategory"
@@ -78,9 +79,14 @@ func performJob() {
 			if page == 2 {
 				category.Url = category.Url + fmt.Sprintf("?_encoding=UTF8&pg=%d", page)
 			}
-			products, err := app.InitCrawler(category).ScrapeProducts()
-			if err != nil {
-				logger.Error("An error occured: %s", err)
+			products, err := app.InitCrawler(category).WithPage(page).ScrapeProducts()
+			if err, ok := err.(*crawler.EmptyError); ok {
+				logger.Info(fmt.Sprintf("The names scraped from the url `%s` are empty, the category id stored into the DB is %d", err.Category.Url, err.Category.Id))
+				if err := d.Ack(false); err != nil { // Acknowledge a message maunally.
+					logger.Error("Failed to acknowledge a message.", err)
+				}
+				fmt.Println("Done")
+				continue
 			}
 			_, msg, err := pcategory.NewRows().BulkilyInsertRelations(products, categoryId, app.DBconn)
 			if pqErr, ok := err.(*pq.Error); ok {
@@ -90,6 +96,8 @@ func performJob() {
 					"pq_err_detail": pqErr.Detail,
 					"pq_err_hint":   pqErr.Hint,
 					"pq_err_query":  pqErr.InternalQuery,
+					"category_id":   category.Id,
+					"category_url":  category.Url,
 				}
 				switch pqErr.Code {
 				case "23505": // Violate unique constraint

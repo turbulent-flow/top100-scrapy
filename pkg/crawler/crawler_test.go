@@ -3,6 +3,7 @@ package crawler_test
 import (
 	"fmt"
 	"testing"
+	"top100-scrapy/pkg/crawler"
 	"top100-scrapy/pkg/model/category"
 	"top100-scrapy/pkg/model/product"
 	"top100-scrapy/pkg/test"
@@ -19,7 +20,8 @@ func TestScrapeProductNames(t *testing.T) {
 }
 
 func TestScrapeProducts(t *testing.T) {
-	// Test the top 5 products
+	assert := assert.New(t)
+	// Case 01: Test the top 5 products
 	products := product.NewRows()
 	products.Set = test.CannedProductSet
 	expected := products.RemovePointers(products.Set)
@@ -29,12 +31,24 @@ func TestScrapeProducts(t *testing.T) {
 	}
 	actual := products.RemovePointers(products.Set)[:5]
 	failedMsg := fmt.Sprintf("Failed, expected the top 5 products: %v, got the top 5 products: %v", expected, actual)
-	assert.Equal(t, expected, actual, failedMsg)
+	assert.Equal(expected, actual, failedMsg)
 
-	// Test the empty names scraped from the url.
+	// Case 02: Test the empty names scraped from the url.
 	products, err = test.InitHttpRecorder("case_02", test.CannedCategory02).ScrapeProducts()
 	if err == nil {
 		t.Error("Expected `ScrapeProducts` to throw an error: The names scraped from the url are empty..., got nil.")
+	}
+
+	// Case 03: Test the ranks of the products when some items scraped from the url are no longer available.
+	cannedSet := test.CannedRawUnavailableProductSet
+	products, err = test.InitHttpRecorder("case_03", test.CannedCategory03).ScrapeProducts()
+	if err != nil {
+		t.Errorf("An error occured: %s", err)
+	}
+	rawProductSet := product.NewRows().RemovePointers(products.Set)
+	failedMsg = "Failed, the product set should contain the item %v, got the set %v"
+	for _, item := range cannedSet {
+		assert.Containsf(rawProductSet, item, failedMsg, item, rawProductSet)
 	}
 }
 
@@ -44,4 +58,22 @@ func TestScrapeCategories(t *testing.T) {
 	actual := category.NewRows().RemovePointers(categories.Set)
 	failedMsg := fmt.Sprintf("Failed, expected the categories: %v, got the categories: %v", expected, actual)
 	assert.Equal(t, expected, actual, failedMsg)
+}
+
+func TestBuildRank(t *testing.T) {
+	index := 0
+	assert := assert.New(t)
+	// Case 01: expected the rank of the first product is 1 when scraping from the page 1.
+	expected := 1
+	page := 1
+	actual := crawler.New().BuildRank(index, page)
+	failedMsg := fmt.Sprintf("Failed, expected the rank of the first product is %d, got the rank: %d", expected, actual)
+	assert.Equal(expected, actual, failedMsg)
+
+	// Case 02: expected the rank of the first product is 51 when scraping from the page 2.
+	expected = 51
+	page = 2
+	actual = crawler.New().BuildRank(index, page)
+	failedMsg = fmt.Sprintf("Failed, expected the rank of the first product is %d, got the rank: %d", expected, actual)
+	assert.Equal(expected, actual, failedMsg)
 }

@@ -49,6 +49,11 @@ var (
 		product.Row{Name: "Echo Dot (3rd Gen) - Smart speaker with clock and Alexa - Sandstone", Rank: 4},
 		product.Row{Name: "Echo Show 8 - HD 8\" smart display with Alexa  - Charcoal", Rank: 5},
 	}
+	CannedRawUnavailableProductSet = []product.Row{
+		product.Row{Name: "This item is no longer available", Rank: 34},
+		product.Row{Name: "This item is no longer available", Rank: 36},
+		product.Row{Name: "This item is no longer available", Rank: 37},
+	}
 	CannedCategoryId   = 2
 	CannedPcategorySet = []*pcategory.Row{
 		&pcategory.Row{ProductId: 1, CategoryId: 2},
@@ -77,6 +82,13 @@ var (
 		Url:      "https://www.amazon.com/Best-Sellers-MP3-Downloads/zgbs/dmusic/ref=zg_bs_nav_0/144-3395590-4790907",
 		Path:     "01.18",
 		ParentId: 1,
+	}
+	CannedCategory03 = &category.Row{
+		Id:       42,
+		Name:     "Prints & Posters",
+		Url:      "https://www.amazon.com/Best-Sellers-Entertainment-Collectibles-Collectible-Prints-Posters/zgbs/entertainment-collectibles/5227492011/ref=zg_bs_nav_ec_1_ec/144-3395590-4790907",
+		Path:     "01.20.01",
+		ParentId: 21,
 	}
 	CannedRawCategory = category.Row{
 		Id:       2,
