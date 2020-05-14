@@ -14,6 +14,7 @@ import (
 type Crawler struct {
 	doc      *goquery.Document
 	category *category.Row
+	page     int
 }
 
 func New() *Crawler {
@@ -30,6 +31,20 @@ func (c *Crawler) WithDoc(doc *goquery.Document) *Crawler {
 func (c *Crawler) WithCategory(category *category.Row) *Crawler {
 	c.category = category
 	return c
+}
+
+func (c *Crawler) WithPage(page int) *Crawler {
+	c.page = page
+	return c
+}
+
+func (c *Crawler) BuildRank(index int, page int) (rank int) {
+	if page == 2 {
+		rank = index + 51
+	} else {
+		rank = index + 1
+	}
+	return rank
 }
 
 func (c *Crawler) ScrapeProductNames() (names []string) {
@@ -50,7 +65,7 @@ func (c *Crawler) ScrapeProducts() (products *product.Rows, err error) {
 	for i, name := range names {
 		product := &product.Row{
 			Name: name,
-			Rank: i + 1,
+			Rank: c.BuildRank(i, c.page),
 		}
 		products.Set = append(products.Set, product)
 	}

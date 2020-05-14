@@ -3,6 +3,7 @@ package crawler_test
 import (
 	"fmt"
 	"testing"
+	"top100-scrapy/pkg/crawler"
 	"top100-scrapy/pkg/model/category"
 	"top100-scrapy/pkg/model/product"
 	"top100-scrapy/pkg/test"
@@ -44,4 +45,22 @@ func TestScrapeCategories(t *testing.T) {
 	actual := category.NewRows().RemovePointers(categories.Set)
 	failedMsg := fmt.Sprintf("Failed, expected the categories: %v, got the categories: %v", expected, actual)
 	assert.Equal(t, expected, actual, failedMsg)
+}
+
+func TestBuildRank(t *testing.T) {
+	index := 0
+	assert := assert.New(t)
+	// Case 01: expected the rank of the first product is 1 when scraping from the page 1.
+	expected := 1
+	page := 1
+	actual := crawler.New().BuildRank(index, page)
+	failedMsg := fmt.Sprintf("Failed, expected the rank of the first product is %d, got the rank: %d", expected, actual)
+	assert.Equal(expected, actual, failedMsg)
+
+	// Case 02: expected the rank of the first product is 51 when scraping from the page 2.
+	expected = 51
+	page = 2
+	actual = crawler.New().BuildRank(index, page)
+	failedMsg = fmt.Sprintf("Failed, expected the rank of the first product is %d, got the rank: %d", expected, actual)
+	assert.Equal(expected, actual, failedMsg)
 }

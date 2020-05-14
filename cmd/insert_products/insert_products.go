@@ -79,7 +79,7 @@ func performJob() {
 			if page == 2 {
 				category.Url = category.Url + fmt.Sprintf("?_encoding=UTF8&pg=%d", page)
 			}
-			products, err := app.InitCrawler(category).ScrapeProducts()
+			products, err := app.InitCrawler(category).WithPage(page).ScrapeProducts()
 			if err, ok := err.(*crawler.EmptyError); ok {
 				logger.Info(fmt.Sprintf("The names scraped from the url `%s` are empty, the category id stored into the DB is %d", err.Category.Url, err.Category.Id))
 				if err := d.Ack(false); err != nil { // Acknowledge a message maunally.
