@@ -40,17 +40,16 @@ func TestScrapeProducts(t *testing.T) {
 	}
 
 	// Case 03: Test the ranks of the products when some items scraped from the url are no longer available.
-	slice := []int{30, 32, 33}
+	cannedSet := test.CannedRawUnavailableProductSet
 	products, err = test.InitHttpRecorder("case_03", test.CannedCategory03).ScrapeProducts()
 	if err != nil {
 		t.Errorf("An error occured: %s", err)
 	}
-	ids := make([]int, 0)
-	for _, post := range products.Set {
-		ids = append(ids, post.Rank)
+	rawProductSet := product.NewRows().RemovePointers(products.Set)
+	failedMsg = "Failed, the product set should contain the item %v, got the set %v"
+	for _, item := range cannedSet {
+		assert.Containsf(rawProductSet, item, failedMsg, item, rawProductSet)
 	}
-	failedMsg := "Failed, expected the ranks of the products not contain the slice, got the ranks %v"
-	assert.NotContainsf(ids, slice, failedMsg, ids)
 }
 
 func TestScrapeCategories(t *testing.T) {

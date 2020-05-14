@@ -11,6 +11,8 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+const UnavailbaleProduct = "This item is no longer available"
+
 type Crawler struct {
 	doc      *goquery.Document
 	category *category.Row
@@ -48,8 +50,14 @@ func (c *Crawler) BuildRank(index int, page int) (rank int) {
 }
 
 func (c *Crawler) ScrapeProductNames() (names []string) {
-	c.doc.Find("ol#zg-ordered-list span.zg-text-center-align").Next().Each(func(i int, s *goquery.Selection) {
-		name := s.Text()
+	c.doc.Find("ol#zg-ordered-list li.zg-item-immersion").Each(func(i int, s *goquery.Selection) {
+		var name string
+		nameNode := s.Find("span.zg-text-center-align").Next()
+		if len(nameNode.Nodes) == 1 {
+			name = nameNode.Text()
+		} else {
+			name = UnavailbaleProduct
+		}
 		names = append(names, strings.TrimSpace(name))
 	})
 	return names
