@@ -38,6 +38,19 @@ func TestScrapeProducts(t *testing.T) {
 	if err == nil {
 		t.Error("Expected `ScrapeProducts` to throw an error: The names scraped from the url are empty..., got nil.")
 	}
+
+	// Case 03: Test the ranks of the products when some items scraped from the url are no longer available.
+	slice := []int{30, 32, 33}
+	products, err = test.InitHttpRecorder("case_03", test.CannedCategory03).ScrapeProducts()
+	if err != nil {
+		t.Errorf("An error occured: %s", err)
+	}
+	ids := make([]int, 0)
+	for _, post := range products.Set {
+		ids = append(ids, post.Rank)
+	}
+	failedMsg := "Failed, expected the ranks of the products not contain the slice, got the ranks %v"
+	assert.NotContainsf(ids, slice, failedMsg, ids)
 }
 
 func TestScrapeCategories(t *testing.T) {
