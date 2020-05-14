@@ -96,6 +96,8 @@ func performJob() {
 					"pq_err_detail": pqErr.Detail,
 					"pq_err_hint":   pqErr.Hint,
 					"pq_err_query":  pqErr.InternalQuery,
+					"category_id":   category.Id,
+					"category_url":  category.Url,
 				}
 				switch pqErr.Code {
 				case "23505": // Violate unique constraint
