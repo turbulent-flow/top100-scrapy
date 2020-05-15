@@ -63,7 +63,7 @@ func performJob() {
 		return
 	}
 
-	stmt = `SELECT id from categories where id > $1 limit 500;`
+	stmt = `SELECT id from categories where id > $1 order by id asc limit 500;`
 	// Scan the categories on DB.
 	rows, err := app.DBconn.Query(stmt, lastId)
 	if err != nil {

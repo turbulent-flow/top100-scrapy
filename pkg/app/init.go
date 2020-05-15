@@ -66,7 +66,11 @@ func InitCrawler(category *category.Row) *crawler.Crawler {
 
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
-		logger.Error("Failed to return a document.", err)
+		factors := logger.Factors{
+			"category_id":  category.Id,
+			"category_url": category.Url,
+		}
+		logger.Error("Failed to return a document.", err, factors)
 	}
 
 	return crawler.New().WithDoc(doc).WithCategory(category)
