@@ -51,6 +51,11 @@ func (p *productSuite) TestBulkilyInsert() {
 		actual := products.RemovePointers(products.Set)
 		failedMsg := fmt.Sprintf("Failed, expected the data inserted into the products: %v, got the data: %v", expected, actual)
 		assert.Equal(expected, actual, failedMsg)
+		// Test case 02: Test the start id of the range recorded by the products insertion.
+		expectedStartId = 1
+		actualStartId = products.RangeStartId
+		failedMsg = fmt.Sprintf("Failed, expected the start id is %d, got the id: %d", expectedStartId, actualStartId)
+		assert.Equal(expectedStartId, actualStartId, failedMsg)
 	}
 }
 
