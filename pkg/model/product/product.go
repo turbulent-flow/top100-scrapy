@@ -24,6 +24,7 @@ type Row struct {
 type Rows struct {
 	Set          []*Row
 	RangeStartId int
+	RangeEndId   int
 	Context      context.Context
 	Tx           *sql.Tx
 }
@@ -60,6 +61,7 @@ func (r *Rows) BulkilyInsert(productSet []*Row, db *sql.DB) (*Rows, error) {
 	// Note: `RETURNIN ID` in this statement will return the id of the first row inserted into the DB.
 	stmt := fmt.Sprintf("INSERT INTO products (name, rank) VALUES %s RETURNING id", strings.Join(valueStrings, ","))
 	err := db.QueryRow(stmt, valueArgs...).Scan(&r.RangeStartId)
+	r.RangeEndId = r.RangeStartId + len(productSet) - 1
 	return r, err
 }
 

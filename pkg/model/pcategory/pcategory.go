@@ -50,7 +50,7 @@ func (r *Rows) BulkilyInsertRelations(products *product.Rows, categoryId int, db
 		return r, "Failed to insert the data into the table `products`.", err
 	}
 
-	products, err = products.ScanIdsFrom(products.RecordId, db)
+	products, err = products.ScanIdsFrom(products.RangeStartId, db)
 	if err != nil {
 		tx.Rollback()
 		return r, "Failed to query the products.", err
