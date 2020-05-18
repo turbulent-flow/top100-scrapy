@@ -2,9 +2,9 @@ package pcategory // table `product_categories`
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"strings"
+	"top100-scrapy/pkg/model"
 	"top100-scrapy/pkg/model/product"
 )
 
@@ -23,46 +23,41 @@ type Row struct {
 
 type Rows struct {
 	Set     []*Row
-	Context context.Context
-	Tx      *sql.Tx
+	Options *model.Options
 }
 
-func (r *Rows) WithContext(ctx context.Context) *Rows {
-	r.Context = ctx
+func (r *Rows) WithOptions(options *model.Options) *Rows {
+	r.Options = options
 	return r
 }
 
-func (r *Rows) WithTx(tx *sql.Tx) *Rows {
-	r.Tx = tx
-	return r
-}
-
-func (r *Rows) BulkilyInsertRelations(products *product.Rows, categoryId int, db *sql.DB) (rows *Rows, msg string, err error) {
-	ctx := context.Background()
-	tx, err := db.BeginTx(ctx, nil)
+func (r *Rows) BulkilyInsertRelations(products *product.Rows) (rows *Rows, msg string, err error) {
+	r.Options.Context = context.Background()
+	r.Options.Tx, err = r.Options.DB.BeginTx(r.Options.Context, nil)
 	if err != nil {
 		return r, "Could not start a transction.", err
 	}
 
-	products, err = product.NewRows().WithContext(ctx).WithTx(tx).BulkilyInsert(products.Set, db)
+	products, err = product.NewRows().WithOptions(r.Options).BulkilyInsert(products.Set)
 	if err != nil {
-		tx.Rollback()
+		r.Options.Tx.Rollback()
 		return r, "Failed to insert the data into the table `products`.", err
 	}
 
-	products, err = products.ScanIdsFrom(products.RangeStartId, db)
+	products, err = products.ScanIds()
+
 	if err != nil {
-		tx.Rollback()
+		r.Options.Tx.Rollback()
 		return r, "Failed to query the products.", err
 	}
 
-	r, err = NewRows().WithContext(ctx).WithTx(tx).BulkilyInsert(products.Set, categoryId, db)
+	r, err = r.BulkilyInsert(products.Set)
 	if err != nil {
-		tx.Rollback()
+		r.Options.Tx.Rollback()
 		return r, "Failed to insert the data into the table `product_categories`.", err
 	}
 
-	err = tx.Commit()
+	err = r.Options.Tx.Commit()
 	if err != nil {
 		return r, "Failed to commit a transaction.", err
 	}
@@ -70,12 +65,12 @@ func (r *Rows) BulkilyInsertRelations(products *product.Rows, categoryId int, db
 	return r, "", err
 }
 
-func (r *Rows) BulkilyInsert(productSet []*product.Row, categoryId int, db *sql.DB) (*Rows, error) {
+func (r *Rows) BulkilyInsert(productSet []*product.Row) (*Rows, error) {
 	var err error
 	for _, post := range productSet {
 		pCategory := &Row{
 			ProductId:  post.Id,
-			CategoryId: categoryId,
+			CategoryId: r.Options.Category.Id,
 		}
 		r.Set = append(r.Set, pCategory)
 	}
@@ -89,10 +84,10 @@ func (r *Rows) BulkilyInsert(productSet []*product.Row, categoryId int, db *sql.
 	}
 
 	stmt := fmt.Sprintf("INSERT INTO product_categories (product_id, category_id) VALUES %s", strings.Join(valueStrings, ","))
-	if r.Tx != nil {
-		_, err = r.Tx.ExecContext(r.Context, stmt, valueArgs...)
+	if r.Options.Tx != nil {
+		_, err = r.Options.Tx.ExecContext(r.Options.Context, stmt, valueArgs...)
 	} else {
-		_, err = db.Exec(stmt, valueArgs...)
+		_, err = r.Options.DB.Exec(stmt, valueArgs...)
 	}
 	return r, err
 }

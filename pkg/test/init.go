@@ -35,24 +35,24 @@ var (
 		"Echo Show 8 - HD 8\" smart display with Alexa  - Charcoal",
 	}
 	CannedProductSet = []*product.Row{
-		&product.Row{Name: "Fire TV Stick streaming media player with Alexa built in, includes Alexa Voice Remote, HD, easy set-up, released 2019", Rank: 1},
-		&product.Row{Name: "Echo Dot (3rd Gen) - Smart speaker with Alexa - Charcoal", Rank: 2},
-		&product.Row{Name: "Fire TV Stick 4K streaming device with Alexa built in, Dolby Vision, includes Alexa Voice Remote, latest release", Rank: 3},
-		&product.Row{Name: "Echo Dot (3rd Gen) - Smart speaker with clock and Alexa - Sandstone", Rank: 4},
-		&product.Row{Name: "Echo Show 8 - HD 8\" smart display with Alexa  - Charcoal", Rank: 5},
+		&product.Row{Name: "Fire TV Stick streaming media player with Alexa built in, includes Alexa Voice Remote, HD, easy set-up, released 2019", Rank: 1, Page: 1, CategoryId: 2},
+		&product.Row{Name: "Echo Dot (3rd Gen) - Smart speaker with Alexa - Charcoal", Rank: 2, Page: 1, CategoryId: 2},
+		&product.Row{Name: "Fire TV Stick 4K streaming device with Alexa built in, Dolby Vision, includes Alexa Voice Remote, latest release", Rank: 3, Page: 1, CategoryId: 2},
+		&product.Row{Name: "Echo Dot (3rd Gen) - Smart speaker with clock and Alexa - Sandstone", Rank: 4, Page: 1, CategoryId: 2},
+		&product.Row{Name: "Echo Show 8 - HD 8\" smart display with Alexa  - Charcoal", Rank: 5, Page: 1, CategoryId: 2},
 	}
 	// The canned products after removing pointers
 	CannedRawProductSet = []product.Row{
-		product.Row{Name: "Fire TV Stick streaming media player with Alexa built in, includes Alexa Voice Remote, HD, easy set-up, released 2019", Rank: 1},
-		product.Row{Name: "Echo Dot (3rd Gen) - Smart speaker with Alexa - Charcoal", Rank: 2},
-		product.Row{Name: "Fire TV Stick 4K streaming device with Alexa built in, Dolby Vision, includes Alexa Voice Remote, latest release", Rank: 3},
-		product.Row{Name: "Echo Dot (3rd Gen) - Smart speaker with clock and Alexa - Sandstone", Rank: 4},
-		product.Row{Name: "Echo Show 8 - HD 8\" smart display with Alexa  - Charcoal", Rank: 5},
+		product.Row{Name: "Fire TV Stick streaming media player with Alexa built in, includes Alexa Voice Remote, HD, easy set-up, released 2019", Rank: 1, Page: 1, CategoryId: 2},
+		product.Row{Name: "Echo Dot (3rd Gen) - Smart speaker with Alexa - Charcoal", Rank: 2, Page: 1, CategoryId: 2},
+		product.Row{Name: "Fire TV Stick 4K streaming device with Alexa built in, Dolby Vision, includes Alexa Voice Remote, latest release", Rank: 3, Page: 1, CategoryId: 2},
+		product.Row{Name: "Echo Dot (3rd Gen) - Smart speaker with clock and Alexa - Sandstone", Rank: 4, Page: 1, CategoryId: 2},
+		product.Row{Name: "Echo Show 8 - HD 8\" smart display with Alexa  - Charcoal", Rank: 5, Page: 1, CategoryId: 2},
 	}
 	CannedRawUnavailableProductSet = []product.Row{
-		product.Row{Name: "This item is no longer available", Rank: 34},
-		product.Row{Name: "This item is no longer available", Rank: 36},
-		product.Row{Name: "This item is no longer available", Rank: 37},
+		product.Row{Name: "This item is no longer available", Rank: 34, Page: 1, CategoryId: 42},
+		product.Row{Name: "This item is no longer available", Rank: 36, Page: 1, CategoryId: 42},
+		product.Row{Name: "This item is no longer available", Rank: 37, Page: 1, CategoryId: 42},
 	}
 	CannedCategoryId   = 2
 	CannedPcategorySet = []*pcategory.Row{

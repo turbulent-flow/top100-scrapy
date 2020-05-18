@@ -49,6 +49,13 @@ func (c *Crawler) BuildRank(index int, page int) (rank int) {
 	return rank
 }
 
+func (c *Crawler) BuildPage() int {
+	if c.page == 0 {
+		c.page = 1
+	}
+	return c.page
+}
+
 func (c *Crawler) ScrapeProductNames() (names []string) {
 	c.doc.Find("ol#zg-ordered-list li.zg-item-immersion").Each(func(i int, s *goquery.Selection) {
 		var name string
@@ -72,8 +79,10 @@ func (c *Crawler) ScrapeProducts() (products *product.Rows, err error) {
 	products = product.NewRows()
 	for i, name := range names {
 		product := &product.Row{
-			Name: name,
-			Rank: c.BuildRank(i, c.page),
+			Name:       name,
+			Rank:       c.BuildRank(i, c.page),
+			Page:       c.BuildPage(),
+			CategoryId: c.category.Id,
 		}
 		products.Set = append(products.Set, product)
 	}

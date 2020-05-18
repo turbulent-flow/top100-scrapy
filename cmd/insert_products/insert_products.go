@@ -9,6 +9,7 @@ import (
 	"top100-scrapy/pkg/app"
 	"top100-scrapy/pkg/crawler"
 	"top100-scrapy/pkg/logger"
+	"top100-scrapy/pkg/model"
 	"top100-scrapy/pkg/model/category"
 	"top100-scrapy/pkg/model/pcategory"
 
@@ -93,7 +94,6 @@ func performJob() {
 	fmt.Println(" [*] Waiting for messages. To exit press CTRL+C")
 	fmt.Printf(" [*] The PID of the consumer is: %d\n", os.Getpid())
 	wg.Wait()
-
 }
 
 func worker(options *options) {
@@ -120,7 +120,12 @@ func worker(options *options) {
 			fmt.Println("Done")
 			return
 		}
-		_, msg, err := pcategory.NewRows().BulkilyInsertRelations(products, categoryId, app.DBconn)
+		options := &model.Options{
+			Page:     page,
+			Category: category,
+			DB:       app.DBconn,
+		}
+		_, msg, err := pcategory.NewRows().WithOptions(options).BulkilyInsertRelations(products)
 		if pqErr, ok := err.(*pq.Error); ok {
 			factors := logger.Factors{
 				"pq_err_code":   pqErr.Code,

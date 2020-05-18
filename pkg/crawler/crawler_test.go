@@ -77,3 +77,11 @@ func TestBuildRank(t *testing.T) {
 	failedMsg = fmt.Sprintf("Failed, expected the rank of the first product is %d, got the rank: %d", expected, actual)
 	assert.Equal(expected, actual, failedMsg)
 }
+
+func TestBuildPage(t *testing.T) {
+	// Test case 01: Expected the page number is 1 when the given numbe is 0.
+	expected := 1
+	actual := crawler.New().BuildPage()
+	failedMsg := fmt.Sprintf("Failed, expected the page number is %d, got the number: %d", expected, actual)
+	assert.Equal(t, expected, actual, failedMsg)
+}

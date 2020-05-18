@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"testing"
+	"top100-scrapy/pkg/model"
 	"top100-scrapy/pkg/model/pcategory"
 	"top100-scrapy/pkg/model/product"
 	"top100-scrapy/pkg/test"
@@ -17,6 +18,8 @@ type pcategorySuite struct {
 	suite.Suite
 }
 
+var options *model.Options
+
 func (p *pcategorySuite) SetupSuite() {
 	// Initialize the DB
 	msg, err := test.InitDB()
@@ -25,6 +28,12 @@ func (p *pcategorySuite) SetupSuite() {
 	}
 	// Initialize the dbcleaner
 	test.InitCleaner()
+	// Initialize the options
+	options = &model.Options{
+		Page:     1,
+		Category: test.CannedCategory,
+		DB:       test.DBconn,
+	}
 	// Populate the data into the table `product_categories`
 	seedPath := fmt.Sprintf("%s/model/category.yml", test.FixturesUri)
 	seed, err := os.Open(seedPath)
@@ -61,7 +70,7 @@ func (p *pcategorySuite) TearDownSuite() {
 func (p *pcategorySuite) TestBulkilyInsertRelations() {
 	products := product.NewRows()
 	products.Set = test.CannedProductSet
-	pcategories, msg, err := pcategory.NewRows().BulkilyInsertRelations(products, test.CannedCategoryId, test.DBconn)
+	pcategories, msg, err := pcategory.NewRows().WithOptions(options).BulkilyInsertRelations(products)
 	if err != nil {
 		p.T().Errorf("%s Error: %v", msg, err)
 	} else {

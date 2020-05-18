@@ -1,10 +1,10 @@
 package product
 
 import (
-	"context"
 	"database/sql"
 	"fmt"
 	"strings"
+	"top100-scrapy/pkg/model"
 )
 
 func NewRow() *Row {
@@ -16,26 +16,20 @@ func NewRows() *Rows {
 }
 
 type Row struct {
-	Id   int
-	Name string
-	Rank int
+	Id         int
+	Name       string
+	Rank       int
+	Page       int
+	CategoryId int
 }
 
 type Rows struct {
-	Set          []*Row
-	RangeStartId int
-	RangeEndId   int
-	Context      context.Context
-	Tx           *sql.Tx
+	Set     []*Row
+	Options *model.Options
 }
 
-func (r *Rows) WithContext(ctx context.Context) *Rows {
-	r.Context = ctx
-	return r
-}
-
-func (r *Rows) WithTx(tx *sql.Tx) *Rows {
-	r.Tx = tx
+func (r *Rows) WithOptions(o *model.Options) *Rows {
+	r.Options = o
 	return r
 }
 
@@ -48,31 +42,37 @@ func (r *Rows) RemovePointers(set []*Row) (rawSet []Row) {
 	return rawSet
 }
 
-func (r *Rows) BulkilyInsert(productSet []*Row, db *sql.DB) (*Rows, error) {
+func (r *Rows) BulkilyInsert(productSet []*Row) (*Rows, error) {
 	r.Set = productSet
 	valueStrings := make([]string, 0, len(r.Set))
-	valueArgs := make([]interface{}, 0, len(r.Set)*2)
+	valueArgs := make([]interface{}, 0, len(r.Set)*4)
 	for i, post := range r.Set {
-		valueStrings = append(valueStrings, fmt.Sprintf("($%d, $%d)", i*2+1, i*2+2))
+		valueStrings = append(valueStrings, fmt.Sprintf("($%d, $%d, $%d, $%d)", i*4+1, i*4+2, i*4+3, i*4+4))
 		valueArgs = append(valueArgs, post.Name)
 		valueArgs = append(valueArgs, post.Rank)
+		valueArgs = append(valueArgs, post.Page)
+		valueArgs = append(valueArgs, post.CategoryId)
 	}
 
+	var err error
 	// Note: `RETURNIN ID` in this statement will return the id of the first row inserted into the DB.
-	stmt := fmt.Sprintf("INSERT INTO products (name, rank) VALUES %s RETURNING id", strings.Join(valueStrings, ","))
-	err := db.QueryRow(stmt, valueArgs...).Scan(&r.RangeStartId)
-	r.RangeEndId = r.RangeStartId + len(productSet) - 1
+	stmt := fmt.Sprintf("INSERT INTO products (name, rank, page, category_id) VALUES %s", strings.Join(valueStrings, ","))
+	if r.Options.Tx != nil {
+		_, err = r.Options.Tx.ExecContext(r.Options.Context, stmt, valueArgs...)
+	} else {
+		_, err = r.Options.DB.Exec(stmt, valueArgs...)
+	}
 	return r, err
 }
 
-func (r *Rows) ScanIdsFrom(id int, db *sql.DB) (*Rows, error) {
+func (r *Rows) ScanIds() (*Rows, error) {
 	var err error
-	stmt := fmt.Sprintf("SELECT id FROM products where id >= %d", id)
+	stmt := fmt.Sprintf("SELECT id FROM products where page = %d and category_id = %d", r.Options.Page, r.Options.Category.Id)
 	rows := &sql.Rows{}
-	if r.Tx != nil {
-		rows, err = r.Tx.Query(stmt)
+	if r.Options.Tx != nil {
+		rows, err = r.Options.Tx.QueryContext(r.Options.Context, stmt)
 	} else {
-		rows, err = db.Query(stmt)
+		rows, err = r.Options.DB.Query(stmt)
 	}
 	defer rows.Close()
 	if err != nil {
