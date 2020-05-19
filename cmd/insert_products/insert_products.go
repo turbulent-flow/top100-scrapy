@@ -67,6 +67,9 @@ func performJob() {
 		logger.Error("Failed to register a consumer.", err)
 	}
 
+	fmt.Println(" [*] Waiting for messages. To exit press CTRL+C")
+	fmt.Printf(" [*] The PID of the consumer is: %d\n", os.Getpid())
+
 	var concurrency = 25
 	prefetchCount := concurrency * 4
 	err = ch.Qos(prefetchCount, 0, false)
@@ -91,9 +94,6 @@ func performJob() {
 		wg.Add(1)
 		_ = p.Invoke(o)
 	}
-	fmt.Println(" [*] Waiting for messages. To exit press CTRL+C")
-	fmt.Printf(" [*] The PID of the consumer is: %d\n", os.Getpid())
-	wg.Wait()
 }
 
 func worker(options *options) {
