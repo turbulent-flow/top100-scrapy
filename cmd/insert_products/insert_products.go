@@ -11,7 +11,6 @@ import (
 	"top100-scrapy/pkg/logger"
 	"top100-scrapy/pkg/model"
 	"top100-scrapy/pkg/model/category"
-	"top100-scrapy/pkg/model/pcategory"
 
 	"github.com/lib/pq"
 	"github.com/panjf2000/ants"
@@ -24,6 +23,7 @@ type options struct {
 	msgs <-chan amqp.Delivery
 }
 
+// TODO: Figure out the usage.
 type jobs struct {
 	args *[]options
 }
@@ -111,7 +111,7 @@ func worker(options *options) {
 		if page == 2 {
 			category.Url = category.Url + fmt.Sprintf("?_encoding=UTF8&pg=%d", page)
 		}
-		products, err := app.InitCrawler(category).WithPage(page).ScrapeProducts()
+		set, err := app.InitCrawler(category).WithPage(page).ScrapeProducts()
 		if err, ok := err.(*crawler.EmptyError); ok {
 			logger.Info(fmt.Sprintf("The names scraped from the url `%s` are empty, the category id stored into the DB is %d", err.Category.Url, err.Category.Id))
 			if err := d.Ack(false); err != nil { // Acknowledge a message maunally.
@@ -120,12 +120,8 @@ func worker(options *options) {
 			fmt.Println("Done")
 			return
 		}
-		options := &model.Options{
-			Page:     page,
-			Category: category,
-			DB:       app.DBconn,
-		}
-		_, msg, err := pcategory.NewRows().WithOptions(options).BulkilyInsertRelations(products)
+		modelOptions := model.NewOptions().WithDB(app.DBconn).WithCategory(category).WithSet(set)
+		msg, err := model.New().WithOptions(modelOptions).BulkilyInsertRelations()
 		if pqErr, ok := err.(*pq.Error); ok {
 			factors := logger.Factors{
 				"pq_err_code":   pqErr.Code,

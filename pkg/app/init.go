@@ -72,6 +72,6 @@ func InitCrawler(category *category.Row) *crawler.Crawler {
 		}
 		logger.Error("Failed to return a document.", err, factors)
 	}
-
-	return crawler.New().WithDoc(doc).WithCategory(category)
+	options := crawler.NewOptions().WithDoc(doc).WithCategory(category)
+	return crawler.New().WithOptions(options)
 }
