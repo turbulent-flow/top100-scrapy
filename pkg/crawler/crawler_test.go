@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 	"top100-scrapy/pkg/crawler"
+	"top100-scrapy/pkg/model"
 	"top100-scrapy/pkg/model/category"
-	"top100-scrapy/pkg/model/product"
 	"top100-scrapy/pkg/test"
 
 	"github.com/stretchr/testify/assert"
@@ -22,33 +22,31 @@ func TestScrapeProductNames(t *testing.T) {
 func TestScrapeProducts(t *testing.T) {
 	assert := assert.New(t)
 	// Case 01: Test the top 5 products
-	products := product.NewRows()
-	products.Set = test.CannedProductSet
-	expected := products.RemovePointers(products.Set)
-	products, err := test.InitHttpRecorder("case_01", test.CannedCategory).ScrapeProducts()
+	expected := test.CannedRawProductSet02
+	set, err := test.InitHttpRecorder("case_01", test.CannedCategory).ScrapeProducts()
 	if err != nil {
 		t.Errorf("An error occured: %s", err)
 	}
-	actual := products.RemovePointers(products.Set)[:5]
+	actual := model.New().RemovePointers(set).([]model.ProductRow)[:5]
 	failedMsg := fmt.Sprintf("Failed, expected the top 5 products: %v, got the top 5 products: %v", expected, actual)
 	assert.Equal(expected, actual, failedMsg)
 
 	// Case 02: Test the empty names scraped from the url.
-	products, err = test.InitHttpRecorder("case_02", test.CannedCategory02).ScrapeProducts()
+	set, err = test.InitHttpRecorder("case_02", test.CannedCategory02).ScrapeProducts()
 	if err == nil {
 		t.Error("Expected `ScrapeProducts` to throw an error: The names scraped from the url are empty..., got nil.")
 	}
 
 	// Case 03: Test the ranks of the products when some items scraped from the url are no longer available.
 	cannedSet := test.CannedRawUnavailableProductSet
-	products, err = test.InitHttpRecorder("case_03", test.CannedCategory03).ScrapeProducts()
+	set, err = test.InitHttpRecorder("case_03", test.CannedCategory03).ScrapeProducts()
 	if err != nil {
 		t.Errorf("An error occured: %s", err)
 	}
-	rawProductSet := product.NewRows().RemovePointers(products.Set)
+	rawSet := model.New().RemovePointers(set)
 	failedMsg = "Failed, the product set should contain the item %v, got the set %v"
 	for _, item := range cannedSet {
-		assert.Containsf(rawProductSet, item, failedMsg, item, rawProductSet)
+		assert.Containsf(rawSet, item, failedMsg, item, rawSet)
 	}
 }
 
