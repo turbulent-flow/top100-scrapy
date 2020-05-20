@@ -1,84 +1,49 @@
 package model
 
-import (
-	"context"
-	"database/sql"
-	"top100-scrapy/pkg/model/category"
-)
+import "fmt"
 
-type model struct {
-	opts *Options
-}
-
-type Options struct {
-	DB       *sql.DB
-	Context  context.Context
-	Tx       *sql.Tx
-	Page     int
-	Category *category.Row
-	Set      []*ProductRow
-}
-
-func New() *model {
-	return &model{opts: &Options{Page: 1}}
-}
-
-func (m *model) WithDB(db *sql.DB) *model {
-	m.opts.DB = db
-	return m
-}
-
-func (m *model) WithContext(context context.Context) *model {
-	m.opts.Context = context
-	return m
-}
-
-func (m *model) WithTx(tx *sql.Tx) *model {
-	m.opts.Tx = tx
-	return m
-}
-
-func (m *model) WithPage(page int) *model {
-	m.opts.Page = m.BuildPage(page)
-	return m
-}
-
-func (m *model) WithSet(set []*ProductRow) *model {
-	m.opts.Set = set
-	return m
-}
-
-func (m *model) WithCategory(category *category.Row) *model {
-	m.opts.Category = category
-	return m
-}
-
-func (m *model) WithOptions(opts *Options) *model {
-	opts.Page = m.BuildPage(opts.Page)
-	m.opts = opts
-	return m
-}
-
-func (m *model) GetOptions() *Options {
-	return m.opts
-}
-
-func (m *model) BuildPage(page int) int {
-	if page == 0 {
-		page = 1
+func RemovePointers(object interface{}) (rawObject interface{}) {
+	switch object.(type) {
+	case []*ProductRow:
+		rawSet := make([]ProductRow, 0)
+		set := object.([]*ProductRow)
+		for _, item := range set {
+			rawSet = append(rawSet, *item)
+		}
+		rawObject = rawSet
+	case *CategoryRow:
+		// TODO: Refactor me!
+		row := object.(*CategoryRow)
+		rawObject = CategoryRow{
+			Id:       row.Id,
+			Name:     row.Name,
+			Url:      row.Url,
+			Path:     row.Path,
+			ParentId: row.ParentId,
+		}
+	case []*CategoryRow:
+		rawSet := make([]CategoryRow, 0)
+		set := object.([]*CategoryRow)
+		for _, item := range set {
+			rawSet = append(rawSet, *item)
+		}
+		rawObject = rawSet
 	}
-	return page
+	return rawObject
 }
 
-type SetInterface interface{}
-
-type RawSetInterface interface{}
-
-func (m *model) RemovePointers(set SetInterface) RawSetInterface {
-	rawSet := make([]ProductRow, 0)
-	s := set.([]*ProductRow)
-	for _, item := range s {
-		rawSet = append(rawSet, *item)
+func BuildRank(index int, page int) (rank int) {
+	if page == 2 {
+		rank = index + 51
+	} else {
+		rank = index + 1
 	}
-	return rawSet
+	return rank
+}
+
+func BuildURL(url string, page int) string {
+	if page == 2 {
+		url += fmt.Sprintf("?_encoding=UTF8&pg=%d", page)
+	}
+	return url
 }
