@@ -6,8 +6,6 @@ import (
 	"top100-scrapy/pkg/model/category"
 )
 
-var opts *options
-
 type modelInterface interface {
 	WithOptions(options OptionsInterface) modelInterface
 	BulkilyInsertProducts() error
@@ -56,10 +54,8 @@ type options struct {
 	set      []*ProductRow
 }
 
-// TODO: Replace with the atomitc operation
 func NewOptions() OptionsInterface {
-	opts = &options{page: 1}
-	return opts
+	return &options{page: 1}
 }
 
 func (opts *options) WithDB(db *sql.DB) OptionsInterface {

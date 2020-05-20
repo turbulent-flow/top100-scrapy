@@ -9,8 +9,6 @@ import (
 
 const UnavailbaleProduct = "This item is no longer available"
 
-var opts *options
-
 type CrawlerInterface interface {
 	WithOptions(options OptionsInterface) *Crawler
 	WithPage(page int) *Crawler
@@ -49,8 +47,7 @@ type options struct {
 }
 
 func NewOptions() OptionsInterface {
-	opts := &options{page: 1}
-	return opts
+	return &options{page: 1}
 }
 
 func (o *options) WithDoc(doc *goquery.Document) OptionsInterface {
