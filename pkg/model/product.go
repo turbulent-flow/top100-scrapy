@@ -19,7 +19,7 @@ func NewProductRows() []*ProductRow {
 }
 
 func (m *model) BulkilyInsertProducts() error {
-	set := m.options.set
+	set := m.opts.Set
 	valueStrings := make([]string, 0, len(set))
 	valueArgs := make([]interface{}, 0, len(set)*4)
 	for i, item := range set {
@@ -32,23 +32,23 @@ func (m *model) BulkilyInsertProducts() error {
 	var err error
 	// Note: `RETURNIN ID` in this statement will return the id of the first row inserted into the DB.
 	stmt := fmt.Sprintf("INSERT INTO products (name, rank, page, category_id) VALUES %s", strings.Join(valueStrings, ","))
-	if m.options.tx != nil {
-		_, err = m.options.tx.ExecContext(m.options.context, stmt, valueArgs...)
+	if m.opts.Tx != nil {
+		_, err = m.opts.Tx.ExecContext(m.opts.Context, stmt, valueArgs...)
 	} else {
-		_, err = m.options.db.Exec(stmt, valueArgs...)
+		_, err = m.opts.DB.Exec(stmt, valueArgs...)
 	}
 	return err
 }
 
 func (m *model) ScanProductIds() ([]*ProductRow, error) {
-	set := m.options.set
+	set := m.opts.Set
 	var err error
-	stmt := fmt.Sprintf("SELECT id FROM products where page = %d and category_id = %d", m.options.page, m.options.category.Id)
+	stmt := fmt.Sprintf("SELECT id FROM products where page = %d and category_id = %d", m.opts.Page, m.opts.Category.Id)
 	rows := &sql.Rows{}
-	if m.options.tx != nil {
-		rows, err = m.options.tx.QueryContext(m.options.context, stmt)
+	if m.opts.Tx != nil {
+		rows, err = m.opts.Tx.QueryContext(m.opts.Context, stmt)
 	} else {
-		rows, err = m.options.db.Query(stmt)
+		rows, err = m.opts.DB.Query(stmt)
 	}
 	defer rows.Close()
 	if err != nil {

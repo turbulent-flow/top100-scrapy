@@ -69,6 +69,5 @@ func InitHttpRecorder(cassette string, category *category.Row) *crawler.Crawler 
 	if err != nil {
 		logger.Error("Failed to return a document, error: %v", err)
 	}
-	options := crawler.NewOptions().WithDoc(doc).WithCategory(category)
-	return crawler.New().WithOptions(options)
+	return crawler.New().WithDoc(doc).WithCategory(category)
 }

@@ -6,9 +6,8 @@ import (
 )
 
 func (m *modelSuite) TestBulkilyInsertPcategories() {
-	options := model.NewOptions().WithDB(test.DBconn).WithCategory(test.CannedCategory).WithSet(test.CannedProductSet02)
-	ml := model.New()
-	err := ml.WithOptions(options).BulkilyInsertProducts()
+	ml := model.New().WithDB(test.DBconn).WithCategory(test.CannedCategory).WithSet(test.CannedProductSet02)
+	err := ml.BulkilyInsertProducts()
 	if err != nil {
 		m.T().Errorf("Failed to insert the data into the table `products`, error: %v", err)
 	}
@@ -23,8 +22,8 @@ func (m *modelSuite) TestBulkilyInsertPcategories() {
 }
 
 func (m *modelSuite) TestBulkilyInsertRelations() {
-	options := model.NewOptions().WithDB(test.DBconn).WithCategory(test.CannedCategory).WithSet(test.CannedProductSet02)
-	msg, err := model.New().WithOptions(options).BulkilyInsertRelations()
+	ml := model.New().WithDB(test.DBconn).WithCategory(test.CannedCategory).WithSet(test.CannedProductSet02)
+	msg, err := ml.BulkilyInsertRelations()
 	if err != nil {
 		m.T().Errorf("%s Error: %v", msg, err)
 	}

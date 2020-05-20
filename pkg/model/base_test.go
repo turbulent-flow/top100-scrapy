@@ -4,7 +4,10 @@ import (
 	"fmt"
 	"os"
 	"testing"
+	"top100-scrapy/pkg/model"
 	"top100-scrapy/pkg/test"
+
+	"github.com/stretchr/testify/assert"
 
 	"github.com/romanyx/polluter"
 	"github.com/stretchr/testify/suite"
@@ -57,4 +60,44 @@ func (m *modelSuite) TearDownSuite() {
 
 func TestRunSuite(t *testing.T) {
 	suite.Run(t, new(modelSuite))
+}
+
+func TestWithOptions(t *testing.T) {
+	// Test case 01: page = 1
+	options := &model.Options{Page: 1}
+	m := model.New().WithOptions(options)
+	mOptions := m.GetOptions()
+	expected := model.Options{Page: 1}
+	actual := *mOptions
+	failedMsg := fmt.Sprintf("Failed, expected the raw options: %v, got the options: %v", expected, actual)
+	assert.Equal(t, expected, actual, failedMsg)
+	// Test case 02: Ignore the argument `page`.
+	options = &model.Options{}
+	m = model.New().WithOptions(options)
+	mOptions = m.GetOptions()
+	expected = model.Options{Page: 1}
+	actual = *mOptions
+	assert.Equal(t, expected, actual, failedMsg)
+}
+
+func TestWithPage(t *testing.T) {
+	// Test case 01: page = 1
+	m := model.New().WithPage(1)
+	mOptions := m.GetOptions()
+	expected := model.Options{Page: 1}
+	actual := *mOptions
+	failedMsg := fmt.Sprintf("Failed, expected the raw options: %v, got the options: %v", expected, actual)
+	assert.Equal(t, expected, actual, failedMsg)
+	// Test case 02: Ignore the argument `page`
+	m = model.New()
+	mOptions = m.GetOptions()
+	expected = model.Options{Page: 1}
+	actual = *mOptions
+	assert.Equal(t, expected, actual, failedMsg)
+	// Test case 03: page = 0
+	m = model.New().WithPage(0)
+	mOptions = m.GetOptions()
+	expected = model.Options{Page: 1}
+	actual = *mOptions
+	assert.Equal(t, expected, actual, failedMsg)
 }

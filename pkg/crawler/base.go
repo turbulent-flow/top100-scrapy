@@ -1,7 +1,6 @@
 package crawler
 
 import (
-	"top100-scrapy/pkg/model"
 	"top100-scrapy/pkg/model/category"
 
 	"github.com/PuerkitoBio/goquery"
@@ -9,58 +8,36 @@ import (
 
 const UnavailbaleProduct = "This item is no longer available"
 
-type CrawlerInterface interface {
-	WithOptions(options OptionsInterface) *Crawler
-	WithPage(page int) *Crawler
-	ScrapeProductNames() (names []string)
-	ScrapeProducts() (set []*model.ProductRow, err error)
+type Crawler struct {
+	opts *Options
 }
 
-type Crawler struct {
-	options *options
+type Options struct {
+	Doc      *goquery.Document
+	Category *category.Row
+	Page     int
 }
 
 func New() *Crawler {
-	return &Crawler{}
-}
-
-func (c *Crawler) WithOptions(opts OptionsInterface) *Crawler {
-	c.options = opts.(*options)
-	return c
+	return &Crawler{opts: &Options{Page: 1}}
 }
 
 func (c *Crawler) WithPage(page int) *Crawler {
-	c.options.page = page
+	c.opts.Page = page
 	return c
 }
 
-type OptionsInterface interface {
-	WithDoc(doc *goquery.Document) OptionsInterface
-	WithCategory(category *category.Row) OptionsInterface
-	WithPage(page int) OptionsInterface
+func (c *Crawler) WithDoc(doc *goquery.Document) *Crawler {
+	c.opts.Doc = doc
+	return c
 }
 
-type options struct {
-	doc      *goquery.Document
-	category *category.Row
-	page     int
+func (c *Crawler) WithCategory(category *category.Row) *Crawler {
+	c.opts.Category = category
+	return c
 }
 
-func NewOptions() OptionsInterface {
-	return &options{page: 1}
-}
-
-func (o *options) WithDoc(doc *goquery.Document) OptionsInterface {
-	o.doc = doc
-	return o
-}
-
-func (o *options) WithCategory(category *category.Row) OptionsInterface {
-	o.category = category
-	return o
-}
-
-func (o *options) WithPage(page int) OptionsInterface {
-	o.page = page
-	return o
+func (c *Crawler) WithOptions(opts *Options) *Crawler {
+	c.opts = opts
+	return c
 }

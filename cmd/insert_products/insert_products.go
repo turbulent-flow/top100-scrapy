@@ -84,6 +84,7 @@ func performJob() {
 	p, _ := ants.NewPoolWithFunc(concurrency, func(optionInterface interface{}) {
 		options, ok := optionInterface.(*options)
 		if !ok {
+			// TODO: Replace with logger.
 			fmt.Printf("error: %s\n", "there is not the instance of the type `options` in the interface `optionInterface`.")
 		}
 		worker(options)
@@ -120,7 +121,12 @@ func worker(options *options) {
 			fmt.Println("Done")
 			return
 		}
-		modelOptions := model.NewOptions().WithDB(app.DBconn).WithCategory(category).WithSet(set)
+		modelOptions := &model.Options{
+			DB:       app.DBconn,
+			Category: category,
+			Set:      set,
+			Page:     page,
+		}
 		msg, err := model.New().WithOptions(modelOptions).BulkilyInsertRelations()
 		if pqErr, ok := err.(*pq.Error); ok {
 			factors := logger.Factors{

@@ -23,7 +23,7 @@ func (m *model) BulkilyInsertPcategories(set []*ProductRow) error {
 	for _, item := range set {
 		pCategory := &PcategoryRow{
 			ProductId:  item.Id,
-			CategoryId: m.options.category.Id,
+			CategoryId: m.opts.Category.Id,
 		}
 		pCategoryRows = append(pCategoryRows, pCategory)
 	}
@@ -35,37 +35,36 @@ func (m *model) BulkilyInsertPcategories(set []*ProductRow) error {
 		valueArgs = append(valueArgs, item.CategoryId)
 	}
 	stmt := fmt.Sprintf("INSERT INTO product_categories (product_id, category_id) VALUES %s", strings.Join(valueStrings, ","))
-	if m.options.tx != nil {
-		_, err = m.options.tx.ExecContext(m.options.context, stmt, valueArgs...)
+	if m.opts.Tx != nil {
+		_, err = m.opts.Tx.ExecContext(m.opts.Context, stmt, valueArgs...)
 	} else {
-		_, err = m.options.db.Exec(stmt, valueArgs...)
+		_, err = m.opts.DB.Exec(stmt, valueArgs...)
 	}
 	return err
 }
 
 func (m *model) BulkilyInsertRelations() (msg string, err error) {
 	context := context.Background()
-	tx, err := m.options.db.BeginTx(context, nil)
+	tx, err := m.opts.DB.BeginTx(context, nil)
 	if err != nil {
 		return "Could not start a transction.", err
 	}
-	m.options.WithContext(context).WithTx(tx)
-	err = m.BulkilyInsertProducts()
+	err = m.WithContext(context).WithTx(tx).BulkilyInsertProducts()
 	if err != nil {
-		m.options.tx.Rollback()
+		m.opts.Tx.Rollback()
 		return "Failed to insert the data into the table `products`.", err
 	}
 	productSet, err := m.ScanProductIds()
 	if err != nil {
-		m.options.tx.Rollback()
+		m.opts.Tx.Rollback()
 		return "Failed to query the products.", err
 	}
 	err = m.BulkilyInsertPcategories(productSet)
 	if err != nil {
-		m.options.tx.Rollback()
+		m.opts.Tx.Rollback()
 		return "Failed to insert the data into the table `product_categories`.", err
 	}
-	err = m.options.tx.Commit()
+	err = m.opts.Tx.Commit()
 	if err != nil {
 		return "Failed to commit a transaction.", err
 	}

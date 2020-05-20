@@ -9,9 +9,8 @@ import (
 )
 
 func (m *modelSuite) TestScanProductIds() {
-	options := model.NewOptions().WithDB(test.DBconn).WithCategory(test.CannedCategory).WithSet(test.CannedProductSet02)
-	ml := model.New()
-	err := ml.WithOptions(options).BulkilyInsertProducts()
+	ml := model.New().WithDB(test.DBconn).WithCategory(test.CannedCategory).WithSet(test.CannedProductSet02)
+	err := ml.BulkilyInsertProducts()
 	if err != nil {
 		m.T().Errorf("Failed to insert the data into the table `products`, error: %v", err)
 	}
