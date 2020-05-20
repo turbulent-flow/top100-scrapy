@@ -7,9 +7,8 @@ import (
 	"top100-scrapy/pkg/model"
 	"top100-scrapy/pkg/test"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/romanyx/polluter"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -30,6 +29,7 @@ func (m *modelSuite) SetupSuite() {
 
 // Run before each test in the suite.
 func (m *modelSuite) SetupTest() {
+	test.Cleaner.Acquire("products", "categories")
 	// Populate the data into the table `product_categories`
 	seedPath := fmt.Sprintf("%s/model/category.yml", test.FixturesUri)
 	seed, err := os.Open(seedPath)
@@ -41,16 +41,15 @@ func (m *modelSuite) SetupTest() {
 	if err := poluter.Pollute(seed); err != nil {
 		m.T().Errorf("Failed to pollute the seed, error: %v", err)
 	}
-	test.Cleaner.Acquire("products", "categories")
 }
 
 // Run after each test in the suite.
 func (m *modelSuite) TearDownTest() {
+	test.Cleaner.Clean("products", "categories", "product_categories")
 	err := test.InitTable("products", test.DBconn)
 	if err != nil {
 		m.T().Errorf("Failed to truncate table `products` and restart the identity. Error: %v", err)
 	}
-	test.Cleaner.Clean("products", "categories")
 }
 
 // Run after all the tests in the suite have been run.
@@ -62,42 +61,29 @@ func TestRunSuite(t *testing.T) {
 	suite.Run(t, new(modelSuite))
 }
 
-func TestWithOptions(t *testing.T) {
-	// Test case 01: page = 1
-	options := &model.Options{Page: 1}
-	m := model.New().WithOptions(options)
-	mOptions := m.GetOptions()
-	expected := model.Options{Page: 1}
-	actual := *mOptions
-	failedMsg := fmt.Sprintf("Failed, expected the raw options: %v, got the options: %v", expected, actual)
-	assert.Equal(t, expected, actual, failedMsg)
-	// Test case 02: Ignore the argument `page`.
-	options = &model.Options{}
-	m = model.New().WithOptions(options)
-	mOptions = m.GetOptions()
-	expected = model.Options{Page: 1}
-	actual = *mOptions
-	assert.Equal(t, expected, actual, failedMsg)
+func TestBuildRank(t *testing.T) {
+	// Test the rank
+	index := 0
+	assert := assert.New(t)
+	// ## Pass the argument `page` = 1
+	page := 1
+	expected := 1
+	actual := model.BuildRank(index, page)
+	failedMsg := fmt.Sprintf("Failed, expected the rank of the first product: %d, got the rank: %d", expected, actual)
+	assert.Equal(expected, actual, failedMsg)
+
+	// ## Pass the argument `page` = 2
+	page = 2
+	expected = 51
+	actual = model.BuildRank(index, page)
+	failedMsg = fmt.Sprintf("Failed, expected the rank of the 51st producd: %d, got the rank: %d", expected, actual)
+	assert.Equal(expected, actual, failedMsg)
 }
 
-func TestWithPage(t *testing.T) {
-	// Test case 01: page = 1
-	m := model.New().WithPage(1)
-	mOptions := m.GetOptions()
-	expected := model.Options{Page: 1}
-	actual := *mOptions
-	failedMsg := fmt.Sprintf("Failed, expected the raw options: %v, got the options: %v", expected, actual)
-	assert.Equal(t, expected, actual, failedMsg)
-	// Test case 02: Ignore the argument `page`
-	m = model.New()
-	mOptions = m.GetOptions()
-	expected = model.Options{Page: 1}
-	actual = *mOptions
-	assert.Equal(t, expected, actual, failedMsg)
-	// Test case 03: page = 0
-	m = model.New().WithPage(0)
-	mOptions = m.GetOptions()
-	expected = model.Options{Page: 1}
-	actual = *mOptions
+func TestBuildURL(t *testing.T) {
+	page := 2
+	expected := test.CannedCategory.Url + fmt.Sprintf("?_encoding=UTF8&pg=%d", page)
+	actual := model.BuildURL(test.CannedCategory.Url, page)
+	failedMsg := fmt.Sprintf("Failed, expected the url: %v, got the url: %v", expected, actual)
 	assert.Equal(t, expected, actual, failedMsg)
 }

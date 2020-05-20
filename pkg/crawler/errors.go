@@ -1,8 +1,8 @@
 package crawler
 
-import "top100-scrapy/pkg/model/category"
+import "top100-scrapy/pkg/model"
 
 type EmptyError struct {
-	Category *category.Row
+	Category *model.CategoryRow
 	error
 }

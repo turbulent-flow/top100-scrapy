@@ -1,28 +1,20 @@
 package crawler
 
-// Scrape everything you want.
+// The palce that you can scrap everything!
 
 import (
 	"fmt"
 	"strings"
 	"top100-scrapy/pkg/model"
-	"top100-scrapy/pkg/model/category"
+	"top100-scrapy/pkg/preference"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
-// TODO: Move this method into the package `model`.
-func (c *Crawler) BuildRank(index int, page int) (rank int) {
-	if page == 2 {
-		rank = index + 51
-	} else {
-		rank = index + 1
-	}
-	return rank
-}
+const UnavailbaleProduct = "This item is no longer available"
 
-func (c *Crawler) ScrapeProductNames() (names []string) {
-	c.opts.Doc.Find("ol#zg-ordered-list li.zg-item-immersion").Each(func(i int, s *goquery.Selection) {
+func ScrapeProductNames(opts *preference.Options) (names []string) {
+	opts.Doc.Find("ol#zg-ordered-list li.zg-item-immersion").Each(func(i int, s *goquery.Selection) {
 		var name string
 		nameNode := s.Find("span.zg-text-center-align").Next()
 		if len(nameNode.Nodes) == 1 {
@@ -35,42 +27,44 @@ func (c *Crawler) ScrapeProductNames() (names []string) {
 	return names
 }
 
-func (c *Crawler) ScrapeProducts() (set []*model.ProductRow, err error) {
-	names := c.ScrapeProductNames()
+func ScrapeProducts(row *model.CategoryRow, opts *preference.Options) (set []*model.ProductRow, err error) {
+	names := ScrapeProductNames(opts)
 	if len(names) == 0 {
-		err := fmt.Errorf("The names scraped from the url `%s` are empty, the category id stored into the DB is %d", c.opts.Category.Url, c.opts.Category.Id)
-		return set, &EmptyError{c.opts.Category, err}
+		err := fmt.Errorf("The names scraped from the url `%s` are empty, the category id stored into the DB is %d", row.Url, row.Id)
+		return set, &EmptyError{row, err}
 	}
 	for i, name := range names {
 		productRow := &model.ProductRow{
 			Name:       name,
-			Rank:       c.BuildRank(i, c.opts.Page),
-			Page:       c.opts.Page,
-			CategoryId: c.opts.Category.Id,
+			Rank:       model.BuildRank(i, opts.Page),
+			Page:       opts.Page,
+			CategoryId: row.Id,
 		}
 		set = append(set, productRow)
 	}
 	return set, err
 }
 
-func (c *Crawler) ScrapeCategories() (categories *category.Rows) {
-	categories = category.NewRows()
-	c.opts.Doc.Find("#zg_browseRoot .zg_selected").Parent().Next().Each(func(i int, s *goquery.Selection) {
+func ScrapeCategories(row *model.CategoryRow, opts *preference.Options) []*model.CategoryRow {
+	// TODO: Track the error of the empty set scraped from the url.
+	set := make([]*model.CategoryRow, 0)
+	categoryRow := row
+	opts.Doc.Find("#zg_browseRoot .zg_selected").Parent().Next().Each(func(i int, s *goquery.Selection) {
 		if goquery.NodeName(s) == "ul" {
 			n := 0
-			c.opts.Doc.Find("#zg_browseRoot .zg_selected").Parent().Next().Find("li a").Each(func(i int, s *goquery.Selection) {
+			opts.Doc.Find("#zg_browseRoot .zg_selected").Parent().Next().Find("li a").Each(func(i int, s *goquery.Selection) {
 				n++
 				url, _ := s.Attr("href")
-				path := category.NewRow().BuildPath(n, c.opts.Category)
-				category := &category.Row{
+				path := model.BuildPath(n, categoryRow)
+				row := &model.CategoryRow{
 					Name:     s.Text(),
 					Url:      url,
 					Path:     path,
-					ParentId: c.opts.Category.Id,
+					ParentId: categoryRow.Id,
 				}
-				categories.Set = append(categories.Set, category)
+				set = append(set, row)
 			})
 		}
 	})
-	return categories
+	return set
 }

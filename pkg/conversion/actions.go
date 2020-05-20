@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func ToSingleStringFromIntSlice(params []int) string {
+func ToSingleString(params []int) string {
 	paramStrings := make([]string, 0)
 	for _, param := range params {
 		paramString := strconv.Itoa(param)
