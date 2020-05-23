@@ -95,8 +95,7 @@ func performCategoriesInsertion(opts *preference.Options) {
 		set := crawler.ScrapeCategories(category, opts)
 		err = model.BulkilyInsertCategories(set, opts)
 		handlePostgresqlError(err, "Failed to insert a row.", category)
-		// Acknowledge a message maunally.
-		if err := d.Ack(false); err != nil {
+		if err := d.Ack(false); err != nil { // Acknowledge a message maunally.
 			logger.Error("Failed to acknowledge a message.", err)
 		}
 		fmt.Println("Done")
