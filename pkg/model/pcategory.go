@@ -47,7 +47,6 @@ func BulkilyInsertRelations(categoryID int, set []*ProductRow, opts *preference.
 		return "Could not start a transction.", err
 	}
 	opts = preference.LoadOptions(preference.WithOptions(*opts), preference.WithContext(context), preference.WithTx(tx))
-	// preference.AddOptions(opts, preference.WithOptions(*opts))
 	err = BulkilyInsertProducts(set, opts)
 	if err != nil {
 		opts.Tx.Rollback()

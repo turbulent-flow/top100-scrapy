@@ -91,9 +91,7 @@ func performCategoriesInsertion(opts *preference.Options) {
 		}
 		// TODO: Track the error of the empty set scraped from the url.
 		doc := crawler.InitHttpDoc(category)
-		// opts.Doc = doc
 		opts = preference.LoadOptions(preference.WithOptions(*opts), preference.WithDoc(doc))
-		// preference.AddOptions(opts, preference.WithDoc(doc))
 		set := crawler.ScrapeCategories(category, opts)
 		err = model.BulkilyInsertCategories(set, opts)
 		handlePostgresqlError(err, "Failed to insert a row.", category)

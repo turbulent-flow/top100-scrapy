@@ -38,14 +38,6 @@ func LoadOptions(options ...Option) *Options {
 	return opts
 }
 
-// AddOptions can append the additional options or overide the existed options.
-func AddOptions(opts *Options, options ...Option) *Options {
-	for _, option := range options {
-		option(opts)
-	}
-	return opts
-}
-
 func WithDB(db *sql.DB) Option {
 	return func(opts *Options) {
 		opts.DB = db
@@ -87,10 +79,3 @@ func WithOptions(options Options) Option {
 		*opts = options
 	}
 }
-
-// func BuildPage(page int) int {
-// 	if page == 0 {
-// 		page = 1
-// 	}
-// 	return page
-// }
