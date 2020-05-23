@@ -50,9 +50,7 @@ func ScrapeProducts(row *model.CategoryRow, opts *preference.Options) (set []*mo
 	return set, err
 }
 
-func ScrapeCategories(row *model.CategoryRow, opts *preference.Options) []*model.CategoryRow {
-	// TODO: Track the error of the empty set scraped from the url.
-	set := make([]*model.CategoryRow, 0)
+func ScrapeCategories(row *model.CategoryRow, opts *preference.Options) (set []*model.CategoryRow, err error) {
 	categoryRow := row
 	opts.Doc.Find("#zg_browseRoot .zg_selected").Parent().Next().Each(func(i int, s *goquery.Selection) {
 		if goquery.NodeName(s) == "ul" {
@@ -71,5 +69,13 @@ func ScrapeCategories(row *model.CategoryRow, opts *preference.Options) []*model
 			})
 		}
 	})
-	return set
+	if len(set) == 0 {
+		factors := logger.Factors{
+			"category_id":  row.ID,
+			"category_url": row.URL,
+		}
+		content := "The categories scraped from the url are empty."
+		return set, &EmptyError{errors.New(content), factors}
+	}
+	return set, err
 }

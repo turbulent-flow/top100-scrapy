@@ -48,8 +48,9 @@ func RunPublisher(opts *preference.Options) {
 	if err != nil {
 		logger.Error("Failed to query a row.", err)
 	}
-	// TODO: Track the error when count = 0.
 	if count == 0 {
+		factors := logger.Factors{"last_category_id": info}
+		logger.Info("The rows fetched from the DB are empty.", factors)
 		return
 	}
 	// Scan the categories on DB.

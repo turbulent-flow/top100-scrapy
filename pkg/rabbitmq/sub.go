@@ -89,10 +89,17 @@ func performCategoriesInsertion(opts *preference.Options) {
 		if err != nil {
 			logger.Error("Failed to query on DB or failed to assign a value by the Scan.", err)
 		}
-		// TODO: Track the error of the empty set scraped from the url.
 		doc := crawler.InitHTTPdoc(category)
 		opts = preference.LoadOptions(preference.WithOptions(*opts), preference.WithDoc(doc))
-		set := crawler.ScrapeCategories(category, opts)
+		set, err := crawler.ScrapeCategories(category, opts)
+		if err, ok := err.(*crawler.EmptyError); ok {
+			logger.Info(err.Error(), err.Factors)
+			if err := d.Ack(false); err != nil { // Acknowledge a message maunally.
+				logger.Error("Failed to acknowledge a message.", err)
+			}
+			fmt.Println("Done")
+			return
+		}
 		err = model.BulkilyInsertCategories(set, opts)
 		handlePostgresqlError(err, "Failed to insert a row.", category)
 		if err := d.Ack(false); err != nil { // Acknowledge a message maunally.

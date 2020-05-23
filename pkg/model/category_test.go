@@ -30,10 +30,6 @@ func (m *modelSuite) TestBulkilyInsertCategories() {
 	}
 	opts := preference.LoadOptions(preference.WithDB(test.DBconn))
 	// # Test the instersion of the data of the category
-	// TODO: Track the error of the empty set.
-	// ## Pass the empty set
-
-	// ## Inster the data
 	err = model.BulkilyInsertCategories(test.CannedCategorySet, opts)
 	if err != nil {
 		m.T().Errorf("Failed to insert the data into the table `categories`, error: %v", err)

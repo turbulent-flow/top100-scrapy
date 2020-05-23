@@ -22,10 +22,6 @@ func FetchCategoryRow(id int, opts *preference.Options) (*CategoryRow, error) {
 }
 
 func BulkilyInsertCategories(set []*CategoryRow, opts *preference.Options) error {
-	// TODO: Track the error of the empty set.
-	if len(set) == 0 {
-		return nil
-	}
 	valueStrings := make([]string, 0, len(set))
 	valueArgs := make([]interface{}, 0, len(set)*4)
 	for i, item := range set {

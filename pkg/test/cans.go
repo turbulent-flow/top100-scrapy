@@ -62,6 +62,12 @@ var (
 		Path:     "01.20.01",
 		ParentID: 21,
 	}
+	CannedCategory04 = &model.CategoryRow{
+		Name:     "Amazon Pantry",
+		URL:      "https://www.amazon.com/Best-Sellers-Prime-Pantry/zgbs/pantry/ref=zg_bs_nav_0/145-7972861-4524441",
+		Path:     "01.03",
+		ParentID: 1,
+	}
 	CannedRawCategory = model.CategoryRow{
 		ID:       2,
 		Name:     "Amazon Devices & Accessories",
