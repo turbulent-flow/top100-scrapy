@@ -4,22 +4,18 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
+	"top100-scrapy/pkg/preference"
 )
 
 type ProductRow struct {
-	Id         int
+	ID         int
 	Name       string
 	Rank       int
 	Page       int
-	CategoryId int
+	CategoryID int
 }
 
-func NewProductRows() []*ProductRow {
-	return make([]*ProductRow, 0)
-}
-
-func (m *model) BulkilyInsertProducts() error {
-	set := m.opts.Set
+func BulkilyInsertProducts(set []*ProductRow, opts *preference.Options) error {
 	valueStrings := make([]string, 0, len(set))
 	valueArgs := make([]interface{}, 0, len(set)*4)
 	for i, item := range set {
@@ -27,28 +23,26 @@ func (m *model) BulkilyInsertProducts() error {
 		valueArgs = append(valueArgs, item.Name)
 		valueArgs = append(valueArgs, item.Rank)
 		valueArgs = append(valueArgs, item.Page)
-		valueArgs = append(valueArgs, item.CategoryId)
+		valueArgs = append(valueArgs, item.CategoryID)
 	}
 	var err error
-	// Note: `RETURNIN ID` in this statement will return the id of the first row inserted into the DB.
 	stmt := fmt.Sprintf("INSERT INTO products (name, rank, page, category_id) VALUES %s", strings.Join(valueStrings, ","))
-	if m.opts.Tx != nil {
-		_, err = m.opts.Tx.ExecContext(m.opts.Context, stmt, valueArgs...)
+	if opts.Tx != nil {
+		_, err = opts.Tx.ExecContext(opts.Context, stmt, valueArgs...)
 	} else {
-		_, err = m.opts.DB.Exec(stmt, valueArgs...)
+		_, err = opts.DB.Exec(stmt, valueArgs...)
 	}
 	return err
 }
 
-func (m *model) ScanProductIds() ([]*ProductRow, error) {
-	set := m.opts.Set
+func ScanProductIds(categoryID int, set []*ProductRow, opts *preference.Options) ([]*ProductRow, error) {
 	var err error
-	stmt := fmt.Sprintf("SELECT id FROM products where page = %d and category_id = %d", m.opts.Page, m.opts.Category.Id)
+	stmt := fmt.Sprintf("SELECT id FROM products where page = %d and category_id = %d", opts.Page, categoryID)
 	rows := &sql.Rows{}
-	if m.opts.Tx != nil {
-		rows, err = m.opts.Tx.QueryContext(m.opts.Context, stmt)
+	if opts.Tx != nil {
+		rows, err = opts.Tx.QueryContext(opts.Context, stmt)
 	} else {
-		rows, err = m.opts.DB.Query(stmt)
+		rows, err = opts.DB.Query(stmt)
 	}
 	defer rows.Close()
 	if err != nil {
@@ -56,7 +50,7 @@ func (m *model) ScanProductIds() ([]*ProductRow, error) {
 	}
 	i := 0
 	for rows.Next() {
-		err = rows.Scan(&set[i].Id)
+		err = rows.Scan(&set[i].ID)
 		if err != nil {
 			return set, err
 		}

@@ -5,7 +5,7 @@ import (
 	"testing"
 	"top100-scrapy/pkg/crawler"
 	"top100-scrapy/pkg/model"
-	"top100-scrapy/pkg/model/category"
+	"top100-scrapy/pkg/preference"
 	"top100-scrapy/pkg/test"
 
 	"github.com/stretchr/testify/assert"
@@ -13,37 +13,46 @@ import (
 
 func TestScrapeProductNames(t *testing.T) {
 	// Test the names of the top 5 products.
+	doc := test.InitHTTPrecorder("case_01", test.CannedCategory.URL)
+	opts := preference.LoadOptions(preference.WithDoc(doc))
 	expected := test.CannedScrapedProducts
-	actual := test.InitHttpRecorder("case_01", test.CannedCategory).ScrapeProductNames()[:5]
+	actual := crawler.ScrapeProductNames(opts)[:5]
 	failedMsg := fmt.Sprintf("Failed, expected the names of the top 5 products: %s, got the names of the top 5 products: %s", expected, actual)
 	assert.Equal(t, expected, actual, failedMsg)
 }
 
 func TestScrapeProducts(t *testing.T) {
 	assert := assert.New(t)
-	// Case 01: Test the top 5 products
-	expected := test.CannedRawProductSet02
-	set, err := test.InitHttpRecorder("case_01", test.CannedCategory).ScrapeProducts()
+	page := 1
+	opts := preference.LoadOptions(preference.WithPage(page))
+	// # Test the top 5 products
+	// ## Standandard procedure
+	doc := test.InitHTTPrecorder("case_01", test.CannedCategory.URL)
+	opts = preference.LoadOptions(preference.WithOptions(*opts), preference.WithDoc(doc))
+	expected := test.CannedRawProductSet
+	set, err := crawler.ScrapeProducts(test.CannedCategory, opts)
 	if err != nil {
 		t.Errorf("An error occured: %s", err)
 	}
-	actual := model.New().RemovePointers(set).([]model.ProductRow)[:5]
-	failedMsg := fmt.Sprintf("Failed, expected the top 5 products: %v, got the top 5 products: %v", expected, actual)
+	actual := model.RemovePointers(set).([]model.ProductRow)[:5]
+	failedMsg := fmt.Sprintf("Failed, expected the top 5 products: %v, got the products: %v", expected, actual)
 	assert.Equal(expected, actual, failedMsg)
-
-	// Case 02: Test the empty names scraped from the url.
-	set, err = test.InitHttpRecorder("case_02", test.CannedCategory02).ScrapeProducts()
+	// ## Expected to throw an error when the names scraped from the url are empty.
+	doc = test.InitHTTPrecorder("case_02", test.CannedCategory02.URL)
+	opts = preference.LoadOptions(preference.WithOptions(*opts), preference.WithDoc(doc))
+	set, err = crawler.ScrapeProducts(test.CannedCategory02, opts)
 	if err == nil {
-		t.Error("Expected `ScrapeProducts` to throw an error: The names scraped from the url are empty..., got nil.")
+		t.Error("Expected `ScrapeProducts` to throw an error: `The names scraped from the url are empty.`, got nil.")
 	}
-
-	// Case 03: Test the ranks of the products when some items scraped from the url are no longer available.
+	// ## Test the ranks of the products when some items scraped from the url are no longer available.
 	cannedSet := test.CannedRawUnavailableProductSet
-	set, err = test.InitHttpRecorder("case_03", test.CannedCategory03).ScrapeProducts()
+	doc = test.InitHTTPrecorder("case_03", test.CannedCategory03.URL)
+	opts = preference.LoadOptions(preference.WithOptions(*opts), preference.WithDoc(doc))
+	set, err = crawler.ScrapeProducts(test.CannedCategory03, opts)
 	if err != nil {
 		t.Errorf("An error occured: %s", err)
 	}
-	rawSet := model.New().RemovePointers(set)
+	rawSet := model.RemovePointers(set)
 	failedMsg = "Failed, the product set should contain the item %v, got the set %v"
 	for _, item := range cannedSet {
 		assert.Containsf(rawSet, item, failedMsg, item, rawSet)
@@ -51,27 +60,24 @@ func TestScrapeProducts(t *testing.T) {
 }
 
 func TestScrapeCategories(t *testing.T) {
-	expected := test.CannedRawCategorySet
-	categories := test.InitHttpRecorder("case_01", test.CannedCategory).ScrapeCategories()
-	actual := category.NewRows().RemovePointers(categories.Set)
-	failedMsg := fmt.Sprintf("Failed, expected the categories: %v, got the categories: %v", expected, actual)
-	assert.Equal(t, expected, actual, failedMsg)
-}
-
-func TestBuildRank(t *testing.T) {
-	index := 0
 	assert := assert.New(t)
-	// Case 01: expected the rank of the first product is 1 when scraping from the page 1.
-	expected := 1
-	page := 1
-	actual := crawler.New().BuildRank(index, page)
-	failedMsg := fmt.Sprintf("Failed, expected the rank of the first product is %d, got the rank: %d", expected, actual)
+	// # Test the categories
+	// ## Standard procedure
+	doc := test.InitHTTPrecorder("case_01", test.CannedCategory.URL)
+	opts := preference.LoadOptions(preference.WithDoc(doc))
+	set, err := crawler.ScrapeCategories(test.CannedCategory, opts)
+	if err != nil {
+		t.Errorf("An error occured: %s", err)
+	}
+	expected := test.CannedRawCategorySet
+	actual := model.RemovePointers(set)
+	failedMsg := fmt.Sprintf("Failed, expected the categories: %v, got the categories: %v", expected, actual)
 	assert.Equal(expected, actual, failedMsg)
-
-	// Case 02: expected the rank of the first product is 51 when scraping from the page 2.
-	expected = 51
-	page = 2
-	actual = crawler.New().BuildRank(index, page)
-	failedMsg = fmt.Sprintf("Failed, expected the rank of the first product is %d, got the rank: %d", expected, actual)
-	assert.Equal(expected, actual, failedMsg)
+	// ## Expected to throw an error when the categories scraped from the url are empty.
+	doc = test.InitHTTPrecorder("case_04", test.CannedCategory04.URL)
+	opts = preference.LoadOptions(preference.WithDoc(doc))
+	set, err = crawler.ScrapeCategories(test.CannedCategory, opts)
+	if err == nil {
+		t.Error("Expected the method `ScrapeCategories()` to throw an error: `The categories scraped from the url are empty.`, got nil")
+	}
 }

@@ -1,43 +1,35 @@
 package crawler
 
 import (
-	"top100-scrapy/pkg/model/category"
+	"net/http"
+	"top100-scrapy/pkg/logger"
+	"top100-scrapy/pkg/model"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
-const UnavailbaleProduct = "This item is no longer available"
-
-type Crawler struct {
-	opts *Options
-}
-
-type Options struct {
-	Doc      *goquery.Document
-	Category *category.Row
-	Page     int
-}
-
-func New() *Crawler {
-	return &Crawler{opts: &Options{Page: 1}}
-}
-
-func (c *Crawler) WithPage(page int) *Crawler {
-	c.opts.Page = page
-	return c
-}
-
-func (c *Crawler) WithDoc(doc *goquery.Document) *Crawler {
-	c.opts.Doc = doc
-	return c
-}
-
-func (c *Crawler) WithCategory(category *category.Row) *Crawler {
-	c.opts.Category = category
-	return c
-}
-
-func (c *Crawler) WithOptions(opts *Options) *Crawler {
-	c.opts = opts
-	return c
+// InitHTTPdoc returns the HTML document fetched from the url.
+func InitHTTPdoc(category *model.CategoryRow) (doc *goquery.Document) {
+	resp, err := http.Get(category.URL)
+	if err != nil {
+		factors := logger.Factors{
+			"category_id":  category.ID,
+			"category_url": category.URL,
+		}
+		logger.Error("Failed to get the url.", err, factors)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != 200 {
+		factors := logger.Factors{"status_code": resp.StatusCode, "status": resp.Status}
+		logger.Error("The status of the code error occurs!", err, factors)
+	}
+	doc, err = goquery.NewDocumentFromReader(resp.Body)
+	if err != nil {
+		factors := logger.Factors{
+			"category_id":  category.ID,
+			"category_url": category.URL,
+		}
+		logger.Error("Failed to return a document.", err, factors)
+	}
+	return doc
 }

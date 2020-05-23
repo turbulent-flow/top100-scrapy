@@ -2,28 +2,37 @@ package model_test
 
 import (
 	"top100-scrapy/pkg/model"
+	"top100-scrapy/pkg/preference"
 	"top100-scrapy/pkg/test"
 )
 
 func (m *modelSuite) TestBulkilyInsertPcategories() {
-	ml := model.New().WithDB(test.DBconn).WithCategory(test.CannedCategory).WithSet(test.CannedProductSet02)
-	err := ml.BulkilyInsertProducts()
+	opts := &preference.Options{
+		DB:   test.DBconn,
+		Page: 1,
+	}
+	opts = preference.LoadOptions(preference.WithOptions(*opts))
+	err := model.BulkilyInsertProducts(test.CannedProductSet, opts)
 	if err != nil {
 		m.T().Errorf("Failed to insert the data into the table `products`, error: %v", err)
 	}
-	set, err := ml.ScanProductIds()
+	set, err := model.ScanProductIds(test.CannedCategory.ID, test.CannedProductSet, opts)
 	if err != nil {
 		m.T().Errorf("Failed to scan the product ids, error: %v", err)
 	}
-	err = ml.BulkilyInsertPcategories(set)
+	err = model.BulkilyInsertPcategories(test.CannedCategory.ID, set, opts)
 	if err != nil {
 		m.T().Errorf("Failed to insert the data into the table `product_categories`, error: %v", err)
 	}
 }
 
 func (m *modelSuite) TestBulkilyInsertRelations() {
-	ml := model.New().WithDB(test.DBconn).WithCategory(test.CannedCategory).WithSet(test.CannedProductSet02)
-	msg, err := ml.BulkilyInsertRelations()
+	opts := &preference.Options{
+		DB:   test.DBconn,
+		Page: 1,
+	}
+	opts = preference.LoadOptions(preference.WithOptions(*opts))
+	msg, err := model.BulkilyInsertRelations(test.CannedCategory.ID, test.CannedProductSet, opts)
 	if err != nil {
 		m.T().Errorf("%s Error: %v", msg, err)
 	}

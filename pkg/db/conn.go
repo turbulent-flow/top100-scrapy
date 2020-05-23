@@ -21,8 +21,8 @@ var (
 )
 
 func Open() (db *sql.DB, err error) {
-	dbUrl := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", dbUser, dbPassword, dbHost, dbPort, dbName, sslMode)
-	db, err = sql.Open("postgres", dbUrl)
+	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", dbUser, dbPassword, dbHost, dbPort, dbName, sslMode)
+	db, err = sql.Open("postgres", dbURL)
 	return db, err
 }
 

@@ -1,29 +1,26 @@
 package model
 
+// Table: product_categories
+
 import (
 	"context"
 	"fmt"
 	"strings"
+	"top100-scrapy/pkg/preference"
 )
 
-// Table - product_categories
-
 type PcategoryRow struct {
-	ProductId  int
-	CategoryId int
+	ProductID  int
+	CategoryID int
 }
 
-func NewPcategoryRows() []*PcategoryRow {
-	return make([]*PcategoryRow, 0)
-}
-
-func (m *model) BulkilyInsertPcategories(set []*ProductRow) error {
+func BulkilyInsertPcategories(categoryID int, set []*ProductRow, opts *preference.Options) error {
 	var err error
-	pCategoryRows := NewPcategoryRows()
+	pCategoryRows := make([]*PcategoryRow, 0)
 	for _, item := range set {
 		pCategory := &PcategoryRow{
-			ProductId:  item.Id,
-			CategoryId: m.opts.Category.Id,
+			ProductID:  item.ID,
+			CategoryID: categoryID,
 		}
 		pCategoryRows = append(pCategoryRows, pCategory)
 	}
@@ -31,40 +28,41 @@ func (m *model) BulkilyInsertPcategories(set []*ProductRow) error {
 	valueArgs := make([]interface{}, 0, len(pCategoryRows)*2)
 	for i, item := range pCategoryRows {
 		valueStrings = append(valueStrings, fmt.Sprintf("($%d, $%d)", i*2+1, i*2+2))
-		valueArgs = append(valueArgs, item.ProductId)
-		valueArgs = append(valueArgs, item.CategoryId)
+		valueArgs = append(valueArgs, item.ProductID)
+		valueArgs = append(valueArgs, item.CategoryID)
 	}
 	stmt := fmt.Sprintf("INSERT INTO product_categories (product_id, category_id) VALUES %s", strings.Join(valueStrings, ","))
-	if m.opts.Tx != nil {
-		_, err = m.opts.Tx.ExecContext(m.opts.Context, stmt, valueArgs...)
+	if opts.Tx != nil {
+		_, err = opts.Tx.ExecContext(opts.Context, stmt, valueArgs...)
 	} else {
-		_, err = m.opts.DB.Exec(stmt, valueArgs...)
+		_, err = opts.DB.Exec(stmt, valueArgs...)
 	}
 	return err
 }
 
-func (m *model) BulkilyInsertRelations() (msg string, err error) {
+func BulkilyInsertRelations(categoryID int, set []*ProductRow, opts *preference.Options) (msg string, err error) {
 	context := context.Background()
-	tx, err := m.opts.DB.BeginTx(context, nil)
+	tx, err := opts.DB.BeginTx(context, nil)
 	if err != nil {
 		return "Could not start a transction.", err
 	}
-	err = m.WithContext(context).WithTx(tx).BulkilyInsertProducts()
+	opts = preference.LoadOptions(preference.WithOptions(*opts), preference.WithContext(context), preference.WithTx(tx))
+	err = BulkilyInsertProducts(set, opts)
 	if err != nil {
-		m.opts.Tx.Rollback()
+		opts.Tx.Rollback()
 		return "Failed to insert the data into the table `products`.", err
 	}
-	productSet, err := m.ScanProductIds()
+	productSet, err := ScanProductIds(categoryID, set, opts)
 	if err != nil {
-		m.opts.Tx.Rollback()
+		opts.Tx.Rollback()
 		return "Failed to query the products.", err
 	}
-	err = m.BulkilyInsertPcategories(productSet)
+	err = BulkilyInsertPcategories(categoryID, productSet, opts)
 	if err != nil {
-		m.opts.Tx.Rollback()
+		opts.Tx.Rollback()
 		return "Failed to insert the data into the table `product_categories`.", err
 	}
-	err = m.opts.Tx.Commit()
+	err = opts.Tx.Commit()
 	if err != nil {
 		return "Failed to commit a transaction.", err
 	}
