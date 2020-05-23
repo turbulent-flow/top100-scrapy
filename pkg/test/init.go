@@ -26,7 +26,7 @@ func InitDB() (msg string, err error) {
 
 func InitCleaner() {
 	Cleaner = dbcleaner.New()
-	psql := engine.NewPostgresEngine(dbUrl)
+	psql := engine.NewPostgresEngine(dbURL)
 	Cleaner.SetEngine(psql)
 }
 
@@ -37,8 +37,9 @@ func InitTable(name string, db *sql.DB) error {
 	return err
 }
 
-func InitHttpRecorder(cassette string, url string) (doc *goquery.Document) {
-	cassettePath := fmt.Sprintf("%s/crawler/%s", FixturesUri, cassette)
+// InitHTTPrecorder returns the HTML document injected by the recorder.
+func InitHTTPrecorder(cassette string, url string) (doc *goquery.Document) {
+	cassettePath := fmt.Sprintf("%s/crawler/%s", FixturesURI, cassette)
 	r, err := recorder.New(cassettePath)
 	if err != nil {
 		logger.Error("Could not instantiate a recorder, error: %v", err)

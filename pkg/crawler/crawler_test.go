@@ -13,7 +13,7 @@ import (
 
 func TestScrapeProductNames(t *testing.T) {
 	// Test the names of the top 5 products.
-	doc := test.InitHttpRecorder("case_01", test.CannedCategory.Url)
+	doc := test.InitHTTPrecorder("case_01", test.CannedCategory.URL)
 	opts := preference.LoadOptions(preference.WithDoc(doc))
 	expected := test.CannedScrapedProducts
 	actual := crawler.ScrapeProductNames(opts)[:5]
@@ -27,7 +27,7 @@ func TestScrapeProducts(t *testing.T) {
 	opts := preference.LoadOptions(preference.WithPage(page))
 	// # Test the top 5 products
 	// ## Standandard procedure
-	doc := test.InitHttpRecorder("case_01", test.CannedCategory.Url)
+	doc := test.InitHTTPrecorder("case_01", test.CannedCategory.URL)
 	opts = preference.LoadOptions(preference.WithOptions(*opts), preference.WithDoc(doc))
 	expected := test.CannedRawProductSet
 	set, err := crawler.ScrapeProducts(test.CannedCategory, opts)
@@ -38,7 +38,7 @@ func TestScrapeProducts(t *testing.T) {
 	failedMsg := fmt.Sprintf("Failed, expected the top 5 products: %v, got the products: %v", expected, actual)
 	assert.Equal(expected, actual, failedMsg)
 	// ## Expected to throw an error when the names scraped from the url are empty
-	doc = test.InitHttpRecorder("case_02", test.CannedCategory02.Url)
+	doc = test.InitHTTPrecorder("case_02", test.CannedCategory02.URL)
 	opts = preference.LoadOptions(preference.WithOptions(*opts), preference.WithDoc(doc))
 	set, err = crawler.ScrapeProducts(test.CannedCategory02, opts)
 	if err == nil {
@@ -46,7 +46,7 @@ func TestScrapeProducts(t *testing.T) {
 	}
 	// ## Test the ranks of the products when some items scraped from the url are no longer available.
 	cannedSet := test.CannedRawUnavailableProductSet
-	doc = test.InitHttpRecorder("case_03", test.CannedCategory03.Url)
+	doc = test.InitHTTPrecorder("case_03", test.CannedCategory03.URL)
 	opts = preference.LoadOptions(preference.WithOptions(*opts), preference.WithDoc(doc))
 	set, err = crawler.ScrapeProducts(test.CannedCategory03, opts)
 	if err != nil {
@@ -60,7 +60,7 @@ func TestScrapeProducts(t *testing.T) {
 }
 
 func TestScrapeCategories(t *testing.T) {
-	doc := test.InitHttpRecorder("case_01", test.CannedCategory.Url)
+	doc := test.InitHTTPrecorder("case_01", test.CannedCategory.URL)
 	opts := preference.LoadOptions(preference.WithDoc(doc))
 	set := crawler.ScrapeCategories(test.CannedCategory, opts)
 	expected := test.CannedRawCategorySet

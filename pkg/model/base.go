@@ -15,11 +15,11 @@ func RemovePointers(object interface{}) (rawObject interface{}) {
 		// TODO: Refactor me!
 		row := object.(*CategoryRow)
 		rawObject = CategoryRow{
-			Id:       row.Id,
+			ID:       row.ID,
 			Name:     row.Name,
-			Url:      row.Url,
+			URL:      row.URL,
 			Path:     row.Path,
-			ParentId: row.ParentId,
+			ParentID: row.ParentID,
 		}
 	case []*CategoryRow:
 		rawSet := make([]CategoryRow, 0)

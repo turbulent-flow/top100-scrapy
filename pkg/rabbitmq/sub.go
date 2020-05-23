@@ -90,7 +90,7 @@ func performCategoriesInsertion(opts *preference.Options) {
 			logger.Error("Failed to query on DB or failed to assign a value by the Scan.", err)
 		}
 		// TODO: Track the error of the empty set scraped from the url.
-		doc := crawler.InitHttpDoc(category)
+		doc := crawler.InitHTTPdoc(category)
 		opts = preference.LoadOptions(preference.WithOptions(*opts), preference.WithDoc(doc))
 		set := crawler.ScrapeCategories(category, opts)
 		err = model.BulkilyInsertCategories(set, opts)
@@ -116,8 +116,8 @@ func performProductsInsertion(opts *preference.Options) {
 			logger.Error("Failed to query on DB or failed to assign a value by the Scan.", err)
 		}
 		// Change the url when page = 2
-		category.Url = model.BuildURL(category.Url, page)
-		doc := crawler.InitHttpDoc(category)
+		category.URL = model.BuildURL(category.URL, page)
+		doc := crawler.InitHTTPdoc(category)
 		opts = preference.LoadOptions(preference.WithOptions(*opts), preference.WithDoc(doc))
 		set, err := crawler.ScrapeProducts(category, opts)
 		if err, ok := err.(*crawler.EmptyError); ok {
@@ -145,8 +145,8 @@ func handlePostgresqlError(err error, msg string, category *model.CategoryRow) {
 			"pq_err_detail": pqErr.Detail,
 			"pq_err_hint":   pqErr.Hint,
 			"pq_err_query":  pqErr.InternalQuery,
-			"category_id":   category.Id,
-			"category_url":  category.Url,
+			"category_id":   category.ID,
+			"category_url":  category.URL,
 		}
 		switch pqErr.Code {
 		case "23505": // Violate unique constraint

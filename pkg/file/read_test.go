@@ -11,7 +11,7 @@ import (
 
 func TestRead(t *testing.T) {
 	expected := "2345"
-	filePath := fmt.Sprintf("%s/file/last_id", test.FixturesUri)
+	filePath := fmt.Sprintf("%s/file/last_id", test.FixturesURI)
 	actual, err := file.Read(filePath)
 	failedMsg := fmt.Sprintf("Failed, expected the content read from file: %s, got the content: %s", expected, actual)
 	if err != nil {

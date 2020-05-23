@@ -18,7 +18,7 @@ var (
 	DBconn   *sql.DB
 	AMQPconn *amqp.Connection
 	env      = os.Getenv("TOP100_ENV")
-	AppUri   = os.Getenv("TOP100_APP_URI")
+	AppURI   = os.Getenv("TOP100_APP_URI")
 	file     *os.File
 	err      error
 )
