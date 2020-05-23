@@ -11,7 +11,7 @@ import (
 func TestToSingleStringFromIntSlice(t *testing.T) {
 	expected := "1,2"
 	params := []int{1, 2}
-	actual := conversion.ToSingleStringFromIntSlice(params)
+	actual := conversion.ToSingleString(params)
 	failedMsg := fmt.Sprintf("Failed, expected the data converted to single string: %v, got the data: %v", expected, actual)
 	assert.Equal(t, expected, actual, failedMsg)
 }

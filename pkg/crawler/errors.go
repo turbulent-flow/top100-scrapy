@@ -1,8 +1,10 @@
 package crawler
 
-import "top100-scrapy/pkg/model/category"
+import (
+	"top100-scrapy/pkg/logger"
+)
 
 type EmptyError struct {
-	Category *category.Row
 	error
+	Factors logger.Factors
 }
