@@ -124,7 +124,7 @@ func performProductsInsertion(opts *preference.Options) {
 		opts = preference.LoadOptions(preference.WithOptions(*opts), preference.WithDoc(doc))
 		set, err := crawler.ScrapeProducts(category, opts)
 		if err, ok := err.(*crawler.EmptyError); ok {
-			logger.Info(fmt.Sprintf("The names scraped from the url `%s` are empty, the category id stored into the DB is %d", err.Category.Url, err.Category.Id))
+			logger.Info(err.Error(), err.Factors)
 			if err := d.Ack(false); err != nil { // Acknowledge a message maunally.
 				logger.Error("Failed to acknowledge a message.", err)
 			}

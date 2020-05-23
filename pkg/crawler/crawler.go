@@ -3,8 +3,9 @@ package crawler
 // The palce that you can scrap everything!
 
 import (
-	"fmt"
+	"errors"
 	"strings"
+	"top100-scrapy/pkg/logger"
 	"top100-scrapy/pkg/model"
 	"top100-scrapy/pkg/preference"
 
@@ -30,8 +31,12 @@ func ScrapeProductNames(opts *preference.Options) (names []string) {
 func ScrapeProducts(row *model.CategoryRow, opts *preference.Options) (set []*model.ProductRow, err error) {
 	names := ScrapeProductNames(opts)
 	if len(names) == 0 {
-		err := fmt.Errorf("The names scraped from the url `%s` are empty, the category id stored into the DB is %d", row.Url, row.Id)
-		return set, &EmptyError{row, err}
+		factors := logger.Factors{
+			"category_id":  row.Id,
+			"category_url": row.Url,
+		}
+		content := "The names scraped from the url are empty."
+		return set, &EmptyError{errors.New(content), factors}
 	}
 	for i, name := range names {
 		productRow := &model.ProductRow{
