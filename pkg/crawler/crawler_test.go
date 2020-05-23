@@ -37,7 +37,7 @@ func TestScrapeProducts(t *testing.T) {
 	actual := model.RemovePointers(set).([]model.ProductRow)[:5]
 	failedMsg := fmt.Sprintf("Failed, expected the top 5 products: %v, got the products: %v", expected, actual)
 	assert.Equal(expected, actual, failedMsg)
-	// ## Expected to throw an error when the names scraped from the url are empty
+	// ## Expected to throw an error when the names scraped from the url are empty.
 	doc = test.InitHTTPrecorder("case_02", test.CannedCategory02.URL)
 	opts = preference.LoadOptions(preference.WithOptions(*opts), preference.WithDoc(doc))
 	set, err = crawler.ScrapeProducts(test.CannedCategory02, opts)
@@ -60,11 +60,24 @@ func TestScrapeProducts(t *testing.T) {
 }
 
 func TestScrapeCategories(t *testing.T) {
+	assert := assert.New(t)
+	// # Test the categories
+	// ## Standard procedure
 	doc := test.InitHTTPrecorder("case_01", test.CannedCategory.URL)
 	opts := preference.LoadOptions(preference.WithDoc(doc))
-	set := crawler.ScrapeCategories(test.CannedCategory, opts)
+	set, err := crawler.ScrapeCategories(test.CannedCategory, opts)
+	if err != nil {
+		t.Errorf("An error occured: %s", err)
+	}
 	expected := test.CannedRawCategorySet
 	actual := model.RemovePointers(set)
 	failedMsg := fmt.Sprintf("Failed, expected the categories: %v, got the categories: %v", expected, actual)
-	assert.Equal(t, expected, actual, failedMsg)
+	assert.Equal(expected, actual, failedMsg)
+	// ## Expected to throw an error when the categories scraped from the url are empty.
+	doc = test.InitHTTPrecorder("case_04", test.CannedCategory04.URL)
+	opts = preference.LoadOptions(preference.WithDoc(doc))
+	set, err = crawler.ScrapeCategories(test.CannedCategory, opts)
+	if err == nil {
+		t.Error("Expected the method `ScrapeCategories()` to throw an error: `The categories scraped from the url are empty.`, got nil")
+	}
 }
