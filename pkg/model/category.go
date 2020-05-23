@@ -35,12 +35,3 @@ func BulkilyInsertCategories(set []*CategoryRow, opts *preference.Options) error
 	_, err := opts.DB.Exec(stmt, valueArgs...)
 	return err
 }
-
-func BuildPath(n int, parent *CategoryRow) (path string) {
-	if n < 10 {
-		path = fmt.Sprintf("%s.0%d", parent.Path, n)
-	} else {
-		path = fmt.Sprintf("%s.%d", parent.Path, n)
-	}
-	return path
-}
