@@ -42,7 +42,7 @@ func TestScrapeProducts(t *testing.T) {
 	opts = preference.LoadOptions(preference.WithOptions(*opts), preference.WithDoc(doc))
 	set, err = crawler.ScrapeProducts(test.CannedCategory02, opts)
 	if err == nil {
-		t.Error("Expected `ScrapeProducts` to throw an error: The names scraped from the url are empty..., got nil.")
+		t.Error("Expected `ScrapeProducts` to throw an error: `The names scraped from the url are empty.`, got nil.")
 	}
 	// ## Test the ranks of the products when some items scraped from the url are no longer available.
 	cannedSet := test.CannedRawUnavailableProductSet
