@@ -64,7 +64,7 @@ func RunSubscriber(opts *preference.Options) {
 	p, _ := ants.NewPoolWithFunc(opts.Concurrency, func(optionsInterface interface{}) {
 		opts, ok := optionsInterface.(*preference.Options)
 		if !ok {
-			logger.Error("The type `*preference.Options` has not implemented the interface `optionSInterface`.", nil)
+			logger.Error("The type `*preference.Options` has not implemented the interface `optionsInterface`.", nil)
 		}
 		switch opts.Queue {
 		case "categories_insertion":
