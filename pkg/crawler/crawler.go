@@ -12,7 +12,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-const UnavailbaleProduct = "This item is no longer available"
+const unavailbaleProduct = "This item is no longer available"
 
 func ScrapeProductNames(opts *preference.Options) (names []string) {
 	opts.Doc.Find("ol#zg-ordered-list li.zg-item-immersion").Each(func(i int, s *goquery.Selection) {
@@ -21,7 +21,7 @@ func ScrapeProductNames(opts *preference.Options) (names []string) {
 		if len(nameNode.Nodes) == 1 {
 			name = nameNode.Text()
 		} else {
-			name = UnavailbaleProduct
+			name = unavailbaleProduct
 		}
 		names = append(names, strings.TrimSpace(name))
 	})
@@ -32,8 +32,8 @@ func ScrapeProducts(row *model.CategoryRow, opts *preference.Options) (set []*mo
 	names := ScrapeProductNames(opts)
 	if len(names) == 0 {
 		factors := logger.Factors{
-			"category_id":  row.Id,
-			"category_url": row.Url,
+			"category_id":  row.ID,
+			"category_url": row.URL,
 		}
 		content := "The names scraped from the url are empty."
 		return set, &EmptyError{errors.New(content), factors}
@@ -43,7 +43,7 @@ func ScrapeProducts(row *model.CategoryRow, opts *preference.Options) (set []*mo
 			Name:       name,
 			Rank:       model.BuildRank(i, opts.Page),
 			Page:       opts.Page,
-			CategoryId: row.Id,
+			CategoryID: row.ID,
 		}
 		set = append(set, productRow)
 	}
@@ -63,9 +63,9 @@ func ScrapeCategories(row *model.CategoryRow, opts *preference.Options) []*model
 				path := model.BuildPath(n, categoryRow)
 				row := &model.CategoryRow{
 					Name:     s.Text(),
-					Url:      url,
+					URL:      url,
 					Path:     path,
-					ParentId: categoryRow.Id,
+					ParentID: categoryRow.ID,
 				}
 				set = append(set, row)
 			})

@@ -31,7 +31,7 @@ func (m *modelSuite) SetupSuite() {
 func (m *modelSuite) SetupTest() {
 	test.Cleaner.Acquire("products", "categories")
 	// Populate the data into the table `product_categories`
-	seedPath := fmt.Sprintf("%s/model/category.yml", test.FixturesUri)
+	seedPath := fmt.Sprintf("%s/model/category.yml", test.FixturesURI)
 	seed, err := os.Open(seedPath)
 	if err != nil {
 		m.T().Errorf("Failed to opent the seed, error: %v", err)
@@ -82,8 +82,8 @@ func TestBuildRank(t *testing.T) {
 
 func TestBuildURL(t *testing.T) {
 	page := 2
-	expected := test.CannedCategory.Url + fmt.Sprintf("?_encoding=UTF8&pg=%d", page)
-	actual := model.BuildURL(test.CannedCategory.Url, page)
+	expected := test.CannedCategory.URL + fmt.Sprintf("?_encoding=UTF8&pg=%d", page)
+	actual := model.BuildURL(test.CannedCategory.URL, page)
 	failedMsg := fmt.Sprintf("Failed, expected the url: %v, got the url: %v", expected, actual)
 	assert.Equal(t, expected, actual, failedMsg)
 }

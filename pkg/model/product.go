@@ -8,11 +8,11 @@ import (
 )
 
 type ProductRow struct {
-	Id         int
+	ID         int
 	Name       string
 	Rank       int
 	Page       int
-	CategoryId int
+	CategoryID int
 }
 
 func BulkilyInsertProducts(set []*ProductRow, opts *preference.Options) error {
@@ -23,7 +23,7 @@ func BulkilyInsertProducts(set []*ProductRow, opts *preference.Options) error {
 		valueArgs = append(valueArgs, item.Name)
 		valueArgs = append(valueArgs, item.Rank)
 		valueArgs = append(valueArgs, item.Page)
-		valueArgs = append(valueArgs, item.CategoryId)
+		valueArgs = append(valueArgs, item.CategoryID)
 	}
 	var err error
 	stmt := fmt.Sprintf("INSERT INTO products (name, rank, page, category_id) VALUES %s", strings.Join(valueStrings, ","))
@@ -50,7 +50,7 @@ func ScanProductIds(categoryID int, set []*ProductRow, opts *preference.Options)
 	}
 	i := 0
 	for rows.Next() {
-		err = rows.Scan(&set[i].Id)
+		err = rows.Scan(&set[i].ID)
 		if err != nil {
 			return set, err
 		}

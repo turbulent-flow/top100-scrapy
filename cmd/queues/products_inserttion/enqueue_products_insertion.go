@@ -13,7 +13,7 @@ func main() {
 		DB:       app.DBconn,
 		AMQP:     app.AMQPconn,
 		Queue:    "products_insertion",
-		FilePath: fmt.Sprintf("%s/logs/%s", app.AppUri, "insertion/product_pub/last_id"),
+		FilePath: fmt.Sprintf("%s/logs/%s", app.AppURI, "insertion/product_pub/last_id"),
 	}
 	opts = preference.LoadOptions(preference.WithOptions(*opts))
 	rabbitmq.RunPublisher(opts)

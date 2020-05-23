@@ -16,11 +16,11 @@ func (m *modelSuite) TestBulkilyInsertPcategories() {
 	if err != nil {
 		m.T().Errorf("Failed to insert the data into the table `products`, error: %v", err)
 	}
-	set, err := model.ScanProductIds(test.CannedCategory.Id, test.CannedProductSet, opts)
+	set, err := model.ScanProductIds(test.CannedCategory.ID, test.CannedProductSet, opts)
 	if err != nil {
 		m.T().Errorf("Failed to scan the product ids, error: %v", err)
 	}
-	err = model.BulkilyInsertPcategories(test.CannedCategory.Id, set, opts)
+	err = model.BulkilyInsertPcategories(test.CannedCategory.ID, set, opts)
 	if err != nil {
 		m.T().Errorf("Failed to insert the data into the table `product_categories`, error: %v", err)
 	}
@@ -32,7 +32,7 @@ func (m *modelSuite) TestBulkilyInsertRelations() {
 		Page: 1,
 	}
 	opts = preference.LoadOptions(preference.WithOptions(*opts))
-	msg, err := model.BulkilyInsertRelations(test.CannedCategory.Id, test.CannedProductSet, opts)
+	msg, err := model.BulkilyInsertRelations(test.CannedCategory.ID, test.CannedProductSet, opts)
 	if err != nil {
 		m.T().Errorf("%s Error: %v", msg, err)
 	}

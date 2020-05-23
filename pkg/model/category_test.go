@@ -12,7 +12,7 @@ import (
 
 func (m *modelSuite) TestFetchCategoryRow() {
 	opts := preference.LoadOptions(preference.WithDB(test.DBconn))
-	category, err := model.FetchCategoryRow(test.CannedCategory.Id, opts)
+	category, err := model.FetchCategoryRow(test.CannedCategory.ID, opts)
 	if err != nil {
 		m.T().Errorf("Failed to query on DB or failed to assign a value by the Scan, error: %v", err)
 	} else {

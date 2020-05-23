@@ -8,13 +8,13 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-// Return the HTML document fetched from the url.
-func InitHttpDoc(category *model.CategoryRow) (doc *goquery.Document) {
-	resp, err := http.Get(category.Url)
+// InitHTTPdoc returns the HTML document fetched from the url.
+func InitHTTPdoc(category *model.CategoryRow) (doc *goquery.Document) {
+	resp, err := http.Get(category.URL)
 	if err != nil {
 		factors := logger.Factors{
-			"category_id":  category.Id,
-			"category_url": category.Url,
+			"category_id":  category.ID,
+			"category_url": category.URL,
 		}
 		logger.Error("Failed to get the url.", err, factors)
 	}
@@ -26,8 +26,8 @@ func InitHttpDoc(category *model.CategoryRow) (doc *goquery.Document) {
 	doc, err = goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
 		factors := logger.Factors{
-			"category_id":  category.Id,
-			"category_url": category.Url,
+			"category_id":  category.ID,
+			"category_url": category.URL,
 		}
 		logger.Error("Failed to return a document.", err, factors)
 	}

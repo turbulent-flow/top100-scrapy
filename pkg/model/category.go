@@ -7,17 +7,17 @@ import (
 )
 
 type CategoryRow struct {
-	Id       int
+	ID       int
 	Name     string
-	Url      string
+	URL      string
 	Path     string
-	ParentId int
+	ParentID int
 }
 
 func FetchCategoryRow(id int, opts *preference.Options) (*CategoryRow, error) {
 	row := new(CategoryRow)
 	stmt := fmt.Sprintf("select id, name, url, path, parent_id from categories where id = %d", id)
-	err := opts.DB.QueryRow(stmt).Scan(&row.Id, &row.Name, &row.Url, &row.Path, &row.ParentId)
+	err := opts.DB.QueryRow(stmt).Scan(&row.ID, &row.Name, &row.URL, &row.Path, &row.ParentID)
 	return row, err
 }
 
@@ -32,8 +32,8 @@ func BulkilyInsertCategories(set []*CategoryRow, opts *preference.Options) error
 		valueStrings = append(valueStrings, fmt.Sprintf("($%d, $%d, $%d, $%d)", i*4+1, i*4+2, i*4+3, i*4+4))
 		valueArgs = append(valueArgs, item.Name)
 		valueArgs = append(valueArgs, item.Path)
-		valueArgs = append(valueArgs, item.Url)
-		valueArgs = append(valueArgs, item.ParentId)
+		valueArgs = append(valueArgs, item.URL)
+		valueArgs = append(valueArgs, item.ParentID)
 	}
 	stmt := fmt.Sprintf("INSERT INTO categories (name, path, url, parent_id) VALUES %s", strings.Join(valueStrings, ","))
 	_, err := opts.DB.Exec(stmt, valueArgs...)

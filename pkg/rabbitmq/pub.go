@@ -62,7 +62,7 @@ func RunPublisher(opts *preference.Options) {
 	defer rows.Close()
 	for rows.Next() {
 		row := &model.CategoryRow{}
-		err = rows.Scan(&row.Id)
+		err = rows.Scan(&row.ID)
 		if err != nil {
 			logger.Error("Failed to assign a value by the Scan.", err)
 		}
@@ -76,7 +76,7 @@ func RunPublisher(opts *preference.Options) {
 	switch opts.Queue {
 	case "categories_insertion":
 		for _, row := range set {
-			body := strconv.Itoa(row.Id)
+			body := strconv.Itoa(row.ID)
 			err = ch.Publish(
 				"",     // exchange
 				q.Name, // routing key
@@ -95,7 +95,7 @@ func RunPublisher(opts *preference.Options) {
 	case "products_insertion":
 		for _, row := range set {
 			for page := 1; page <= 2; page++ {
-				slice := []int{row.Id, page}
+				slice := []int{row.ID, page}
 				body := conversion.ToSingleString(slice)
 				err = ch.Publish(
 					"",     // exchange
@@ -115,7 +115,7 @@ func RunPublisher(opts *preference.Options) {
 		}
 	}
 	// Write the info into the file.
-	info = set[len(set)-1].Id
+	info = set[len(set)-1].ID
 	err = file.Write(opts.FilePath, strconv.Itoa(info))
 	if err != nil {
 		logger.Error("Could not write file.", err)
