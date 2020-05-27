@@ -11,8 +11,8 @@ import (
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/preference"
 
-	"github.com/lib/pq"
-	"github.com/panjf2000/ants"
+	"github.com/jackc/pgconn"
+	"github.com/panjf2000/ants/v2"
 )
 
 // The palce that you can subscribe the queue to receive the messages with the instance of the worker,
@@ -145,15 +145,15 @@ func performProductsInsertion(opts *preference.Options) {
 }
 
 func handlePostgresqlError(err error, msg string, category *model.CategoryRow) {
-	if pqErr, ok := err.(*pq.Error); ok {
+	if pqErr, ok := err.(*pgconn.PgError); ok {
 		factors := logger.Factors{
-			"pq_err_code":   pqErr.Code,
-			"pq_err_msg":    pqErr.Message,
-			"pq_err_detail": pqErr.Detail,
-			"pq_err_hint":   pqErr.Hint,
-			"pq_err_query":  pqErr.InternalQuery,
+			"pqerr_code":   pqErr.Code,
+			"pqerr_msg":    pqErr.Message,
+			"pqerr_detail": pqErr.Detail,
+			"pqerr_hint":   pqErr.Hint,
+			"pqerr_query":  pqErr.InternalQuery,
 			"category_id":   category.ID,
-			"category_url":  category.URL,
+			"category_url": category.URL,
 		}
 		switch pqErr.Code {
 		case "23505": // Violate unique constraint

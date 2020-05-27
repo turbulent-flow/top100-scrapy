@@ -9,7 +9,7 @@ import (
 func main() {
 	defer app.Finalize()
 	opts := &preference.Options{
-		DB:            app.DBconn,
+		DB:            app.DBpool,
 		AMQP:          app.AMQPconn,
 		Queue:         "products_insertion",
 		Concurrency:   25,

@@ -11,7 +11,7 @@ import (
 
 func (m *modelSuite) TestScanProductIds() {
 	opts := &preference.Options{
-		DB:   test.DBconn,
+		DB:   test.DBpool,
 		Page: 1,
 	}
 	opts = preference.LoadOptions(preference.WithOptions(*opts))

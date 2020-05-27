@@ -8,7 +8,7 @@ import (
 
 func (m *modelSuite) TestBulkilyInsertPcategories() {
 	opts := &preference.Options{
-		DB:   test.DBconn,
+		DB:   test.DBpool,
 		Page: 1,
 	}
 	opts = preference.LoadOptions(preference.WithOptions(*opts))
@@ -28,7 +28,7 @@ func (m *modelSuite) TestBulkilyInsertPcategories() {
 
 func (m *modelSuite) TestBulkilyInsertRelations() {
 	opts := &preference.Options{
-		DB:   test.DBconn,
+		DB:   test.DBpool,
 		Page: 1,
 	}
 	opts = preference.LoadOptions(preference.WithOptions(*opts))

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/preference"
+	"context"
 )
 
 type CategoryRow struct {
@@ -17,7 +18,7 @@ type CategoryRow struct {
 func FetchCategoryRow(id int, opts *preference.Options) (*CategoryRow, error) {
 	row := new(CategoryRow)
 	stmt := fmt.Sprintf("select id, name, url, path, parent_id from categories where id = %d", id)
-	err := opts.DB.QueryRow(stmt).Scan(&row.ID, &row.Name, &row.URL, &row.Path, &row.ParentID)
+	err := opts.DB.QueryRow(context.Background(), stmt).Scan(&row.ID, &row.Name, &row.URL, &row.Path, &row.ParentID)
 	return row, err
 }
 
@@ -32,6 +33,6 @@ func BulkilyInsertCategories(set []*CategoryRow, opts *preference.Options) error
 		valueArgs = append(valueArgs, item.ParentID)
 	}
 	stmt := fmt.Sprintf("INSERT INTO categories (name, path, url, parent_id) VALUES %s", strings.Join(valueStrings, ","))
-	_, err := opts.DB.Exec(stmt, valueArgs...)
+	_, err := opts.DB.Exec(context.Background(), stmt, valueArgs...)
 	return err
 }

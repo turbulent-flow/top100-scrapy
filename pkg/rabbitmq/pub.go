@@ -8,7 +8,7 @@ import (
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/logger"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/preference"
-
+	"context"
 	"github.com/streadway/amqp"
 )
 
@@ -44,7 +44,7 @@ func RunPublisher(opts *preference.Options) {
 	// Count the rows from the query.
 	var count int
 	stmt := fmt.Sprintf("SELECT count(id) as count from categories where id > %d", info)
-	err = opts.DB.QueryRow(stmt).Scan(&count)
+	err = opts.DB.QueryRow(context.Background(), stmt).Scan(&count)
 	if err != nil {
 		logger.Error("Failed to query a row.", err)
 	}
@@ -56,7 +56,7 @@ func RunPublisher(opts *preference.Options) {
 	// Scan the categories on DB.
 	set := make([]*model.CategoryRow, 0)
 	stmt = `SELECT id from categories where id > $1 order by id asc limit 500;`
-	rows, err := opts.DB.Query(stmt, info)
+	rows, err := opts.DB.Query(context.Background(), stmt, info)
 	if err != nil {
 		logger.Error("Failed to query on DB.", err)
 	}
