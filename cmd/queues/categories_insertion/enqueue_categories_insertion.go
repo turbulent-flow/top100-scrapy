@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"top100-scrapy/pkg/app"
-	"top100-scrapy/pkg/preference"
-	"top100-scrapy/pkg/rabbitmq"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/app"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/preference"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/rabbitmq"
 )
 
 func main() {

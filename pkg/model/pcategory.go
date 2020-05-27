@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
-	"top100-scrapy/pkg/preference"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/preference"
 )
 
 type PcategoryRow struct {

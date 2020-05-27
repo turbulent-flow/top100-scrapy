@@ -3,7 +3,7 @@ package test
 import (
 	"database/sql"
 	"os"
-	"top100-scrapy/pkg/model"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
 
 	"github.com/khaiql/dbcleaner"
 )

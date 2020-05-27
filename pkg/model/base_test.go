@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 	"testing"
-	"top100-scrapy/pkg/model"
-	"top100-scrapy/pkg/test"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/test"
 
 	"github.com/romanyx/polluter"
 	"github.com/stretchr/testify/assert"

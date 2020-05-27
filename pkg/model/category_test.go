@@ -3,9 +3,9 @@ package model_test
 import (
 	"fmt"
 	"testing"
-	"top100-scrapy/pkg/model"
-	"top100-scrapy/pkg/preference"
-	"top100-scrapy/pkg/test"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/preference"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/test"
 
 	"github.com/stretchr/testify/assert"
 )

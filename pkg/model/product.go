@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
-	"top100-scrapy/pkg/preference"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/preference"
 )
 
 type ProductRow struct {
