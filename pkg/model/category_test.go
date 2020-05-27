@@ -11,7 +11,7 @@ import (
 )
 
 func (m *modelSuite) TestFetchCategoryRow() {
-	opts := preference.LoadOptions(preference.WithDB(test.DBconn))
+	opts := preference.LoadOptions(preference.WithDB(test.DBpool))
 	category, err := model.FetchCategoryRow(test.CannedCategory.ID, opts)
 	if err != nil {
 		m.T().Errorf("Failed to query on DB or failed to assign a value by the Scan, error: %v", err)
@@ -24,11 +24,11 @@ func (m *modelSuite) TestFetchCategoryRow() {
 }
 
 func (m *modelSuite) TestBulkilyInsertCategories() {
-	err := test.InitTable("categories", test.DBconn)
+	err := test.InitTable("categories", test.DBpool)
 	if err != nil {
 		m.T().Errorf("Failed to truncate table `categories` and restart the identity. Error: %v", err)
 	}
-	opts := preference.LoadOptions(preference.WithDB(test.DBconn))
+	opts := preference.LoadOptions(preference.WithDB(test.DBpool))
 	// # Test the instersion of the data of the category
 	err = model.BulkilyInsertCategories(test.CannedCategorySet, opts)
 	if err != nil {

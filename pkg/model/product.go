@@ -1,10 +1,11 @@
 package model
 
 import (
-	"database/sql"
 	"fmt"
 	"strings"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/preference"
+	"context"
+	"github.com/jackc/pgx/v4"
 )
 
 type ProductRow struct {
@@ -28,26 +29,26 @@ func BulkilyInsertProducts(set []*ProductRow, opts *preference.Options) error {
 	var err error
 	stmt := fmt.Sprintf("INSERT INTO products (name, rank, page, category_id) VALUES %s", strings.Join(valueStrings, ","))
 	if opts.Tx != nil {
-		_, err = opts.Tx.ExecContext(opts.Context, stmt, valueArgs...)
+		_, err = opts.Tx.Exec(opts.Context, stmt, valueArgs...)
 	} else {
-		_, err = opts.DB.Exec(stmt, valueArgs...)
+		_, err = opts.DB.Exec(context.Background(), stmt, valueArgs...)
 	}
 	return err
 }
 
 func ScanProductIds(categoryID int, set []*ProductRow, opts *preference.Options) ([]*ProductRow, error) {
 	var err error
+	var rows pgx.Rows
 	stmt := fmt.Sprintf("SELECT id FROM products where page = %d and category_id = %d", opts.Page, categoryID)
-	rows := &sql.Rows{}
 	if opts.Tx != nil {
-		rows, err = opts.Tx.QueryContext(opts.Context, stmt)
+		rows, err = opts.Tx.Query(opts.Context, stmt)
 	} else {
-		rows, err = opts.DB.Query(stmt)
+		rows, err = opts.DB.Query(context.Background(), stmt)
 	}
-	defer rows.Close()
 	if err != nil {
 		return set, err
 	}
+	defer rows.Close()
 	i := 0
 	for rows.Next() {
 		err = rows.Scan(&set[i].ID)

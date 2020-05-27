@@ -4,7 +4,8 @@ package preference
 
 import (
 	"context"
-	"database/sql"
+	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4/pgxpool"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/streadway/amqp"
@@ -17,9 +18,9 @@ type Option func(opts *Options)
 // TODO: Define the argument `PrefetchCount`.
 // TODO: Define the argument `Deliveries`
 type Options struct {
-	DB            *sql.DB
+	DB            *pgxpool.Pool
 	Context       context.Context
-	Tx            *sql.Tx
+	Tx            pgx.Tx
 	Page          int
 	Doc           *goquery.Document
 	AMQP          *amqp.Connection
@@ -38,7 +39,7 @@ func LoadOptions(options ...Option) *Options {
 	return opts
 }
 
-func WithDB(db *sql.DB) Option {
+func WithDB(db *pgxpool.Pool) Option {
 	return func(opts *Options) {
 		opts.DB = db
 	}
@@ -50,7 +51,7 @@ func WithContext(context context.Context) Option {
 	}
 }
 
-func WithTx(tx *sql.Tx) Option {
+func WithTx(tx pgx.Tx) Option {
 	return func(opts *Options) {
 		opts.Tx = tx
 	}

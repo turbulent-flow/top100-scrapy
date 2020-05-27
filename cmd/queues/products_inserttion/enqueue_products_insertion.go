@@ -10,7 +10,7 @@ import (
 func main() {
 	defer app.Finalize()
 	opts := &preference.Options{
-		DB:       app.DBconn,
+		DB:       app.DBpool,
 		AMQP:     app.AMQPconn,
 		Queue:    "products_insertion",
 		FilePath: fmt.Sprintf("%s/logs/%s", app.AppURI, "insertion/product_pub/last_id"),
