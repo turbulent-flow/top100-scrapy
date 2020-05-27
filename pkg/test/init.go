@@ -6,8 +6,8 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
-	"top100-scrapy/pkg/db"
-	"top100-scrapy/pkg/logger"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/db"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/logger"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/dnaeon/go-vcr/recorder"

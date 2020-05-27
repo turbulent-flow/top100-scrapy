@@ -3,8 +3,8 @@ package file_test
 import (
 	"fmt"
 	"testing"
-	"top100-scrapy/pkg/file"
-	"top100-scrapy/pkg/test"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/file"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/test"
 
 	"github.com/stretchr/testify/assert"
 )

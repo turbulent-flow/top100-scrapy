@@ -2,8 +2,8 @@ package crawler
 
 import (
 	"net/http"
-	"top100-scrapy/pkg/logger"
-	"top100-scrapy/pkg/model"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/logger"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
 
 	"github.com/PuerkitoBio/goquery"
 )

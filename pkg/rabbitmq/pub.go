@@ -3,11 +3,11 @@ package rabbitmq
 import (
 	"fmt"
 	"strconv"
-	"top100-scrapy/pkg/conversion"
-	"top100-scrapy/pkg/file"
-	"top100-scrapy/pkg/logger"
-	"top100-scrapy/pkg/model"
-	"top100-scrapy/pkg/preference"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/conversion"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/file"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/logger"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/preference"
 
 	"github.com/streadway/amqp"
 )

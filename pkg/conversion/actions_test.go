@@ -3,7 +3,7 @@ package conversion_test
 import (
 	"fmt"
 	"testing"
-	"top100-scrapy/pkg/conversion"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/conversion"
 
 	"github.com/stretchr/testify/assert"
 )
