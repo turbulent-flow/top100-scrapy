@@ -1,7 +1,8 @@
 package test
 
 func Finalize() {
-	DBconn.Close()
+	DBpool.Close()
+	PQconn.Close()
 	if Cleaner != nil {
 		Cleaner.Close()
 	}

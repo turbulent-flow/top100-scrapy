@@ -1,15 +1,15 @@
 package main
 
 import (
-	"top100-scrapy/pkg/app"
-	"top100-scrapy/pkg/preference"
-	"top100-scrapy/pkg/rabbitmq"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/app"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/preference"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/rabbitmq"
 )
 
 func main() {
 	defer app.Finalize()
 	opts := &preference.Options{
-		DB:            app.DBconn,
+		DB:            app.DBpool,
 		AMQP:          app.AMQPconn,
 		Queue:         "categories_insertion",
 		Concurrency:   25,

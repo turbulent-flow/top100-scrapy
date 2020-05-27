@@ -6,7 +6,8 @@ import (
 	"context"
 	"fmt"
 	"strings"
-	"top100-scrapy/pkg/preference"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/preference"
+	"github.com/jackc/pgx/v4"
 )
 
 type PcategoryRow struct {
@@ -33,36 +34,36 @@ func BulkilyInsertPcategories(categoryID int, set []*ProductRow, opts *preferenc
 	}
 	stmt := fmt.Sprintf("INSERT INTO product_categories (product_id, category_id) VALUES %s", strings.Join(valueStrings, ","))
 	if opts.Tx != nil {
-		_, err = opts.Tx.ExecContext(opts.Context, stmt, valueArgs...)
+		_, err = opts.Tx.Exec(opts.Context, stmt, valueArgs...)
 	} else {
-		_, err = opts.DB.Exec(stmt, valueArgs...)
+		_, err = opts.DB.Exec(context.Background(), stmt, valueArgs...)
 	}
 	return err
 }
 
 func BulkilyInsertRelations(categoryID int, set []*ProductRow, opts *preference.Options) (msg string, err error) {
 	context := context.Background()
-	tx, err := opts.DB.BeginTx(context, nil)
+	tx, err := opts.DB.BeginTx(context, pgx.TxOptions{})
 	if err != nil {
 		return "Could not start a transction.", err
 	}
 	opts = preference.LoadOptions(preference.WithOptions(*opts), preference.WithContext(context), preference.WithTx(tx))
 	err = BulkilyInsertProducts(set, opts)
 	if err != nil {
-		opts.Tx.Rollback()
+		opts.Tx.Rollback(opts.Context)
 		return "Failed to insert the data into the table `products`.", err
 	}
 	productSet, err := ScanProductIds(categoryID, set, opts)
 	if err != nil {
-		opts.Tx.Rollback()
+		opts.Tx.Rollback(opts.Context)
 		return "Failed to query the products.", err
 	}
 	err = BulkilyInsertPcategories(categoryID, productSet, opts)
 	if err != nil {
-		opts.Tx.Rollback()
+		opts.Tx.Rollback(opts.Context)
 		return "Failed to insert the data into the table `product_categories`.", err
 	}
-	err = opts.Tx.Commit()
+	err = opts.Tx.Commit(opts.Context)
 	if err != nil {
 		return "Failed to commit a transaction.", err
 	}

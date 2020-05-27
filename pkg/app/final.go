@@ -4,5 +4,5 @@ func Finalize() {
   if env == "development" {
     file.Close()
   }
-  DBconn.Close()
+  DBpool.Close()
 }

@@ -3,7 +3,7 @@ package logger_test
 import (
 	"fmt"
 	"testing"
-	"top100-scrapy/pkg/logger"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/logger"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"

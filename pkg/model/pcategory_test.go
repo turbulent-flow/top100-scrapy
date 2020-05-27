@@ -1,14 +1,14 @@
 package model_test
 
 import (
-	"top100-scrapy/pkg/model"
-	"top100-scrapy/pkg/preference"
-	"top100-scrapy/pkg/test"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/preference"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/test"
 )
 
 func (m *modelSuite) TestBulkilyInsertPcategories() {
 	opts := &preference.Options{
-		DB:   test.DBconn,
+		DB:   test.DBpool,
 		Page: 1,
 	}
 	opts = preference.LoadOptions(preference.WithOptions(*opts))
@@ -28,7 +28,7 @@ func (m *modelSuite) TestBulkilyInsertPcategories() {
 
 func (m *modelSuite) TestBulkilyInsertRelations() {
 	opts := &preference.Options{
-		DB:   test.DBconn,
+		DB:   test.DBpool,
 		Page: 1,
 	}
 	opts = preference.LoadOptions(preference.WithOptions(*opts))

@@ -1,10 +1,11 @@
 package test
 
 import (
-	"database/sql"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"os"
-	"top100-scrapy/pkg/model"
-
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
+	"database/sql"
+	_ "github.com/lib/pq"
 	"github.com/khaiql/dbcleaner"
 )
 
@@ -13,7 +14,8 @@ import (
 var (
 	dbURL                 = os.Getenv("TOP100_DB_TEST_DSN")
 	FixturesURI           = os.Getenv("TOP100_FIXTURES_URI")
-	DBconn                *sql.DB
+	DBpool                *pgxpool.Pool
+	PQconn				  *sql.DB
 	Cleaner               dbcleaner.DbCleaner
 	CannedScrapedProducts = []string{
 		"Fire TV Stick streaming media player with Alexa built in, includes Alexa Voice Remote, HD, easy set-up, released 2019",

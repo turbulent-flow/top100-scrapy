@@ -4,18 +4,16 @@ package app
 // and also can load the additional services manually.
 
 import (
-	"database/sql"
 	"os"
-	"top100-scrapy/pkg/db"
-	"top100-scrapy/pkg/logger"
-	"top100-scrapy/pkg/rabbitmq"
-
-	_ "github.com/lib/pq"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/db"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/logger"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/rabbitmq"
 	"github.com/streadway/amqp"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 var (
-	DBconn   *sql.DB
+	DBpool   *pgxpool.Pool
 	AMQPconn *amqp.Connection
 	env      = os.Getenv("TOP100_ENV")
 	AppURI   = os.Getenv("TOP100_APP_URI")
@@ -36,7 +34,7 @@ func init() {
 		logger.SetProductionConfigs()
 	}
 
-	DBconn, err = db.Open()
+	DBpool, err = db.Open()
 	if err != nil {
 		logger.Error("Failed to connect the DB.", err)
 	}

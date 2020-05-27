@@ -2,16 +2,16 @@ package model_test
 
 import (
 	"fmt"
-	"top100-scrapy/pkg/model"
-	"top100-scrapy/pkg/preference"
-	"top100-scrapy/pkg/test"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/preference"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/test"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func (m *modelSuite) TestScanProductIds() {
 	opts := &preference.Options{
-		DB:   test.DBconn,
+		DB:   test.DBpool,
 		Page: 1,
 	}
 	opts = preference.LoadOptions(preference.WithOptions(*opts))
