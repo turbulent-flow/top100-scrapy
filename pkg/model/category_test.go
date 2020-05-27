@@ -3,15 +3,15 @@ package model_test
 import (
 	"fmt"
 	"testing"
-	"top100-scrapy/pkg/model"
-	"top100-scrapy/pkg/preference"
-	"top100-scrapy/pkg/test"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/preference"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/test"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func (m *modelSuite) TestFetchCategoryRow() {
-	opts := preference.LoadOptions(preference.WithDB(test.DBconn))
+	opts := preference.LoadOptions(preference.WithDB(test.DBpool))
 	category, err := model.FetchCategoryRow(test.CannedCategory.ID, opts)
 	if err != nil {
 		m.T().Errorf("Failed to query on DB or failed to assign a value by the Scan, error: %v", err)
@@ -24,11 +24,11 @@ func (m *modelSuite) TestFetchCategoryRow() {
 }
 
 func (m *modelSuite) TestBulkilyInsertCategories() {
-	err := test.InitTable("categories", test.DBconn)
+	err := test.InitTable("categories", test.DBpool)
 	if err != nil {
 		m.T().Errorf("Failed to truncate table `categories` and restart the identity. Error: %v", err)
 	}
-	opts := preference.LoadOptions(preference.WithDB(test.DBconn))
+	opts := preference.LoadOptions(preference.WithDB(test.DBpool))
 	// # Test the instersion of the data of the category
 	err = model.BulkilyInsertCategories(test.CannedCategorySet, opts)
 	if err != nil {

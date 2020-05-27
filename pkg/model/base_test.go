@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 	"testing"
-	"top100-scrapy/pkg/model"
-	"top100-scrapy/pkg/test"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/test"
 
 	"github.com/romanyx/polluter"
 	"github.com/stretchr/testify/assert"
@@ -37,7 +37,7 @@ func (m *modelSuite) SetupTest() {
 		m.T().Errorf("Failed to opent the seed, error: %v", err)
 	}
 	defer seed.Close()
-	poluter := polluter.New(polluter.PostgresEngine(test.DBconn))
+	poluter := polluter.New(polluter.PostgresEngine(test.PQconn))
 	if err := poluter.Pollute(seed); err != nil {
 		m.T().Errorf("Failed to pollute the seed, error: %v", err)
 	}
@@ -46,7 +46,7 @@ func (m *modelSuite) SetupTest() {
 // Run after each test in the suite.
 func (m *modelSuite) TearDownTest() {
 	test.Cleaner.Clean("products", "categories", "product_categories")
-	err := test.InitTable("products", test.DBconn)
+	err := test.InitTable("products", test.DBpool)
 	if err != nil {
 		m.T().Errorf("Failed to truncate table `products` and restart the identity. Error: %v", err)
 	}

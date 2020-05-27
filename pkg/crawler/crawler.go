@@ -5,9 +5,9 @@ package crawler
 import (
 	"errors"
 	"strings"
-	"top100-scrapy/pkg/logger"
-	"top100-scrapy/pkg/model"
-	"top100-scrapy/pkg/preference"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/logger"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/preference"
 
 	"github.com/PuerkitoBio/goquery"
 )

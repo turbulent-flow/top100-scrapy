@@ -3,24 +3,24 @@ package test
 // The initialization of the testing
 
 import (
-	"database/sql"
 	"fmt"
 	"net/http"
-	"top100-scrapy/pkg/db"
-	"top100-scrapy/pkg/logger"
-
+	"context"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/db"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/logger"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/dnaeon/go-vcr/recorder"
-	_ "github.com/lib/pq"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"gopkg.in/khaiql/dbcleaner.v2"
 	"gopkg.in/khaiql/dbcleaner.v2/engine"
 )
 
 func InitDB() (msg string, err error) {
-	DBconn, err = db.OpenTest()
+	DBpool, err = db.OpenTest()
 	if err != nil {
 		return "Failed to connect the DB", err
 	}
+	PQconn, err = db.OpenPQtest()
 	return "", err
 }
 
@@ -31,9 +31,9 @@ func InitCleaner() {
 }
 
 // InitTable is used to truncated the table, and restart the identity of the table.
-func InitTable(name string, db *sql.DB) error {
+func InitTable(name string, db *pgxpool.Pool) error {
 	stmt := fmt.Sprintf("truncate table %s restart identity cascade", name)
-	_, err := db.Exec(stmt)
+	_, err := db.Exec(context.Background(), stmt)
 	return err
 }
 
