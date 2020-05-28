@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/crawler"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/logger"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
@@ -75,9 +76,13 @@ func RunSubscriber(opts *preference.Options) {
 		wg.Done()
 	})
 	defer p.Release()
+	var n int32
 	for {
 		wg.Add(1)
 		_ = p.Invoke(opts)
+		// set the interval to invoke worek.
+		n = 200
+		time.Sleep(time.Duration(n) * time.Millisecond)
 	}
 }
 

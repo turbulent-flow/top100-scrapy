@@ -4,6 +4,7 @@ package logger
 
 import (
 	log "github.com/sirupsen/logrus"
+	"fmt"
 )
 
 // Construct the factors as the first item of args passed into the methods.
@@ -22,6 +23,7 @@ type Factors map[string]interface{}
 // 	logger.Error("The status of the code error occurs!", err, factors)
 // }
 func Error(msg string, err error, args ...Factors) {
+	msg = fmt.Sprintf("%s Error: %s", msg, err)
 	switchError(NewFactorsEntry(args...), msg)
 }
 
