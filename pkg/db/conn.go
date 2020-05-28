@@ -19,11 +19,17 @@ var (
 	dbHost     = os.Getenv("TOP100_DB_HOST")
 	sslMode    = os.Getenv("TOP100_SSL_MODE")
 	testDbUrl  = os.Getenv("TOP100_DB_TEST_DSN")
+	maxPoolConns = os.Getenv("MAX_POOL_CONNECTIONS")
+	minPoolConns = os.Getenv("MIN_POOL_CONNECTIONS")
 )
 
 func Open() (db *pgxpool.Pool, err error) {
-	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", dbUser, dbPassword, dbHost, dbPort, dbName, sslMode)
-	db, err = pgxpool.Connect(context.Background(), dbURL)
+	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s&pool_max_conns=%s&pool_min_conns=%s", dbUser, dbPassword, dbHost, dbPort, dbName, sslMode, maxPoolConns, minPoolConns)
+	config, err := pgxpool.ParseConfig(dbURL)
+	if err != nil {
+		return nil, err
+	}
+	db, err = pgxpool.ConnectConfig(context.Background(), config)
 	return db, err
 }
 
