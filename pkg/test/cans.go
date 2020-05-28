@@ -6,7 +6,7 @@ import (
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
 	"database/sql"
 	_ "github.com/lib/pq"
-	"github.com/khaiql/dbcleaner"
+	"gopkg.in/khaiql/dbcleaner.v2"
 )
 
 // The lists of the canned data
