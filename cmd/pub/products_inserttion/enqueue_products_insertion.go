@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/app"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/preference"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/rabbitmq"
@@ -9,12 +10,11 @@ import (
 func main() {
 	defer app.Finalize()
 	opts := &preference.Options{
-		DB:            app.DBpool,
-		AMQP:          app.AMQPconn,
-		Queue:         "products_insertion",
-		Concurrency:   25,
-		PrefetchCount: 100,
+		DB:       app.DBpool,
+		AMQP:     app.AMQPconn,
+		Action:   "insert_products",
+		FilePath: fmt.Sprintf("%s/logs/%s", app.AppURI, "insertion/product_pub/last_id"),
 	}
 	opts = preference.LoadOptions(preference.WithOptions(*opts))
-	rabbitmq.RunSubscriber(opts)
+	rabbitmq.RunPublisher(opts)
 }

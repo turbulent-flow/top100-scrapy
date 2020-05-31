@@ -12,7 +12,7 @@ func main() {
 	opts := &preference.Options{
 		DB:       app.DBpool,
 		AMQP:     app.AMQPconn,
-		Queue:    "categories_insertion",
+		Action:    "insert_categories",
 		FilePath: fmt.Sprintf("%s/logs/%s", app.AppURI, "insertion/category_pub/last_id"),
 	}
 	opts = preference.LoadOptions(preference.WithOptions(*opts))

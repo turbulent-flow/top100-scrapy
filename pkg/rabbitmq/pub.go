@@ -3,7 +3,6 @@ package rabbitmq
 import (
 	"fmt"
 	"strconv"
-	"github.com/LiamYabou/top100-scrapy/v2/pkg/conversion"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/file"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/logger"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
@@ -21,12 +20,12 @@ func RunPublisher(opts *preference.Options) {
 	}
 	defer ch.Close()
 	q, err := ch.QueueDeclare(
-		opts.Queue, // name
-		true,       // durable
-		false,      // delete when unused
-		false,      // exclusive
-		false,      // no-wait
-		nil,        // arguments
+		"scrapy", // name
+		true,            // durable
+		false,           // delete when unused
+		false,           // exclusive
+		false,           // no-wait
+		nil,             // arguments
 	)
 	if err != nil {
 		logger.Error("Failed to declare a queue.", err)
@@ -38,7 +37,7 @@ func RunPublisher(opts *preference.Options) {
 	}
 	info, _ := strconv.Atoi(c)
 	// Start from 1 when the operation is the insertion of the products
-	if opts.Queue == "products_insertion" && info == 0 {
+	if opts.Action == "insert_products" && info == 0 {
 		info = 1
 	}
 	// Count the rows from the query.
@@ -74,10 +73,10 @@ func RunPublisher(opts *preference.Options) {
 		logger.Error("The errors were encountered during the iteration.", err)
 	}
 	// Push the jobs into the queue
-	switch opts.Queue {
-	case "categories_insertion":
+	switch opts.Action {
+	case "insert_categories":
 		for _, row := range set {
-			body := strconv.Itoa(row.ID)
+			body := opts.Action + "/" + strconv.Itoa(row.ID)
 			err = ch.Publish(
 				"",     // exchange
 				q.Name, // routing key
@@ -93,11 +92,10 @@ func RunPublisher(opts *preference.Options) {
 			}
 			fmt.Printf(" [x] Sent %s\n", body)
 		}
-	case "products_insertion":
+	case "insert_products":
 		for _, row := range set {
 			for page := 1; page <= 2; page++ {
-				slice := []int{row.ID, page}
-				body := conversion.ToSingleString(slice)
+				body := opts.Action + "/" + strconv.Itoa(row.ID) + "/" + strconv.Itoa(page)
 				err = ch.Publish(
 					"",     // exchange
 					q.Name, // routing key
