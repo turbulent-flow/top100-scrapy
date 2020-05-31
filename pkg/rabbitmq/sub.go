@@ -11,7 +11,7 @@ import (
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/logger"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/preference"
-
+	"github.com/streadway/amqp"
 	"github.com/jackc/pgconn"
 	"github.com/panjf2000/ants/v2"
 )
@@ -28,12 +28,12 @@ func RunSubscriber(opts *preference.Options) {
 	}
 	defer ch.Close()
 	q, err := ch.QueueDeclare(
-		opts.Queue, // name
-		true,       // durable
-		false,      // delete when unused
-		false,      // exclusive
-		false,      // no-wait
-		nil,        // arguments
+		"scrapy", // name
+		true,             // durable
+		false,            // delete when unused
+		false,            // exclusive
+		false,            // no-wait
+		nil,              // arguments
 	)
 	if err != nil {
 		logger.Error("Failed to declare a queue.", err)
@@ -67,11 +67,12 @@ func RunSubscriber(opts *preference.Options) {
 		if !ok {
 			logger.Error("The type `*preference.Options` has not implemented the interface `optionsInterface`.", nil)
 		}
-		switch opts.Queue {
-		case "categories_insertion":
-			performCategoriesInsertion(opts)
-		case "products_insertion":
-			performProductsInsertion(opts)
+		for d := range opts.Delivery {
+			fmt.Printf("Received a message: %s\n", d.Body)
+			args := strings.Split(string(d.Body), "/")
+			// args[0] represents the action of the consumer,
+			// dispaches the workers to perform the tasks according to that.
+			performDispatcher(d, opts, args)
 		}
 		wg.Done()
 	})
@@ -86,67 +87,73 @@ func RunSubscriber(opts *preference.Options) {
 	}
 }
 
-func performCategoriesInsertion(opts *preference.Options) {
-	for d := range opts.Delivery {
-		fmt.Printf("Received a message: %s\n", d.Body)
-		categoryID, _ := strconv.Atoi(string(d.Body))
-		category, err := model.FetchCategoryRow(categoryID, opts)
-		if err != nil {
-			logger.Error("Failed to query on DB or failed to assign a value by the Scan.", err)
-		}
-		doc := crawler.InitHTTPdoc(category)
-		opts = preference.LoadOptions(preference.WithOptions(*opts), preference.WithDoc(doc))
-		set, err := crawler.ScrapeCategories(category, opts)
-		if err, ok := err.(*crawler.EmptyError); ok {
-			logger.Info(err.Error(), err.Factors)
-			if err := d.Ack(false); err != nil { // Acknowledge a message maunally.
-				logger.Error("Failed to acknowledge a message.", err)
-			}
-			fmt.Println("Done")
-			return
-		}
-		err = model.BulkilyInsertCategories(set, opts)
-		handlePostgresqlError(err, "Failed to insert a row.", category)
-		if err := d.Ack(false); err != nil { // Acknowledge a message maunally.
-			logger.Error("Failed to acknowledge a message.", err)
-		}
-		fmt.Println("Done")
+func performDispatcher(delivery amqp.Delivery, opts *preference.Options, args []string) {
+	action := args[0]
+	switch action {
+	case "insert_categories":
+		performCategoriesInsertion(delivery, opts, args)
+	case "insert_products":
+		performProductsInsertion(delivery, opts, args)
 	}
 }
 
-func performProductsInsertion(opts *preference.Options) {
-	for d := range opts.Delivery {
-		fmt.Printf("Received a message: %s\n", d.Body)
-		args := strings.Split(string(d.Body), ",")
-		// args[0] represents the id of the category row.
-		// args[1] represents the number of the page expected to scrape from.
-		categoryID, _ := strconv.Atoi(args[0])
-		page, _ := strconv.Atoi(args[1])
-		opts = preference.LoadOptions(preference.WithOptions(*opts), preference.WithPage(page))
-		category, err := model.FetchCategoryRow(categoryID, opts)
-		if err != nil {
-			logger.Error("Failed to query on DB or failed to assign a value by the Scan.", err)
-		}
-		// Change the url when page = 2
-		category.URL = model.BuildURL(category.URL, page)
-		doc := crawler.InitHTTPdoc(category)
-		opts = preference.LoadOptions(preference.WithOptions(*opts), preference.WithDoc(doc))
-		set, err := crawler.ScrapeProducts(category, opts)
-		if err, ok := err.(*crawler.EmptyError); ok {
-			logger.Info(err.Error(), err.Factors)
-			if err := d.Ack(false); err != nil { // Acknowledge a message maunally.
-				logger.Error("Failed to acknowledge a message.", err)
-			}
-			fmt.Println("Done")
-			return
-		}
-		msg, err := model.BulkilyInsertRelations(categoryID, set, opts)
-		handlePostgresqlError(err, msg, category)
-		if err := d.Ack(false); err != nil { // Acknowledge a message maunally.
+func performCategoriesInsertion(delivery amqp.Delivery, opts *preference.Options, args []string) {
+	args = strings.Split(string(delivery.Body), "/")
+	// args[1] represents the id of the category row.
+	categoryID, _ := strconv.Atoi(string(args[1]))
+	category, err := model.FetchCategoryRow(categoryID, opts)
+	if err != nil {
+		logger.Error("Failed to query on DB or failed to assign a value by the Scan.", err)
+	}
+	doc := crawler.InitHTTPdoc(category)
+	opts = preference.LoadOptions(preference.WithOptions(*opts), preference.WithDoc(doc))
+	set, err := crawler.ScrapeCategories(category, opts)
+	if err, ok := err.(*crawler.EmptyError); ok {
+		logger.Info(err.Error(), err.Factors)
+		if err := delivery.Ack(false); err != nil { // Acknowledge a message maunally.
 			logger.Error("Failed to acknowledge a message.", err)
 		}
 		fmt.Println("Done")
+		return
 	}
+	err = model.BulkilyInsertCategories(set, opts)
+	handlePostgresqlError(err, "Failed to insert a row.", category)
+	if err := delivery.Ack(false); err != nil { // Acknowledge a message maunally.
+		logger.Error("Failed to acknowledge a message.", err)
+	}
+	fmt.Println("Done")
+}
+
+func performProductsInsertion(delivery amqp.Delivery, opts *preference.Options, args []string) {
+	args = strings.Split(string(delivery.Body), "/")
+	// args[1] represents the id of the category row.
+	// args[2] represents the number of the page which is expected to scrape from.
+	categoryID, _ := strconv.Atoi(args[1])
+	page, _ := strconv.Atoi(args[2])
+	opts = preference.LoadOptions(preference.WithOptions(*opts), preference.WithPage(page))
+	category, err := model.FetchCategoryRow(categoryID, opts)
+	if err != nil {
+		logger.Error("Failed to query on DB or failed to assign a value by the Scan.", err)
+	}
+	// Change the url when page = 2
+	category.URL = model.BuildURL(category.URL, page)
+	doc := crawler.InitHTTPdoc(category)
+	opts = preference.LoadOptions(preference.WithOptions(*opts), preference.WithDoc(doc))
+	set, err := crawler.ScrapeProducts(category, opts)
+	if err, ok := err.(*crawler.EmptyError); ok {
+		logger.Info(err.Error(), err.Factors)
+		if err := delivery.Ack(false); err != nil { // Acknowledge a message maunally.
+			logger.Error("Failed to acknowledge a message.", err)
+		}
+		fmt.Println("Done")
+		return
+	}
+	msg, err := model.BulkilyInsertRelations(categoryID, set, opts)
+	handlePostgresqlError(err, msg, category)
+	if err := delivery.Ack(false); err != nil { // Acknowledge a message maunally.
+		logger.Error("Failed to acknowledge a message.", err)
+	}
+	fmt.Println("Done")
 }
 
 func handlePostgresqlError(err error, msg string, category *model.CategoryRow) {
