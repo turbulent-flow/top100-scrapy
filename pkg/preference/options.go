@@ -24,7 +24,7 @@ type Options struct {
 	Page          int
 	Doc           *goquery.Document
 	AMQP          *amqp.Connection
-	Queue         string
+	Action        string
 	FilePath      string
 	Concurrency   int
 	PrefetchCount int

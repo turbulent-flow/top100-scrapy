@@ -11,7 +11,6 @@ func main() {
 	opts := &preference.Options{
 		DB:            app.DBpool,
 		AMQP:          app.AMQPconn,
-		Queue:         "categories_insertion",
 		Concurrency:   25,
 		PrefetchCount: 100,
 	}
