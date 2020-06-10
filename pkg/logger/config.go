@@ -9,7 +9,7 @@ import (
 )
 
 var (
-  appUri = os.Getenv("TOP100_APP_URI")
+  appUri = os.Getenv("APP_URI")
 )
 
 func SetDevConfigs() (file *os.File, err error) {
