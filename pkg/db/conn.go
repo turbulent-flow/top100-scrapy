@@ -12,13 +12,13 @@ import (
 )
 
 var (
-	dbName     = os.Getenv("TOP100_DB_NAME")
-	dbUser     = os.Getenv("TOP100_DB_USER")
-	dbPassword = os.Getenv("TOP100_DB_PASSWORD")
-	dbPort     = os.Getenv("TOP100_DB_PORT")
-	dbHost     = os.Getenv("TOP100_DB_HOST")
-	sslMode    = os.Getenv("TOP100_SSL_MODE")
-	testDbURL  = os.Getenv("TOP100_DB_TEST_DSN")
+	dbName     = os.Getenv("DB_NAME")
+	dbUser     = os.Getenv("DB_USER")
+	dbPassword = os.Getenv("DB_PASSWORD")
+	dbPort     = os.Getenv("DB_PORT")
+	dbHost     = os.Getenv("DB_HOST")
+	sslMode    = os.Getenv("SSL_MODE")
+	testDBURL  = os.Getenv("TEST_DB_DSN")
 	maxPoolConns = os.Getenv("MAX_POOL_CONNECTIONS")
 	minPoolConns = os.Getenv("MIN_POOL_CONNECTIONS")
 )
@@ -34,11 +34,11 @@ func Open() (db *pgxpool.Pool, err error) {
 }
 
 func OpenTest() (db *pgxpool.Pool, err error) {
-	db, err = pgxpool.Connect(context.Background(), testDbURL)
+	db, err = pgxpool.Connect(context.Background(), testDBURL)
 	return db, err
 }
 
 func OpenPQtest() (db *sql.DB, err error) {
-	db, err = sql.Open("postgres", testDbURL)
+	db, err = sql.Open("postgres", testDBURL)
 	return db, err
 } 
