@@ -10,19 +10,18 @@ import (
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/rabbitmq"
 	"github.com/streadway/amqp"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/LiamYabou/top100-scrapy/v2/variable"
 )
 
 var (
 	DBpool   *pgxpool.Pool
 	AMQPconn *amqp.Connection
-	env      = os.Getenv("ENV")
-	AppURI   = os.Getenv("APP_URI")
 	file     *os.File
 	err      error
 )
 
 func init() {
-	switch env {
+	switch variable.Env {
 	case "development":
 		file, err = logger.SetDevConfigs()
 		if err != nil {

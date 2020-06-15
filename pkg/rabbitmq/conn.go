@@ -3,16 +3,11 @@ package rabbitmq
 // Initialize connection of rabitmq
 
 import (
-	"os"
-
 	"github.com/streadway/amqp"
-)
-
-var (
-	amqpURL = os.Getenv("AMQP_URL")
+	"github.com/LiamYabou/top100-scrapy/v2/variable"
 )
 
 func Open() (amqpConn *amqp.Connection, err error) {
-	amqpConn, err = amqp.Dial(amqpURL)
+	amqpConn, err = amqp.Dial(variable.AMQPURL)
 	return amqpConn, err
 }

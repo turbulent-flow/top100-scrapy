@@ -6,14 +6,11 @@ import (
   "os"
   "fmt"
   log "github.com/sirupsen/logrus"
-)
-
-var (
-  appUri = os.Getenv("APP_URI")
+  "github.com/LiamYabou/top100-scrapy/v2/variable"
 )
 
 func SetDevConfigs() (file *os.File, err error) {
-  filePath := fmt.Sprintf("%s/logs/development.log", appUri)
+  filePath := fmt.Sprintf("%s/logs/development.log", variable.AppURI)
   file, err = os.OpenFile(filePath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
   log.SetOutput(file)
   log.SetFormatter(&log.JSONFormatter{})

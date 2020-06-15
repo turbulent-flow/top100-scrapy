@@ -1,7 +1,9 @@
 package app
 
+import "github.com/LiamYabou/top100-scrapy/v2/variable"
+
 func Finalize() {
-  if env == "development" {
+  if variable.Env == "development" {
     file.Close()
   }
   DBpool.Close()
