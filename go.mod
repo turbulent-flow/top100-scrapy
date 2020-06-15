@@ -14,7 +14,6 @@ require (
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
 	github.com/panjf2000/ants/v2 v2.4.1
 	github.com/romanyx/polluter v1.2.2
-	github.com/sirupsen/logrus v1.6.0
 	github.com/streadway/amqp v0.0.0-20200108173154-1c71cc93ed71
 	github.com/stretchr/testify v1.6.0
 	golang.org/x/sys v0.0.0-20200523222454-059865788121 // indirect
