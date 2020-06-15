@@ -5,24 +5,23 @@ package app
 
 import (
 	"os"
-	"github.com/LiamYabou/top100-scrapy/v2/pkg/db"
-	"github.com/LiamYabou/top100-scrapy/v2/pkg/logger"
-	"github.com/LiamYabou/top100-scrapy/v2/pkg/rabbitmq"
+	"github.com/LiamYabou/top100-pkg/db"
+	"github.com/LiamYabou/top100-pkg/logger"
+	"github.com/LiamYabou/top100-pkg/rabbitmq" // Use the connection from the outside package
 	"github.com/streadway/amqp"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/LiamYabou/top100-scrapy/v2/variable"
 )
 
 var (
 	DBpool   *pgxpool.Pool
 	AMQPconn *amqp.Connection
-	env      = os.Getenv("ENV")
-	AppURI   = os.Getenv("APP_URI")
 	file     *os.File
 	err      error
 )
 
 func init() {
-	switch env {
+	switch variable.Env {
 	case "development":
 		file, err = logger.SetDevConfigs()
 		if err != nil {
@@ -33,12 +32,10 @@ func init() {
 	case "production":
 		logger.SetProductionConfigs()
 	}
-
-	DBpool, err = db.Open()
+	DBpool, err = db.Open(variable.DBURL)
 	if err != nil {
 		logger.Error("Failed to connect the DB.", err)
 	}
-
 	AMQPconn, err = rabbitmq.Open()
 	if err != nil {
 		logger.Error("Failed to connect the RabbitMQ.", err)
