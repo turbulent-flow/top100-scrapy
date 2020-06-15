@@ -1,7 +1,7 @@
 package crawler
 
 import (
-	"github.com/LiamYabou/top100-scrapy/v2/pkg/logger"
+	"github.com/LiamYabou/top100-pkg/logger"
 )
 
 type EmptyError struct {

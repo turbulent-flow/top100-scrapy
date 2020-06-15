@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/crawler"
-	"github.com/LiamYabou/top100-scrapy/v2/pkg/logger"
+	"github.com/LiamYabou/top100-pkg/logger"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
 	"github.com/LiamYabou/top100-scrapy/v2/preference"
 	"github.com/streadway/amqp"

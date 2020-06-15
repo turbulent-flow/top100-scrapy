@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"context"
 	"github.com/LiamYabou/top100-pkg/db"
-	"github.com/LiamYabou/top100-scrapy/v2/pkg/logger"
+	"github.com/LiamYabou/top100-pkg/logger"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/dnaeon/go-vcr/recorder"
 	"github.com/jackc/pgx/v4/pgxpool"
