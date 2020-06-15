@@ -12,8 +12,8 @@ import (
 // The lists of the canned data
 
 var (
-	dbURL                 = os.Getenv("TOP100_DB_TEST_DSN")
-	FixturesURI           = os.Getenv("TOP100_FIXTURES_URI")
+	dbURL                 = os.Getenv("TEST_DB_DSN")
+	FixturesURI           = os.Getenv("FIXTURES_URI")
 	DBpool                *pgxpool.Pool
 	PQconn				  *sql.DB
 	Cleaner               dbcleaner.DbCleaner

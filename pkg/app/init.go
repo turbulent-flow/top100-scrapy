@@ -15,8 +15,8 @@ import (
 var (
 	DBpool   *pgxpool.Pool
 	AMQPconn *amqp.Connection
-	env      = os.Getenv("TOP100_ENV")
-	AppURI   = os.Getenv("TOP100_APP_URI")
+	env      = os.Getenv("ENV")
+	AppURI   = os.Getenv("APP_URI")
 	file     *os.File
 	err      error
 )
