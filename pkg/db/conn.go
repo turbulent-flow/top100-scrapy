@@ -3,29 +3,15 @@ package db
 // Initialize the connection of DB.
 
 import (
-	"fmt"
-	"os"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"context"
 	"database/sql"
 	_ "github.com/lib/pq"
-)
-
-var (
-	dbName     = os.Getenv("DB_NAME")
-	dbUser     = os.Getenv("DB_USER")
-	dbPassword = os.Getenv("DB_PASSWORD")
-	dbPort     = os.Getenv("DB_PORT")
-	dbHost     = os.Getenv("DB_HOST")
-	sslMode    = os.Getenv("SSL_MODE")
-	testDbURL  = os.Getenv("TEST_DB_DSN")
-	maxPoolConns = os.Getenv("MAX_POOL_CONNECTIONS")
-	minPoolConns = os.Getenv("MIN_POOL_CONNECTIONS")
+	"github.com/LiamYabou/top100-scrapy/v2/variable"
 )
 
 func Open() (db *pgxpool.Pool, err error) {
-	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s&pool_max_conns=%s&pool_min_conns=%s", dbUser, dbPassword, dbHost, dbPort, dbName, sslMode, maxPoolConns, minPoolConns)
-	config, err := pgxpool.ParseConfig(dbURL)
+	config, err := pgxpool.ParseConfig(variable.DBURL)
 	if err != nil {
 		return nil, err
 	}
@@ -34,11 +20,11 @@ func Open() (db *pgxpool.Pool, err error) {
 }
 
 func OpenTest() (db *pgxpool.Pool, err error) {
-	db, err = pgxpool.Connect(context.Background(), testDbURL)
+	db, err = pgxpool.Connect(context.Background(), variable.TestDBURL)
 	return db, err
 }
 
 func OpenPQtest() (db *sql.DB, err error) {
-	db, err = sql.Open("postgres", testDbURL)
+	db, err = sql.Open("postgres", variable.TestDBURL)
 	return db, err
 } 

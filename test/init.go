@@ -13,6 +13,7 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 	"gopkg.in/khaiql/dbcleaner.v2"
 	"gopkg.in/khaiql/dbcleaner.v2/engine"
+	"github.com/LiamYabou/top100-scrapy/v2/variable"
 )
 
 func InitDB() (msg string, err error) {
@@ -26,7 +27,7 @@ func InitDB() (msg string, err error) {
 
 func InitCleaner() {
 	Cleaner = dbcleaner.New()
-	psql := engine.NewPostgresEngine(dbURL)
+	psql := engine.NewPostgresEngine(variable.TestDBURL)
 	Cleaner.SetEngine(psql)
 }
 
@@ -39,7 +40,7 @@ func InitTable(name string, db *pgxpool.Pool) error {
 
 // InitHTTPrecorder returns the HTML document injected by the recorder.
 func InitHTTPrecorder(cassette string, url string) (doc *goquery.Document) {
-	cassettePath := fmt.Sprintf("%s/crawler/%s", FixturesURI, cassette)
+	cassettePath := fmt.Sprintf("%s/crawler/%s", variable.FixturesURI, cassette)
 	r, err := recorder.New(cassettePath)
 	if err != nil {
 		logger.Error("Could not instantiate a recorder, error: %v", err)

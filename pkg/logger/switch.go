@@ -3,15 +3,13 @@ package logger
 // Switch the level according with the different environment.
 
 import (
-	"os"
-
 	log "github.com/sirupsen/logrus"
+	"github.com/LiamYabou/top100-scrapy/v2/variable"
 )
 
-var env = os.Getenv("ENV")
 
 func switchError(entry *log.Entry, msg string) {
-	switch env {
+	switch variable.Env {
 	case "development":
 		entry.Panic(msg)
 	case "staging":
