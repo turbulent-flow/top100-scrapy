@@ -6,7 +6,7 @@ package app
 import (
 	"os"
 	"github.com/LiamYabou/top100-pkg/db"
-	"github.com/LiamYabou/top100-scrapy/v2/pkg/logger"
+	"github.com/LiamYabou/top100-pkg/logger"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/rabbitmq"
 	"github.com/streadway/amqp"
 	"github.com/jackc/pgx/v4/pgxpool"
