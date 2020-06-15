@@ -7,7 +7,7 @@ import (
 	"os"
 	"github.com/LiamYabou/top100-pkg/db"
 	"github.com/LiamYabou/top100-pkg/logger"
-	"github.com/LiamYabou/top100-scrapy/v2/pkg/rabbitmq"
+	"github.com/LiamYabou/top100-pkg/rabbitmq" // Use the connection from the outside package
 	"github.com/streadway/amqp"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/LiamYabou/top100-scrapy/v2/variable"
