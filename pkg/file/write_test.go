@@ -4,14 +4,13 @@ import (
 	"fmt"
 	"testing"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/file"
-	"github.com/LiamYabou/top100-scrapy/v2/test"
-
 	"github.com/stretchr/testify/assert"
+	"github.com/LiamYabou/top100-scrapy/v2/variable"
 )
 
 func TestWrite(t *testing.T) {
 	expected := "2345"
-	filePath := fmt.Sprintf("%s/file/last_id_for_writing", test.FixturesURI)
+	filePath := fmt.Sprintf("%s/file/last_id_for_writing", variable.FixturesURI)
 	err := file.Write(filePath, "2345")
 	if err != nil {
 		t.Errorf("Could not write file, error: %v", err)

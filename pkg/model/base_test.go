@@ -10,6 +10,7 @@ import (
 	"github.com/romanyx/polluter"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
+	"github.com/LiamYabou/top100-scrapy/v2/variable"
 )
 
 type modelSuite struct {
@@ -31,7 +32,7 @@ func (m *modelSuite) SetupSuite() {
 func (m *modelSuite) SetupTest() {
 	test.Cleaner.Acquire("products", "categories")
 	// Populate the data into the table `product_categories`
-	seedPath := fmt.Sprintf("%s/model/category.yml", test.FixturesURI)
+	seedPath := fmt.Sprintf("%s/model/category.yml", variable.FixturesURI)
 	seed, err := os.Open(seedPath)
 	if err != nil {
 		m.T().Errorf("Failed to opent the seed, error: %v", err)
