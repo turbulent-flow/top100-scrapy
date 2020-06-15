@@ -2,7 +2,6 @@ package test
 
 import (
 	"github.com/jackc/pgx/v4/pgxpool"
-	"os"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
 	"database/sql"
 	_ "github.com/lib/pq"
@@ -12,8 +11,6 @@ import (
 // The lists of the canned data
 
 var (
-	dbURL                 = os.Getenv("TEST_DB_DSN")
-	FixturesURI           = os.Getenv("FIXTURES_URI")
 	DBpool                *pgxpool.Pool
 	PQconn				  *sql.DB
 	Cleaner               dbcleaner.DbCleaner
