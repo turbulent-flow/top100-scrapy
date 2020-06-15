@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	amqpURL = os.Getenv("TOP100_AMQP_URL")
+	amqpURL = os.Getenv("AMQP_URL")
 )
 
 func Open() (amqpConn *amqp.Connection, err error) {
