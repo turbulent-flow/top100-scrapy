@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
-	"github.com/LiamYabou/top100-scrapy/v2/pkg/test"
+	"github.com/LiamYabou/top100-scrapy/v2/test"
 
 	"github.com/romanyx/polluter"
 	"github.com/stretchr/testify/assert"
