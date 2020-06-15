@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strconv"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/file"
-	"github.com/LiamYabou/top100-scrapy/v2/pkg/logger"
+	"github.com/LiamYabou/top100-pkg/logger"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
 	"github.com/LiamYabou/top100-scrapy/v2/preference"
 	"context"
