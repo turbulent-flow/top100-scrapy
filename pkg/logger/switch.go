@@ -8,7 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var env = os.Getenv("ENV")
+var env = os.Getenv("TOP100_ENV")
 
 func switchError(entry *log.Entry, msg string) {
 	switch env {

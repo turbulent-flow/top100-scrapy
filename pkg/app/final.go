@@ -5,5 +5,4 @@ func Finalize() {
     file.Close()
   }
   DBpool.Close()
-  AMQPconn.Close()
 }
