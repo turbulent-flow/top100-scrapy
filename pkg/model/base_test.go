@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
-	"github.com/LiamYabou/top100-scrapy/test"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/test"
 
 	"github.com/romanyx/polluter"
 	"github.com/stretchr/testify/assert"
@@ -31,7 +31,7 @@ func (m *modelSuite) SetupSuite() {
 func (m *modelSuite) SetupTest() {
 	test.Cleaner.Acquire("products", "categories")
 	// Populate the data into the table `product_categories`
-	seedPath := fmt.Sprintf("%s/model/categories.yml", test.FixturesURI)
+	seedPath := fmt.Sprintf("%s/model/category.yml", test.FixturesURI)
 	seed, err := os.Open(seedPath)
 	if err != nil {
 		m.T().Errorf("Failed to opent the seed, error: %v", err)
