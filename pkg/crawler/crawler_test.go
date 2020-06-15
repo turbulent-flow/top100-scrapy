@@ -5,7 +5,7 @@ import (
 	"testing"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/crawler"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
-	"github.com/LiamYabou/top100-scrapy/v2/pkg/preference"
+	"github.com/LiamYabou/top100-scrapy/v2/preference"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/test"
 
 	"github.com/stretchr/testify/assert"

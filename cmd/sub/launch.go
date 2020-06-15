@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/app"
-	"github.com/LiamYabou/top100-scrapy/v2/pkg/preference"
+	"github.com/LiamYabou/top100-scrapy/v2/preference"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/rabbitmq"
 )
 
