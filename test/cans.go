@@ -12,7 +12,7 @@ import (
 // The lists of the canned data
 
 var (
-	dbURL                 = os.Getenv("TEST_DB_DSN_DSN")
+	dbURL                 = os.Getenv("TEST_DB_DSN")
 	FixturesURI           = os.Getenv("FIXTURES_URI")
 	DBpool                *pgxpool.Pool
 	PQconn				  *sql.DB
