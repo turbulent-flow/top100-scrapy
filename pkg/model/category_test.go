@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
-	"github.com/LiamYabou/top100-scrapy/preference"
-	"github.com/LiamYabou/top100-scrapy/test"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/preference"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/test"
 
 	"github.com/stretchr/testify/assert"
 )

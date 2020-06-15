@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/LiamYabou/top100-scrapy/pkg/app"
-	"github.com/LiamYabou/top100-scrapy/preference"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/app"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/preference"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/rabbitmq"
 )
 

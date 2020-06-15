@@ -6,7 +6,7 @@ import (
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/file"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/logger"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
-	"github.com/LiamYabou/top100-scrapy/preference"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/preference"
 	"context"
 	"github.com/streadway/amqp"
 )
