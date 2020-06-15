@@ -5,7 +5,7 @@ package app
 
 import (
 	"os"
-	"github.com/LiamYabou/top100-scrapy/v2/pkg/db"
+	"github.com/LiamYabou/top100-pkg/db"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/logger"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/rabbitmq"
 	"github.com/streadway/amqp"
@@ -32,12 +32,10 @@ func init() {
 	case "production":
 		logger.SetProductionConfigs()
 	}
-
-	DBpool, err = db.Open()
+	DBpool, err = db.Open(variable.DBURL)
 	if err != nil {
 		logger.Error("Failed to connect the DB.", err)
 	}
-
 	AMQPconn, err = rabbitmq.Open()
 	if err != nil {
 		logger.Error("Failed to connect the RabbitMQ.", err)
