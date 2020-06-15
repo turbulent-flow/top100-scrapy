@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestToSingleStringFromIntSlice(t *testing.T) {
+func ToSingleString(t *testing.T) {
 	expected := "1,2"
 	params := []int{1, 2}
 	actual := conversion.ToSingleString(params)

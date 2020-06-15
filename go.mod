@@ -3,6 +3,7 @@ module github.com/LiamYabou/top100-scrapy/v2
 go 1.14
 
 require (
+	github.com/LiamYabou/top100-scrapy v1.0.0
 	github.com/PuerkitoBio/goquery v1.5.1
 	github.com/alexflint/go-filemutex v1.1.0 // indirect
 	github.com/dnaeon/go-vcr v1.0.1
