@@ -7,7 +7,6 @@ import (
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
 	"github.com/LiamYabou/top100-scrapy/v2/preference"
 	"github.com/LiamYabou/top100-scrapy/v2/test"
-
 	"github.com/stretchr/testify/assert"
 )
 
@@ -18,6 +17,20 @@ func TestScrapeProductNames(t *testing.T) {
 	expected := test.CannedScrapedProducts
 	actual := crawler.ScrapeProductNames(opts)[:5]
 	failedMsg := fmt.Sprintf("Failed, expected the names of the top 5 products: %s, got the names of the top 5 products: %s", expected, actual)
+	assert.Equal(t, expected, actual, failedMsg)
+}
+
+func TestScrapeProductImageURLs(t *testing.T) {
+	// Test the image URLs of the top 5 products
+	doc := test.InitHTTPrecorder("case_01", test.CannedCategory.URL)
+	opts := preference.LoadOptions(preference.WithDoc(doc))
+	expected := test.CannedScrapedProductImageURLs
+	imageURLs, err := crawler.ScrapeProductImageURLs(opts)
+	if err != nil {
+		t.Errorf("An error occured: %s", err)
+	}
+	actual := imageURLs[:5]
+	failedMsg := fmt.Sprintf("Failed, expected the image URLs of the top 5 products: %s, got the URLs: %s", expected, actual)
 	assert.Equal(t, expected, actual, failedMsg)
 }
 
