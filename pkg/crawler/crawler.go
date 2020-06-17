@@ -8,7 +8,6 @@ import (
 	"github.com/LiamYabou/top100-pkg/logger"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
 	"github.com/LiamYabou/top100-scrapy/v2/preference"
-
 	"github.com/PuerkitoBio/goquery"
 )
 
@@ -26,6 +25,19 @@ func ScrapeProductNames(opts *preference.Options) (names []string) {
 		names = append(names, strings.TrimSpace(name))
 	})
 	return names
+}
+
+func ScrapeProductImageURLs(opts *preference.Options) (imageURLs []string, err error) {
+	opts.Doc.Find("ol#zg-ordered-list li.zg-item-immersion").Each(func(i int, s *goquery.Selection) {
+		var imageURL string
+		imageURL, ok := s.Find("span.zg-text-center-align img").Attr("src")
+		if !ok {
+			content := "There was an unavailable image url."
+			err = errors.New(content)
+		}
+		imageURLs = append(imageURLs, imageURL)
+	})
+	return imageURLs, err
 }
 
 func ScrapeProducts(row *model.CategoryRow, opts *preference.Options) (set []*model.ProductRow, err error) {
