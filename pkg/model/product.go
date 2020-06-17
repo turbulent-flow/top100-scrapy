@@ -9,11 +9,12 @@ import (
 )
 
 type ProductRow struct {
-	ID         int
-	Name       string
-	Rank       int
-	Page       int
-	CategoryID int
+	ID         int `json:"id,omitempty"`
+	Name       string `json:"name,omitempty"`
+	Rank       int `json:"rank,omitempty"`
+	Page       int `json:"page,omitempty"`
+	ImageURL   string `json:"image_url,omitempty"`
+	CategoryID int `json:"category_id,omitempty"`
 }
 
 func BulkilyInsertProducts(set []*ProductRow, opts *preference.Options) error {
