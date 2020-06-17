@@ -21,6 +21,13 @@ var (
 		"Echo Dot (3rd Gen) - Smart speaker with clock and Alexa - Sandstone",
 		"Echo Show 8 - HD 8\" smart display with Alexa  - Charcoal",
 	}
+	CannedScrapedProductImageURLs = []string{
+		"https://images-na.ssl-images-amazon.com/images/I/51ZdmnHKukL._AC_UL200_SR200,200_.jpg",
+		"https://images-na.ssl-images-amazon.com/images/I/6182S7MYC2L._AC_UL200_SR200,200_.jpg",
+		"https://images-na.ssl-images-amazon.com/images/I/51CgKGfMelL._AC_UL200_SR200,200_.jpg",
+		"https://images-na.ssl-images-amazon.com/images/I/81ilNbqaGWL._AC_UL200_SR200,200_.jpg",
+		"https://images-na.ssl-images-amazon.com/images/I/515oAAEgADL._AC_UL200_SR200,200_.jpg",
+	}
 	CannedProductSet = []*model.ProductRow{
 		{Name: "Fire TV Stick streaming media player with Alexa built in, includes Alexa Voice Remote, HD, easy set-up, released 2019", Rank: 1, Page: 1, CategoryID: 2},
 		{Name: "Echo Dot (3rd Gen) - Smart speaker with Alexa - Charcoal", Rank: 2, Page: 1, CategoryID: 2},
