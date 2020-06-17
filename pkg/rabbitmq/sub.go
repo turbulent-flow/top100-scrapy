@@ -72,7 +72,7 @@ func RunSubscriber(opts *preference.Options) {
 			args := strings.Split(string(d.Body), "/")
 			// args[0] represents the action of the consumer,
 			// dispaches the workers to perform the tasks according to that.
-			performDispatcher(d, opts, args)
+			performDispatcher(d, ch, q, opts, args)
 		}
 		wg.Done()
 	})
@@ -87,13 +87,13 @@ func RunSubscriber(opts *preference.Options) {
 	}
 }
 
-func performDispatcher(delivery amqp.Delivery, opts *preference.Options, args []string) {
+func performDispatcher(delivery amqp.Delivery, ch *amqp.Channel, q amqp.Queue, opts *preference.Options, args []string) {
 	action := args[0]
 	switch action {
 	case "insert_categories":
 		performCategoriesInsertion(delivery, opts, args)
 	case "insert_products":
-		performProductsInsertion(delivery, opts, args)
+		performProductsInsertion(delivery, ch, q, opts, args)
 	}
 }
 
@@ -124,7 +124,7 @@ func performCategoriesInsertion(delivery amqp.Delivery, opts *preference.Options
 	fmt.Println("Done")
 }
 
-func performProductsInsertion(delivery amqp.Delivery, opts *preference.Options, args []string) {
+func performProductsInsertion(delivery amqp.Delivery, ch *amqp.Channel, q amqp.Queue, opts *preference.Options, args []string) {
 	args = strings.Split(string(delivery.Body), "/")
 	// args[1] represents the id of the category row.
 	// args[2] represents the number of the page which is expected to scrape from.
@@ -154,6 +154,36 @@ func performProductsInsertion(delivery amqp.Delivery, opts *preference.Options, 
 		logger.Error("Failed to acknowledge a message.", err)
 	}
 	fmt.Println("Done")
+	// Publisgh the jobs of the image URLs into the queue
+	imageURLs, err := crawler.ScrapeProductImageURLs(opts)
+	if err != nil {
+		logger.Error("Failed to scrape the image url.", err)
+	}
+	for i, item := range imageURLs {
+		c := &content{
+			"category_id": categoryID,
+			"rank": model.BuildRank(i, opts.Page),
+			"image_url": item,
+		}
+		body, err := encode(c)
+		if err != nil {
+			fmt.Errorf("An error occured.", err)
+		}
+		err = ch.Publish(
+			"",     // exchange
+			q.Name, // routing key
+			false,  // mandatory
+			false,  // immediate
+			amqp.Publishing{
+				DeliveryMode: amqp.Persistent,
+				ContentType:  "application/json",
+				Body:         []byte(body),
+			})
+		if err != nil {
+			logger.Error("Failed to publish a message.", err)
+		}
+		fmt.Printf(" [x] Sent %s\n", body)
+	}
 }
 
 func handlePostgresqlError(err error, msg string, category *model.CategoryRow) {
