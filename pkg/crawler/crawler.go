@@ -8,11 +8,8 @@ import (
 	"github.com/LiamYabou/top100-pkg/logger"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
 	"github.com/LiamYabou/top100-scrapy/v2/preference"
-
 	"github.com/PuerkitoBio/goquery"
 )
-
-const unavailbaleProduct = "This item is no longer available"
 
 func ScrapeProductNames(opts *preference.Options) (names []string) {
 	opts.Doc.Find("ol#zg-ordered-list li.zg-item-immersion").Each(func(i int, s *goquery.Selection) {
@@ -21,11 +18,23 @@ func ScrapeProductNames(opts *preference.Options) (names []string) {
 		if len(nameNode.Nodes) == 1 {
 			name = nameNode.Text()
 		} else {
-			name = unavailbaleProduct
+			name = UnavailableProduct
 		}
 		names = append(names, strings.TrimSpace(name))
 	})
 	return names
+}
+
+func ScrapeProductImageURLs(row *model.CategoryRow, opts *preference.Options) (imageURLs []string, err error) {
+	opts.Doc.Find("ol#zg-ordered-list li.zg-item-immersion").Each(func(i int, s *goquery.Selection) {
+		var imageURL string
+		imageURL, ok := s.Find("span.zg-text-center-align img").Attr("src")
+		if !ok {
+			imageURL = UnavailableProduct
+		}
+		imageURLs = append(imageURLs, imageURL)
+	})
+	return imageURLs, err
 }
 
 func ScrapeProducts(row *model.CategoryRow, opts *preference.Options) (set []*model.ProductRow, err error) {
