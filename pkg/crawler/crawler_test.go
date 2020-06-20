@@ -49,7 +49,7 @@ func TestScrapeProducts(t *testing.T) {
 	page := 1
 	opts := preference.LoadOptions(preference.WithPage(page))
 	// # Test the top 5 products
-	// ## Standandard procedure
+	// ## Standard procedure
 	doc := test.InitHTTPrecorder("case_01", test.CannedCategory.URL)
 	opts = preference.LoadOptions(preference.WithOptions(*opts), preference.WithDoc(doc))
 	expected := test.CannedRawProductSet
@@ -67,7 +67,7 @@ func TestScrapeProducts(t *testing.T) {
 	if err == nil {
 		t.Error("Expected `ScrapeProducts` to throw an error: `The names scraped from the url are empty.`, got nil.")
 	}
-	// ## Test the ranks of the products when some items scraped from the url are no longer available.
+	// ## Some items which were no longer available when you scraped the product names from the following category URL.
 	cannedSet := test.CannedRawUnavailableProductSet
 	doc = test.InitHTTPrecorder("case_03", test.CannedCategory03.URL)
 	opts = preference.LoadOptions(preference.WithOptions(*opts), preference.WithDoc(doc))
