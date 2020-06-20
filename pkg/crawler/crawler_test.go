@@ -14,7 +14,7 @@ func TestScrapeProductNames(t *testing.T) {
 	// Test the names of the top 5 products.
 	doc := test.InitHTTPrecorder("case_01", test.CannedCategory.URL)
 	opts := preference.LoadOptions(preference.WithDoc(doc))
-	expected := test.CannedScrapedProducts
+	expected := test.CannedScrapedProductNames
 	actual := crawler.ScrapeProductNames(opts)[:5]
 	failedMsg := fmt.Sprintf("Failed, expected the names of the top 5 products: %s, got the names of the top 5 products: %s", expected, actual)
 	assert.Equal(t, expected, actual, failedMsg)
