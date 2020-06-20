@@ -31,3 +31,22 @@ func (m *modelSuite) TestScanProductIds() {
 	failedMsg := fmt.Sprintf("Failed, expected the slice of the scaned ids: %v, got the slice: %v", expectedIds, actualIds)
 	assert.Equal(m.T(), expectedIds, actualIds, failedMsg)
 }
+
+func (m *modelSuite) TestUpdateImageURL() {
+	cannedImagePath := "images/QOSqqzFrzyfacyXA.jpg"
+	cannedRank := 1
+	opts := &preference.Options{
+		DB:   test.DBpool,
+		Page: 1,
+	}
+	opts = preference.LoadOptions(preference.WithOptions(*opts))
+	err := model.BulkilyInsertProducts(test.CannedProductSet, opts)
+	if err != nil {
+		m.T().Errorf("Failed to insert the data into the table `products`, error: %v", err)
+	}
+	
+	err = model.UpdateImageURL(test.CannedCategory.ID, cannedRank, cannedImagePath, opts)
+	if err != nil {
+		m.T().Errorf("Failed to update the image path on the table `products`, error: %s", err)
+	}
+}

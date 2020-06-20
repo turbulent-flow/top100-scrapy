@@ -21,6 +21,13 @@ var (
 		"Echo Dot (3rd Gen) - Smart speaker with clock and Alexa - Sandstone",
 		"Echo Show 8 - HD 8\" smart display with Alexa  - Charcoal",
 	}
+	CannedScrapedProductImageURLs = []string{
+		"https://images-na.ssl-images-amazon.com/images/I/51ZdmnHKukL._AC_UL200_SR200,200_.jpg",
+		"https://images-na.ssl-images-amazon.com/images/I/6182S7MYC2L._AC_UL200_SR200,200_.jpg",
+		"https://images-na.ssl-images-amazon.com/images/I/51CgKGfMelL._AC_UL200_SR200,200_.jpg",
+		"https://images-na.ssl-images-amazon.com/images/I/81ilNbqaGWL._AC_UL200_SR200,200_.jpg",
+		"https://images-na.ssl-images-amazon.com/images/I/515oAAEgADL._AC_UL200_SR200,200_.jpg",
+	}
 	CannedProductSet = []*model.ProductRow{
 		{Name: "Fire TV Stick streaming media player with Alexa built in, includes Alexa Voice Remote, HD, easy set-up, released 2019", Rank: 1, Page: 1, CategoryID: 2},
 		{Name: "Echo Dot (3rd Gen) - Smart speaker with Alexa - Charcoal", Rank: 2, Page: 1, CategoryID: 2},
@@ -66,6 +73,12 @@ var (
 		URL:      "https://www.amazon.com/Best-Sellers-Prime-Pantry/zgbs/pantry/ref=zg_bs_nav_0/145-7972861-4524441",
 		Path:     "01.03",
 		ParentID: 1,
+	}
+	CannedCategory05 = &model.CategoryRow{
+		Name: "Cut Signatures",
+		URL: "https://www.amazon.com/Best-Sellers-Sports-Collectibles-Memorabilia-Cut-Signatures/zgbs/sports-collectibles/5931158011/ref=zg_bs_nav_sg_sc_1_sg_sc/140-2950630-8512069",
+		Path: "01.37.25",
+		ParentID: 38,
 	}
 	CannedRawCategory = model.CategoryRow{
 		ID:       2,
