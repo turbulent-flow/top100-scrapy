@@ -6,6 +6,7 @@ require (
 	github.com/LiamYabou/top100-pkg v0.0.0-20200604025017-63642a47abdb
 	github.com/PuerkitoBio/goquery v1.5.1
 	github.com/alexflint/go-filemutex v1.1.0 // indirect
+	github.com/aws/aws-sdk-go v1.32.4
 	github.com/dnaeon/go-vcr v1.0.1
 	github.com/jackc/pgconn v1.5.0
 	github.com/jackc/pgx/v4 v4.6.0

@@ -54,7 +54,7 @@ func RunPublisher(opts *preference.Options) {
 	}
 	// Scan the categories on DB.
 	set := make([]*model.CategoryRow, 0)
-	stmt = `SELECT id from categories where id > $1 order by id asc limit 500;`
+	stmt = `SELECT id from categories where id > $1 order by id asc limit 50;`
 	rows, err := opts.DB.Query(context.Background(), stmt, info)
 	if err != nil {
 		logger.Error("Failed to query on DB.", err)
@@ -76,7 +76,14 @@ func RunPublisher(opts *preference.Options) {
 	switch opts.Action {
 	case "insert_categories":
 		for _, row := range set {
-			body := opts.Action + "/" + strconv.Itoa(row.ID)
+			args := &arguments{
+				Action: opts.Action,
+				CategoryID: row.ID,
+			}
+			body, err := encode(args)
+			if err != nil {
+				logger.Error("An error occured.", err)
+			}
 			err = ch.Publish(
 				"",     // exchange
 				q.Name, // routing key
@@ -84,7 +91,7 @@ func RunPublisher(opts *preference.Options) {
 				false,  // immediate
 				amqp.Publishing{
 					DeliveryMode: amqp.Persistent,
-					ContentType:  "text/plain",
+					ContentType:  "application/json",
 					Body:         []byte(body),
 				})
 			if err != nil {
@@ -95,7 +102,12 @@ func RunPublisher(opts *preference.Options) {
 	case "insert_products":
 		for _, row := range set {
 			for page := 1; page <= 2; page++ {
-				body := opts.Action + "/" + strconv.Itoa(row.ID) + "/" + strconv.Itoa(page)
+				args := &arguments{
+					Action: opts.Action,
+					CategoryID: row.ID,
+					Page: page,
+				}
+				body, err := encode(args)
 				err = ch.Publish(
 					"",     // exchange
 					q.Name, // routing key
@@ -103,7 +115,7 @@ func RunPublisher(opts *preference.Options) {
 					false,  // immediate
 					amqp.Publishing{
 						DeliveryMode: amqp.Persistent,
-						ContentType:  "text/plain",
+						ContentType:  "application/json",
 						Body:         []byte(body),
 					})
 				if err != nil {

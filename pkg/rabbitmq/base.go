@@ -5,15 +5,25 @@ import (
 	"errors"
 )
 
-type content map[string]interface{}
+type arguments struct {
+	Action string `json:"action,omitempty"`
+	CategoryID int `json:"category_id,omitempty"`
+	Page int `json:"page,omitempty"`
+	Rank int `json:"rank,omitempty"`
+	ImageURL string `json:"image_url,omitempty"`
+}
 
-func encode(obj *content) (encodedJson string, err error) {
-	var jsonObj []byte
-	jsonObj, err = json.Marshal(obj)
+func encode(obj interface{}) (encodedObj string, err error) {
+	var encodedJson []byte
+	encodedJson, err = json.Marshal(obj)
 	if err != nil {
-		c := "Failed to marshal an object"
-		err = errors.New(c)
+		content := "Failed to marshal an object"
+		err = errors.New(content)
 	}
-	encodedJson = string(jsonObj)
-	return encodedJson, err
+	encodedObj = string(encodedJson)
+	return encodedObj, err
+}
+
+func decode(data []byte, obj interface{}) error {
+	return json.Unmarshal(data, obj)
 }
