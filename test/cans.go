@@ -14,7 +14,7 @@ var (
 	DBpool                *pgxpool.Pool
 	PQconn				  *sql.DB
 	Cleaner               dbcleaner.DbCleaner
-	CannedScrapedProducts = []string{
+	CannedScrapedProductNames = []string{
 		"Fire TV Stick streaming media player with Alexa built in, includes Alexa Voice Remote, HD, easy set-up, released 2019",
 		"Echo Dot (3rd Gen) - Smart speaker with Alexa - Charcoal",
 		"Fire TV Stick 4K streaming device with Alexa built in, Dolby Vision, includes Alexa Voice Remote, latest release",
