@@ -61,3 +61,9 @@ func ScanProductIds(categoryID int, set []*ProductRow, opts *preference.Options)
 	err = rows.Err()
 	return set, err
 }
+
+func UpdateImageURL(categoryID int, rank int, image_path string, opts *preference.Options) error {
+	stmt := fmt.Sprintf("update products set image_path = '%s' where category_id = %d and rank = %d", image_path, categoryID, rank)
+	_, err := opts.DB.Exec(context.Background(), stmt)
+	return err
+}

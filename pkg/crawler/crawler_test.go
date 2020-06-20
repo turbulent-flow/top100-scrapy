@@ -21,17 +21,27 @@ func TestScrapeProductNames(t *testing.T) {
 }
 
 func TestScrapeProductImageURLs(t *testing.T) {
-	// Test the image URLs of the top 5 products
+	// # Test the image URLs of the top 5 products
+	// ## Standard procedure
 	doc := test.InitHTTPrecorder("case_01", test.CannedCategory.URL)
 	opts := preference.LoadOptions(preference.WithDoc(doc))
 	expected := test.CannedScrapedProductImageURLs
-	imageURLs, err := crawler.ScrapeProductImageURLs(opts)
+	imageURLs, err := crawler.ScrapeProductImageURLs(test.CannedCategory, opts)
 	if err != nil {
 		t.Errorf("An error occured: %s", err)
 	}
 	actual := imageURLs[:5]
 	failedMsg := fmt.Sprintf("Failed, expected the image URLs of the top 5 products: %s, got the URLs: %s", expected, actual)
 	assert.Equal(t, expected, actual, failedMsg)
+	// ## Some items which were no longer available when you scraped the image URLs from the following category URL.
+	doc = test.InitHTTPrecorder("case_05", test.CannedCategory05.URL)
+	opts = preference.LoadOptions(preference.WithDoc(doc))
+	imageURLs, err = crawler.ScrapeProductImageURLs(test.CannedCategory, opts)
+	if err != nil {
+		t.Errorf("An error occured: %s", err)
+	}
+	failedMsg = "Failed, the set of the image URLs should contain the item %v, got the set %v"
+	assert.Contains(t, imageURLs, crawler.UnavailableProduct, crawler.UnavailableProduct, imageURLs)
 }
 
 func TestScrapeProducts(t *testing.T) {

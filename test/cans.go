@@ -74,6 +74,12 @@ var (
 		Path:     "01.03",
 		ParentID: 1,
 	}
+	CannedCategory05 = &model.CategoryRow{
+		Name: "Cut Signatures",
+		URL: "https://www.amazon.com/Best-Sellers-Sports-Collectibles-Memorabilia-Cut-Signatures/zgbs/sports-collectibles/5931158011/ref=zg_bs_nav_sg_sc_1_sg_sc/140-2950630-8512069",
+		Path: "01.37.25",
+		ParentID: 38,
+	}
 	CannedRawCategory = model.CategoryRow{
 		ID:       2,
 		Name:     "Amazon Devices & Accessories",

@@ -11,8 +11,6 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-const unavailbaleProduct = "This item is no longer available"
-
 func ScrapeProductNames(opts *preference.Options) (names []string) {
 	opts.Doc.Find("ol#zg-ordered-list li.zg-item-immersion").Each(func(i int, s *goquery.Selection) {
 		var name string
@@ -20,20 +18,19 @@ func ScrapeProductNames(opts *preference.Options) (names []string) {
 		if len(nameNode.Nodes) == 1 {
 			name = nameNode.Text()
 		} else {
-			name = unavailbaleProduct
+			name = UnavailableProduct
 		}
 		names = append(names, strings.TrimSpace(name))
 	})
 	return names
 }
 
-func ScrapeProductImageURLs(opts *preference.Options) (imageURLs []string, err error) {
+func ScrapeProductImageURLs(row *model.CategoryRow, opts *preference.Options) (imageURLs []string, err error) {
 	opts.Doc.Find("ol#zg-ordered-list li.zg-item-immersion").Each(func(i int, s *goquery.Selection) {
 		var imageURL string
 		imageURL, ok := s.Find("span.zg-text-center-align img").Attr("src")
 		if !ok {
-			content := "There was an unavailable image url."
-			err = errors.New(content)
+			imageURL = UnavailableProduct
 		}
 		imageURLs = append(imageURLs, imageURL)
 	})

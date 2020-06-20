@@ -2,15 +2,26 @@ package crawler
 
 import (
 	"net/http"
+	"time"
 	"github.com/LiamYabou/top100-pkg/logger"
+	"github.com/LiamYabou/top100-scrapy/v2/variable"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
-
 	"github.com/PuerkitoBio/goquery"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/kit"
 )
+
+const UnavailableProduct = "This item is no longer available"
 
 // InitHTTPdoc returns the HTML document fetched from the url.
 func InitHTTPdoc(category *model.CategoryRow) (doc *goquery.Document) {
-	resp, err := http.Get(category.URL)
+	var resp *http.Response
+	var err error
+	var callbackFunc = func() (err error) {
+		c := &http.Client{Transport: variable.HTTPclientPreconfigs}
+		resp, err = c.Get(category.URL)
+		return
+	}
+	err = kit.Retry(5, 2 * time.Second, callbackFunc)
 	if err != nil {
 		factors := logger.Factors{
 			"category_id":  category.ID,
