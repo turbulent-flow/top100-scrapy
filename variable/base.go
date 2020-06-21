@@ -17,7 +17,7 @@ var (
 	AMQPURL = os.Getenv("AMQP_URL")
 	dbName     = os.Getenv("DB_NAME")
 	dbUser     = os.Getenv("DB_USER")
-	dbPassword = os.Getenv("c")
+	dbPassword = os.Getenv("DB_PASSWORD")
 	dbPort     = os.Getenv("DB_PORT")
 	dbHost     = os.Getenv("DB_HOST")
 	sslMode    = os.Getenv("SSL_MODE")
@@ -36,7 +36,12 @@ var (
 )
 
 func buildDBURL() (dbURL string) {
-	dbURL = fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s&pool_max_conns=%s&pool_min_conns=%s", dbUser, dbPassword, dbHost, dbPort, dbName, sslMode, maxPoolConns, minPoolConns)
+	switch Env {
+	case "development":
+		dbURL = fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s&pool_max_conns=%s&pool_min_conns=%s", dbUser, dbPassword, dbHost, dbPort, dbName, sslMode, maxPoolConns, minPoolConns)
+	default:
+		dbURL = fmt.Sprintf("%s?sslmode=require&pool_max_conns=%s&pool_min_conns=%s", os.Getenv("DATABASE_URL"), maxPoolConns, minPoolConns)
+	}
 	return dbURL
 }
 
