@@ -14,7 +14,7 @@ import (
 var (
 	Env =  os.Getenv("ENV")
 	AppURI = os.Getenv("APP_URI")
-	AMQPURL = os.Getenv("AMQP_URL")
+	AMQPURL = os.Getenv("CLOUDAMQP_URL")
 	dbName     = os.Getenv("DB_NAME")
 	dbUser     = os.Getenv("DB_USER")
 	dbPassword = os.Getenv("DB_PASSWORD")
@@ -33,6 +33,7 @@ var (
 	S3BucketEndpoint = os.Getenv("AWS_S3_BUCKET_ENDPOINT")
 	httpClientMaxIdleConnsPerHost = os.Getenv("HTTP_CLIENT_MAX_IDLE_CONNECTIONS_PER_HOST")
 	HTTPclientPreconfigs = buildHTTPclientPreconfigs()
+	Concurrency = os.Getenv("GOROUTINE_CONCURRENCY")
 )
 
 func buildDBURL() (dbURL string) {
