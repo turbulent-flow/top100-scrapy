@@ -24,6 +24,7 @@ var (
 	maxPoolConns = os.Getenv("MAX_POOL_CONNECTIONS")
 	minPoolConns = os.Getenv("MIN_POOL_CONNECTIONS")
 	DBURL = buildDBURL()
+	MigrationURL = buildMigrationURL()
 	TestDBURL  = os.Getenv("TEST_DB_DSN")
 	FixturesURI = os.Getenv("FIXTURES_URI")
 	AWSregion = os.Getenv("AWS_S3_REGION")
@@ -55,4 +56,14 @@ func buildHTTPclientPreconfigs() *http.Transport {
 		MaxIdleConns: 100,
 		MaxIdleConnsPerHost: n,
 	}
+}
+
+func buildMigrationURL() (migrationURL string) {
+	switch Env {
+	case "development":
+		migrationURL = fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", dbUser, dbPassword, dbHost, dbPort, dbName, sslMode)
+	default:
+		migrationURL = fmt.Sprintf("%s?sslmode=require", os.Getenv("DATABASE_URL"))
+	}
+	return migrationURL
 }

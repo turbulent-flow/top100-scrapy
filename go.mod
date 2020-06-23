@@ -7,7 +7,6 @@ go 1.14
 require (
 	github.com/DATA-DOG/go-txdb v0.1.3 // indirect
 	github.com/LiamYabou/top100-pkg v0.0.0-20200622082036-12669ddb8700
-	github.com/Microsoft/go-winio v0.4.14 // indirect
 	github.com/PuerkitoBio/goquery v1.5.1
 	github.com/alexflint/go-filemutex v1.1.0 // indirect
 	github.com/andybalholm/cascadia v1.2.0 // indirect
@@ -15,9 +14,9 @@ require (
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/containerd/continuity v0.0.0-20200413184840-d3ef23f19fbb // indirect
 	github.com/dnaeon/go-vcr v1.0.1
-	github.com/docker/go-units v0.4.0 // indirect
 	github.com/go-redis/redis v6.15.8+incompatible // indirect
 	github.com/gofrs/uuid v3.3.0+incompatible // indirect
+	github.com/golang-migrate/migrate/v4 v4.11.0
 	github.com/google/go-cmp v0.5.0 // indirect
 	github.com/jackc/pgconn v1.6.0
 	github.com/jackc/pgx/v4 v4.6.0
