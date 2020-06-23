@@ -36,7 +36,7 @@ func init() {
 	if err != nil {
 		logger.Error("Failed to connect the DB.", err)
 	}
-	AMQPconn, err = rabbitmq.Open()
+	AMQPconn, err = rabbitmq.Open(variable.AMQPURL)
 	if err != nil {
 		logger.Error("Failed to connect the RabbitMQ.", err)
 	}
