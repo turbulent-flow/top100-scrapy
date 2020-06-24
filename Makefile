@@ -3,7 +3,7 @@ PROJECTNAME=$(shell basename "${PWD}")
 ## migrate: database migrations which offer the entire circle that has reversibility.
 migrate: go-migrate
 
-## init: initialize the resouces of the project, e.g., create the initial database.
+## init: initialize the resouces of the project, e.g., initialize the database.
 init: go-init-db
 
 ## test: run all the test of the project.
