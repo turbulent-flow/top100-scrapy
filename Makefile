@@ -15,7 +15,7 @@ compile: go-tidy go-compile-migration go-compile-producer-of-categories-insertio
 
 go-migrate:
 	@echo "  > Processing the migration..."
-	@./bin/migrate
+	@./bin/migrate up
 
 go-migrate-test:
 	@echo "  > Processing the migration of the test database...."
