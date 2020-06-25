@@ -1,3 +1,4 @@
+CREATE EXTENSION IF NOT EXISTS ltree;
 CREATE TABLE categories (
   id serial PRIMARY KEY NOT NULL,
   name varchar(255) NOT NULL,
