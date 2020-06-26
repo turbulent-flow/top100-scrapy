@@ -11,6 +11,7 @@ import (
 	"github.com/streadway/amqp"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/LiamYabou/top100-scrapy/v2/variable"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/monitor"
 )
 
 var (
@@ -21,6 +22,7 @@ var (
 )
 
 func init() {
+	// Set the configs of the logger
 	switch variable.Env {
 	case "development":
 		file, err = logger.SetDevConfigs()
@@ -40,4 +42,5 @@ func init() {
 	if err != nil {
 		logger.Error("Failed to connect the RabbitMQ.", err)
 	}
+	monitor.Initialize()
 }
