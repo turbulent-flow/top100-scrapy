@@ -1,3 +1,3 @@
-/logs
 /.vscode
 /.envrc
+.DS_Store

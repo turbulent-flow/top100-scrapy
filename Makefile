@@ -3,6 +3,9 @@ PROJECTNAME=$(shell basename "${PWD}")
 ## migrate: database migrations which offer the entire circle that has reversibility.
 migrate: go-migrate
 
+## init: initialize the resouces of the project, e.g., initialize the database.
+init: go-init-db
+
 ## test: run all the test of the project.
 test: go-migrate-test go-test
 
@@ -12,11 +15,15 @@ compile: go-tidy go-compile-migration go-compile-producer-of-categories-insertio
 
 go-migrate:
 	@echo "  > Processing the migration..."
-	@./bin/migrate
+	@./bin/migrate up
 
 go-migrate-test:
 	@echo "  > Processing the migration of the test database...."
 	@./bin/migrate_t
+
+go-init-db:
+	@echo "  > Processing the initialization of the db..."
+	@./bin/initialize_db
 
 go-test:
 	@echo "  > Testing..."
@@ -30,6 +37,11 @@ go-compile-migration:
 go-compile-migration-test:
 	@echo "  > Compiling the instruction of the migration of the test database..."
 	@go build -o ./bin/ ./cmd/migration_test/migrate_t.go
+	@echo "  > Done."
+
+go-compile-db-initialization:
+	@echo "  > Compiling the insturction of the initialization of the db..."
+	@go build -o ./bin ./cmd/init/initialize_db.go
 	@echo "  > Done."
 
 go-compile-producer-of-categories-insertion:
