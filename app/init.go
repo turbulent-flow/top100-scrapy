@@ -17,7 +17,7 @@ import (
 var (
 	DBpool   *pgxpool.Pool
 	AMQPconn *amqp.Connection
-	file     *os.File
+	logFile     *os.File
 	err      error
 )
 
@@ -25,7 +25,7 @@ func init() {
 	// Set the configs of the logger
 	switch variable.Env {
 	case "development":
-		file, err = logger.SetDevConfigs()
+		logFile, err = logger.SetDevConfigs()
 		if err != nil {
 			logger.Error("Failed to set the configs of logger.", err)
 		}

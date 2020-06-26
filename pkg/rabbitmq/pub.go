@@ -1,6 +1,7 @@
 package rabbitmq
 
 import (
+	"os"
 	"fmt"
 	"strconv"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/file"
@@ -30,6 +31,12 @@ func RunPublisher(opts *preference.Options) {
 	if err != nil {
 		logger.Error("Failed to declare a queue.", err)
 	}
+	// Create the info file
+	infoFile, err := os.OpenFile(opts.FilePath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		logger.Error("Failed to open the info file.", err)
+	}
+	defer infoFile.Close()
 	// Read the info from the file
 	c, err := file.Read(opts.FilePath)
 	if err != nil {
