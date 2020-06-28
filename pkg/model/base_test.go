@@ -32,7 +32,7 @@ func (m *modelSuite) SetupSuite() {
 func (m *modelSuite) SetupTest() {
 	test.Cleaner.Acquire("products", "categories")
 	// Populate the data into the table `product_categories`
-	seedPath := fmt.Sprintf("%s/model/categories.yml", variable.FixturesURI)
+	seedPath := fmt.Sprintf("%s/model/data.yml", variable.FixturesURI)
 	seed, err := os.Open(seedPath)
 	if err != nil {
 		m.T().Errorf("Failed to opent the seed, error: %v", err)
@@ -46,7 +46,7 @@ func (m *modelSuite) SetupTest() {
 
 // Run after each test in the suite.
 func (m *modelSuite) TearDownTest() {
-	test.Cleaner.Clean("products", "categories", "product_categories")
+	test.Cleaner.Clean("products", "categories", "product_categories, schedule_tasks")
 	err := test.InitTable("products", test.DBpool)
 	if err != nil {
 		m.T().Errorf("Failed to truncate table `products` and restart the identity. Error: %v", err)
