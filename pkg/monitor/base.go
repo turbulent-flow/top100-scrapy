@@ -6,6 +6,8 @@ import (
 	"github.com/LiamYabou/top100-pkg/logger"
 )
 
+var txn *newrelic.Transaction
+
 func Initialize() {
 	if variable.Env == "development" {
 		return
@@ -17,6 +19,9 @@ func Initialize() {
 	if err != nil {
         logger.Error("unable to create New Relic Application", err)
 	}
-	txn := newrelicApp.StartTransaction("top100_scrapy_transactions")
-	defer txn.End()
+	txn = newrelicApp.StartTransaction("top100_scrapy_transactions")
+}
+
+func Finalize() {
+	txn.End()
 }
