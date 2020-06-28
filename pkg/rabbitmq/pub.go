@@ -1,10 +1,7 @@
 package rabbitmq
 
 import (
-	"os"
 	"fmt"
-	"strconv"
-	"github.com/LiamYabou/top100-scrapy/v2/pkg/file"
 	"github.com/LiamYabou/top100-pkg/logger"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
 	"github.com/LiamYabou/top100-scrapy/v2/preference"
@@ -31,21 +28,10 @@ func RunPublisher(opts *preference.Options) {
 	if err != nil {
 		logger.Error("Failed to declare a queue.", err)
 	}
-	// Create the info file
-	infoFile, err := os.OpenFile(opts.FilePath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+	// Read the recorded value form `schedule_task` table
+	info, err := model.FetchLastCategoryId(opts)
 	if err != nil {
-		logger.Error("Failed to open the info file.", err)
-	}
-	defer infoFile.Close()
-	// Read the info from the file
-	c, err := file.Read(opts.FilePath)
-	if err != nil {
-		logger.Error("Could not read file.", err)
-	}
-	info, _ := strconv.Atoi(c)
-	// Start from 1 when the operation is the insertion of the products
-	if opts.Action == "insert_products" && info == 0 {
-		info = 1
+		logger.Error("Failed to fetch the id.", err)
 	}
 	// Count the rows from the query.
 	var count int
@@ -61,7 +47,7 @@ func RunPublisher(opts *preference.Options) {
 	}
 	// Scan the categories on DB.
 	set := make([]*model.CategoryRow, 0)
-	stmt = `SELECT id from categories where id > $1 order by id asc limit 50;`
+	stmt = `SELECT id from categories where id > $1 order by id asc limit 500;`
 	rows, err := opts.DB.Query(context.Background(), stmt, info)
 	if err != nil {
 		logger.Error("Failed to query on DB.", err)
@@ -132,10 +118,10 @@ func RunPublisher(opts *preference.Options) {
 			}
 		}
 	}
-	// Write the info into the file.
+	// Store the info into the `schedule_tasts` table.
 	info = set[len(set)-1].ID
-	err = file.Write(opts.FilePath, strconv.Itoa(info))
+	err = model.UpdateLastCategoryID(info, opts)
 	if err != nil {
-		logger.Error("Could not write file.", err)
+		logger.Error("Could not store the value into the `schedule_tasks` table", err)
 	}
 }

@@ -12,11 +12,13 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/LiamYabou/top100-scrapy/v2/variable"
 	"github.com/LiamYabou/top100-scrapy/v2/pkg/monitor"
+	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
 var (
 	DBpool   *pgxpool.Pool
 	AMQPconn *amqp.Connection
+	NewRelicMonitor *newrelic.Application
 	logFile     *os.File
 	err      error
 )
@@ -42,5 +44,8 @@ func init() {
 	if err != nil {
 		logger.Error("Failed to connect the RabbitMQ.", err)
 	}
-	monitor.Initialize()
+	NewRelicMonitor, err = monitor.InitNewRelic()
+	if err != nil {
+        logger.Error("unable to create New Relic Application", err)
+	}
 }
