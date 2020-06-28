@@ -10,11 +10,13 @@ func Initialize() {
 	if variable.Env == "development" {
 		return
 	}
-	_, err := newrelic.NewApplication(
+	newrelicApp, err := newrelic.NewApplication(
 		newrelic.ConfigAppName(variable.AppName),
 		newrelic.ConfigLicense(variable.NewRelicLicenseKey),
 	)
 	if err != nil {
         logger.Error("unable to create New Relic Application", err)
-    }
+	}
+	txn := newrelicApp.StartTransaction("top100_scrapy_transactions")
+	defer txn.End()
 }
