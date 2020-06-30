@@ -1,2 +1,2 @@
-migragion: migrate up
+release: migrate up
 worker: consume
