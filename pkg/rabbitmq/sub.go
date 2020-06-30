@@ -73,6 +73,11 @@ func RunSubscriber(opts *preference.Options) {
 		if !ok {
 			logger.Error("The type `*preference.Options` has not implemented the interface `optionsInterface`.", nil)
 		}
+		// Monitor the the transaction accoss all the gorountines.
+		if opts.NewRelicTxnTracer != nil {
+			txn := opts.NewRelicTxnTracer.NewGoroutine()
+			defer txn.StartSegment("async").End()
+		}
 		for d := range opts.Delivery {
 			fmt.Printf("Received a message: %s\n", d.Body)
 			args := &arguments{}
@@ -272,6 +277,8 @@ func handlePostgresqlError(err error, msg string, category *model.CategoryRow) {
 		default:
 			logger.Error(msg, err, factors)
 		}
+	} else if outOfIndexErr, ok := err.(*model.OurOfIndexError); ok {
+		logger.Error("An error occured.", err, outOfIndexErr.Factors)
 	} else if err != nil {
 		logger.Error(msg, err)
 	}

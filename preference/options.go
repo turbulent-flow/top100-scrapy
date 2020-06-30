@@ -6,9 +6,9 @@ import (
 	"context"
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
-
 	"github.com/PuerkitoBio/goquery"
 	"github.com/streadway/amqp"
+	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
 // Option represents the optional function.
@@ -29,6 +29,7 @@ type Options struct {
 	Concurrency   int
 	PrefetchCount int
 	Delivery      <-chan amqp.Delivery
+	NewRelicTxnTracer *newrelic.Transaction
 }
 
 func LoadOptions(options ...Option) *Options {
@@ -42,6 +43,12 @@ func LoadOptions(options ...Option) *Options {
 func WithDB(db *pgxpool.Pool) Option {
 	return func(opts *Options) {
 		opts.DB = db
+	}
+}
+
+func WithAction(action string) Option {
+	return func(opts *Options) {
+		opts.Action = action
 	}
 }
 

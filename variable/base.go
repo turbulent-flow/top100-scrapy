@@ -13,6 +13,7 @@ import (
 
 var (
 	Env =  os.Getenv("ENV")
+	AppName = os.Getenv("APP_NAME")
 	AppURI = os.Getenv("APP_URI")
 	AMQPURL = os.Getenv("CLOUDAMQP_URL")
 	dbName     = os.Getenv("DB_NAME")
@@ -35,6 +36,7 @@ var (
 	httpClientMaxIdleConnsPerHost = os.Getenv("HTTP_CLIENT_MAX_IDLE_CONNECTIONS_PER_HOST")
 	HTTPclientPreconfigs = buildHTTPclientPreconfigs()
 	Concurrency = os.Getenv("GOROUTINE_CONCURRENCY")
+	NewRelicLicenseKey = os.Getenv("NEW_RELIC_LICENSE_KEY")
 )
 
 func buildDBURL() (dbURL string) {
