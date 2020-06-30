@@ -2,10 +2,12 @@ package model
 
 import (
 	"fmt"
+	"errors"
 	"strings"
 	"github.com/LiamYabou/top100-scrapy/v2/preference"
 	"context"
 	"github.com/jackc/pgx/v4"
+	"github.com/LiamYabou/top100-pkg/logger"
 )
 
 type ProductRow struct {
@@ -50,15 +52,30 @@ func ScanProductIds(categoryID int, set []*ProductRow, opts *preference.Options)
 		return set, err
 	}
 	defer rows.Close()
-	i := 0
+	var id int
+	ids := make([]int, 0)
 	for rows.Next() {
-		err = rows.Scan(&set[i].ID)
+		
+		err = rows.Scan(&id)
 		if err != nil {
 			return set, err
 		}
-		i++
+		ids = append(ids, id)
 	}
 	err = rows.Err()
+	if len(ids) > 50 {
+		factors := logger.Factors{
+			"stmt": stmt,
+			"category_id": categoryID,
+			"page": opts.Page,
+			"sdaned_ids": ids,
+		}
+		content := "Indox is out fof the range[50]."
+		return set, &OurOfIndexError{errors.New(content), factors}
+	}
+	for i := 0; i < len(ids); i++ {
+		set[i].ID = ids[i]
+	}
 	return set, err
 }
 
