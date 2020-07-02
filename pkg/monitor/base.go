@@ -3,6 +3,7 @@ package monitor
 import (
 	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/LiamYabou/top100-scrapy/v2/variable"
+	"github.com/getsentry/sentry-go"
 )
 
 func InitNewRelic() (newRelicApp *newrelic.Application, err error) {
@@ -13,5 +14,13 @@ func InitNewRelic() (newRelicApp *newrelic.Application, err error) {
 		newrelic.ConfigAppName(variable.AppName),
 		newrelic.ConfigLicense(variable.NewRelicLicenseKey),
 	)
+	return
+}
+
+func InitSentry() (err error) {
+	if variable.Env == "development" {
+		return
+	}
+	err = sentry.Init(sentry.ClientOptions{})
 	return
 }
