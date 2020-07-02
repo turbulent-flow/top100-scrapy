@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"time"
 	"errors"
 	"strings"
 	"github.com/LiamYabou/top100-scrapy/v2/preference"
@@ -80,7 +81,7 @@ func ScanProductIds(categoryID int, set []*ProductRow, opts *preference.Options)
 }
 
 func UpdateImageURL(categoryID int, rank int, image_path string, opts *preference.Options) error {
-	stmt := fmt.Sprintf("update products set image_path = '%s' where category_id = %d and rank = %d", image_path, categoryID, rank)
-	_, err := opts.DB.Exec(context.Background(), stmt)
+	stmt := fmt.Sprintf("update products set image_path = '%s', updated_at = $1 where category_id = %d and rank = %d", image_path, categoryID, rank)
+	_, err := opts.DB.Exec(context.Background(), stmt, time.Now())
 	return err
 }
