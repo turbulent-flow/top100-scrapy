@@ -15,6 +15,7 @@ require (
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/containerd/continuity v0.0.0-20200413184840-d3ef23f19fbb // indirect
 	github.com/dnaeon/go-vcr v1.0.1
+	github.com/getsentry/sentry-go v0.6.1
 	github.com/go-redis/redis v6.15.8+incompatible // indirect
 	github.com/gofrs/uuid v3.3.0+incompatible // indirect
 	github.com/golang-migrate/migrate/v4 v4.11.0
