@@ -48,4 +48,8 @@ func init() {
 	if err != nil {
         logger.Error("unable to create New Relic Application", err)
 	}
+	err = monitor.InitSentry()
+	if err != nil {
+		logger.Error("Unable to configure Sentry.", err)
+	}
 }
