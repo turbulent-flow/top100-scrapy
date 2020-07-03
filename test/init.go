@@ -33,7 +33,7 @@ func InitCleaner() {
 
 // InitTable is used to truncated the table, and restart the identity of the table.
 func InitTable(name string, db *pgxpool.Pool) error {
-	stmt := fmt.Sprintf("truncate table %s restart identity cascade", name)
+	stmt := fmt.Sprintf("TRUNCATE TABLE %s RESTART IDENTITY CASCADE", name)
 	_, err := db.Exec(context.Background(), stmt)
 	return err
 }

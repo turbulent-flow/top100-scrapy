@@ -17,7 +17,7 @@ type CategoryRow struct {
 
 func FetchCategoryRow(id int, opts *preference.Options) (*CategoryRow, error) {
 	row := new(CategoryRow)
-	stmt := fmt.Sprintf("select id, name, url, path, parent_id from categories where id = %d", id)
+	stmt := fmt.Sprintf("SELECT id, name, url, path, parent_id FROM categories WHERE id = %d", id)
 	err := opts.DB.QueryRow(context.Background(), stmt).Scan(&row.ID, &row.Name, &row.URL, &row.Path, &row.ParentID)
 	return row, err
 }
