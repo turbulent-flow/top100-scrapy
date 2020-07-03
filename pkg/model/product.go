@@ -43,7 +43,7 @@ func BulkilyInsertProducts(set []*ProductRow, opts *preference.Options) error {
 func ScanProductIds(categoryID int, set []*ProductRow, opts *preference.Options) ([]*ProductRow, error) {
 	var err error
 	var rows pgx.Rows
-	stmt := fmt.Sprintf("SELECT id FROM products where page = %d and category_id = %d", opts.Page, categoryID)
+	stmt := fmt.Sprintf("SELECT id FROM products WHERE page = %d AND category_id = %d", opts.Page, categoryID)
 	if opts.Tx != nil {
 		rows, err = opts.Tx.Query(opts.Context, stmt)
 	} else {
@@ -81,7 +81,7 @@ func ScanProductIds(categoryID int, set []*ProductRow, opts *preference.Options)
 }
 
 func UpdateImageURL(categoryID int, rank int, image_path string, opts *preference.Options) error {
-	stmt := fmt.Sprintf("update products set image_path = '%s', updated_at = $1 where category_id = %d and rank = %d", image_path, categoryID, rank)
+	stmt := fmt.Sprintf("UPDATE products SET image_path = '%s', updated_at = $1 WHERE category_id = %d AND rank = %d", image_path, categoryID, rank)
 	_, err := opts.DB.Exec(context.Background(), stmt, time.Now())
 	return err
 }
