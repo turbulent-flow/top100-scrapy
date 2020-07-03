@@ -46,7 +46,7 @@ func init() {
 	}
 	NewRelicMonitor, err = monitor.InitNewRelic()
 	if err != nil {
-        logger.Error("unable to create New Relic Application", err)
+        logger.Error("unable to create New Relic Application.", err)
 	}
 	err = monitor.InitSentry()
 	if err != nil {
