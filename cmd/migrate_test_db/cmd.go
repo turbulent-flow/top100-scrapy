@@ -17,7 +17,7 @@ func main() {
 	}
 	err = m.Up()
 	if err != nil && err.Error() == "no change" {
-		fmt.Println("  > NOTE: There is no change related the operation of the migration.")
+		fmt.Println("  > NOTE: There is no change related to the operation of the migration.")
 		return
 	} else if err != nil {
 		logger.Error("Failed to establish the connection of the migration.", err)
