@@ -241,6 +241,7 @@ func performProductImagesInsertion(delivery amqp.Delivery, opts *preference.Opti
 			Key: aws.String(filePath),
 			Body: resp.Body,
 			ContentType: aws.String("image/jpeg"),
+			CacheControl: aws.String("max-age=31536000,public"),
 		})
 		return
 	}
