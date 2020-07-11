@@ -2,7 +2,7 @@ package test
 
 import (
 	"github.com/jackc/pgx/v4/pgxpool"
-	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
+	"github.com/LiamYabou/top100-scrapy/pkg/model"
 	"database/sql"
 	_ "github.com/lib/pq"
 	"gopkg.in/khaiql/dbcleaner.v2"

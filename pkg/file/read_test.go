@@ -3,9 +3,9 @@ package file_test
 import (
 	"fmt"
 	"testing"
-	"github.com/LiamYabou/top100-scrapy/v2/pkg/file"
+	"github.com/LiamYabou/top100-scrapy/pkg/file"
 	"github.com/stretchr/testify/assert"
-	"github.com/LiamYabou/top100-scrapy/v2/variable"
+	"github.com/LiamYabou/top100-scrapy/variable"
 )
 
 func TestRead(t *testing.T) {

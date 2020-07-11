@@ -2,7 +2,7 @@ package app
 
 import (
   "time"
-  "github.com/LiamYabou/top100-scrapy/v2/variable"
+  "github.com/LiamYabou/top100-scrapy/variable"
   "github.com/getsentry/sentry-go"
 )
 
