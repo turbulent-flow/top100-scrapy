@@ -17,10 +17,12 @@ compile: go-tidy go-compile-migration go-compile-testdb-migration \
 go-migrate:
 	@echo "  > Processing the migration..."
 	@./bin/migrate up
+	@echo "  > Done."
 
-go-migrate-test:
+go-migrate-test-db:
 	@echo "  > Processing the migration of the test database...."
-	@./bin/migrate_test_db
+	@./bin/migrate_test_db up
+	@echo "  > Done."
 
 go-init-db:
 	@echo "  > Processing the initialization of the db..."
