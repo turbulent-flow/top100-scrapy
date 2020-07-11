@@ -25,6 +25,8 @@ go-migrate-test:
 go-init-db:
 	@echo "  > Processing the initialization of the db..."
 	@./bin/initialize_db
+	@./bin/initialize_test_db
+	@echo "  > Done."
 
 go-test:
 	@echo "  > Testing..."
@@ -43,6 +45,11 @@ go-compile-testdb-migration:
 go-compile-db-initialization:
 	@echo "  > Compiling the insturction of the initialization of the db..."
 	@go build -o ./bin ./cmd/initialize_db
+	@echo "  > Done."
+
+go-compile-test-db-initialization:
+	@echo "  > Compiling the insturction of the initialization of the test db..."
+	@go build -o ./bin ./cmd/initialize_test_db
 	@echo "  > Done."
 
 go-compile-producer-of-categories-insertion:

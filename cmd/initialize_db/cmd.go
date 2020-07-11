@@ -11,5 +11,4 @@ func main() {
 	if err != nil {
 		logger.Error("Could not initialize the DB.", err)
 	}
-	automation.Finalize()
 }
