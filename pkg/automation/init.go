@@ -5,7 +5,7 @@ import (
 	"context"
 	"strings"
 	"github.com/LiamYabou/top100-pkg/db"
-	"github.com/LiamYabou/top100-scrapy/v2/variable"
+	"github.com/LiamYabou/top100-scrapy/variable"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
