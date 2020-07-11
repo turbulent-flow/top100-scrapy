@@ -7,11 +7,12 @@ import (
 )
 
 func Finalize() {
-  if variable.Env == "development" {
-    logFile.Close()
-  }
-  DBpool.Close()
-  AMQPconn.Close()
-  sentry.Recover() // Capture the unhandled panic
-  sentry.Flush(5 * time.Second) // Set the timeout to the maximum duration the program can afford to wait.
+    DBpool.Close()
+    AMQPconn.Close()
+    if variable.Env == "development" {
+        logFile.Close()
+    } else {
+        sentry.Recover() // Capture the unhandled panic
+        sentry.Flush(5 * time.Second) // Set the timeout to the maximum duration the program can afford to wait.
+    }
 }
