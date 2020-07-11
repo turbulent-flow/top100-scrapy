@@ -1,7 +1,7 @@
 // +heroku goVersion go1.14
 // +heroku install ./cmd/...
 
-module github.com/LiamYabou/top100-scrapy
+module github.com/LiamYabou/top100-scrapy/v2
 
 go 1.14
 

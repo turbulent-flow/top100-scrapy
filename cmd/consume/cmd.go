@@ -2,10 +2,10 @@ package main
 
 import (
 	"strconv"
-	"github.com/LiamYabou/top100-scrapy/app"
-	"github.com/LiamYabou/top100-scrapy/preference"
-	"github.com/LiamYabou/top100-scrapy/variable"
-	"github.com/LiamYabou/top100-scrapy/pkg/rabbitmq"
+	"github.com/LiamYabou/top100-scrapy/v2/app"
+	"github.com/LiamYabou/top100-scrapy/v2/preference"
+	"github.com/LiamYabou/top100-scrapy/v2/variable"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/rabbitmq"
 	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
