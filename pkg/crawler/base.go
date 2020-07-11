@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"time"
 	"github.com/LiamYabou/top100-pkg/logger"
-	"github.com/LiamYabou/top100-scrapy/v2/variable"
-	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
+	"github.com/LiamYabou/top100-scrapy/variable"
+	"github.com/LiamYabou/top100-scrapy/pkg/model"
 	"github.com/PuerkitoBio/goquery"
-	"github.com/LiamYabou/top100-scrapy/v2/pkg/kit"
+	"github.com/LiamYabou/top100-scrapy/pkg/kit"
 )
 
 const UnavailableProduct = "This item is no longer available"
