@@ -3,8 +3,8 @@ package rabbitmq
 import (
 	"fmt"
 	"github.com/LiamYabou/top100-pkg/logger"
-	"github.com/LiamYabou/top100-scrapy/pkg/model"
-	"github.com/LiamYabou/top100-scrapy/preference"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
+	"github.com/LiamYabou/top100-scrapy/v2/preference"
 	"context"
 	"github.com/streadway/amqp"
 )

@@ -8,7 +8,7 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
-	"github.com/LiamYabou/top100-scrapy/variable"
+	"github.com/LiamYabou/top100-scrapy/v2/variable"
 	"github.com/LiamYabou/top100-pkg/logger"
 )
 

@@ -10,8 +10,8 @@ import (
 	"github.com/LiamYabou/top100-pkg/rabbitmq" // Use the connection from the outside package
 	"github.com/streadway/amqp"
 	"github.com/jackc/pgx/v4/pgxpool"
-	"github.com/LiamYabou/top100-scrapy/variable"
-	"github.com/LiamYabou/top100-scrapy/pkg/monitor"
+	"github.com/LiamYabou/top100-scrapy/v2/variable"
+	"github.com/LiamYabou/top100-scrapy/v2/pkg/monitor"
 	"github.com/newrelic/go-agent/v3/newrelic"
 )
 

@@ -13,7 +13,7 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 	"gopkg.in/khaiql/dbcleaner.v2"
 	"gopkg.in/khaiql/dbcleaner.v2/engine"
-	"github.com/LiamYabou/top100-scrapy/variable"
+	"github.com/LiamYabou/top100-scrapy/v2/variable"
 )
 
 func InitDB() (msg string, err error) {

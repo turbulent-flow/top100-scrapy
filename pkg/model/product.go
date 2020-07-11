@@ -5,7 +5,7 @@ import (
 	"time"
 	"errors"
 	"strings"
-	"github.com/LiamYabou/top100-scrapy/preference"
+	"github.com/LiamYabou/top100-scrapy/v2/preference"
 	"context"
 	"github.com/jackc/pgx/v4"
 	"github.com/LiamYabou/top100-pkg/logger"

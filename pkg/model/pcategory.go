@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
-	"github.com/LiamYabou/top100-scrapy/preference"
+	"github.com/LiamYabou/top100-scrapy/v2/preference"
 	"github.com/jackc/pgx/v4"
 )
 

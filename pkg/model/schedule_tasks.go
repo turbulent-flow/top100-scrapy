@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 	"strconv"
-	"github.com/LiamYabou/top100-scrapy/preference"
+	"github.com/LiamYabou/top100-scrapy/v2/preference"
 	"context"
 )
 
