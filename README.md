@@ -1,6 +1,6 @@
 
 # About this project
-Top100 is a project that presents the top 100 categories in this world. At present, you can browser the top 100 products of the best sellers on Amazon with http://staging.amazon.top100.technology
+Top100 is a project that presents the top 100 categories in this world. At present, you can browser the top 100 products of the best sellers on Amazon with http://staging.amazon.top100.technology.
 
 ## Architecture
 The current version is V1.0:
@@ -46,7 +46,7 @@ export GOROUTINE_CONCURRENCY=25
 ```
 
 ## Database Initialization
-> If you have some inquires, please ask help for the `make help` command first.
+> If you have some inquires, please ask for help from the `make help` command first.
 ```
 make init
 ```
@@ -59,6 +59,24 @@ make migrate
 ## Data Population
 ```
 make populate
+```
+
+## Log Monitor
+```
+tail -f logs/development.log
+```
+
+## Pub / Sub
+You can run the following schedule tasks to publish the jobs into the message queue on Rabbitmq.
+```
+bin/enqueue_categories_insertion
+bin/enqueue_products_insertion
+```
+If you want to view the details of the above, you can open the dashboard of the Rabbitmq with http://localhost:15672 (username: guest, password: guest)
+
+You can run the following command to launch the worker to consume the preceding jobs in the message queue.
+```
+bin/consume
 ```
 
 ## Testing
