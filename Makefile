@@ -15,7 +15,7 @@ populate: go-populate-seeds
 ## test: run all the test of the project.
 test: go-migrate-test-db go-test
 
-## compile: compile the most common instructions located the `./cmd` directory into the `./bin` directory.
+## compile: compile the most common instructions located in the `./cmd` directory into the `./bin` directory.
 compile: go-tidy go-compile-migration \
 		 go-compile-producer-of-categories-insertion \
          go-compile-producer-of-products-insertion go-compile-subscriber
@@ -97,7 +97,7 @@ go-tidy:
 .PHONY: help
 help: Makefile
 	@echo
-	@echo "  Choose a command to run in "${PROJECTNAME}": "
+	@echo "  Choose a command to run in "${PROJECTNAME}" project: "
 	@echo
 	@sed -n 's/^##//p' $< | column -t -s ':' |  sed -e 's/^/ /'
 	@echo
