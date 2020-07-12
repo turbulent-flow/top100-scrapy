@@ -7,12 +7,6 @@ import (
 	"github.com/LiamYabou/top100-pkg/logger"
 )
 
-// # the introduce of the subcommands:
-// ## up: migrate up [-step] <number>
-// ## down: migrate down [-step] <number>
-// ## force: migrate force
-// ask help for the `-h` flag, e.g., migrate up -h
-
 func main() {
 	err, msg := automation.MigrateDB(variable.MigrationURL, os.Args)
 	if err != nil {

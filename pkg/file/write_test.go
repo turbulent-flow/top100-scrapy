@@ -10,7 +10,7 @@ import (
 
 func TestWrite(t *testing.T) {
 	expected := "2345"
-	filePath := fmt.Sprintf("%s/file/last_id_for_writing", variable.FixturesURI)
+	filePath := fmt.Sprintf("%s/file/last_id_for_writing", variable.TestFixturesURI)
 	err := file.Write(filePath, "2345")
 	if err != nil {
 		t.Errorf("Could not write file, error: %v", err)

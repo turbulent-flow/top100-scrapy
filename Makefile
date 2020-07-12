@@ -1,13 +1,19 @@
 PROJECTNAME=$(shell basename "${PWD}")
 
-## migrate: database migrations which offer the entire circle that has reversibility.
+## migrate: migrate the database, if you want more fine-grained operations of the migration, you can look at the comments of the `MigrateDB()` method in the `pkg/automation/migration.go` file.
 migrate: go-migrate
+
+## migrate-test-db: migrate the test database, if you want more fine-grained operations of the migration, you can look at the comments of the `MigrateDB()` method in the `pkg/automation/migration.go` file.
+migrate-test-db: go-migrate-test-db
 
 ## init: initialize the resouces of the project, e.g., initialize the database.
 init: go-init-db
 
+## populate: populate the canned data into the tables of the database. It's prepared for the workflow of the development.
+populate: go-populate-seeds
+
 ## test: run all the test of the project.
-test: go-migrate-test go-test
+test: go-migrate-test-db go-test
 
 ## compile: compile the instructions located the `./cmd` directory into the `./bin` directory.
 compile: go-tidy go-compile-migration go-compile-testdb-migration \
@@ -28,6 +34,11 @@ go-init-db:
 	@echo "  > Processing the initialization of the db..."
 	@./bin/initialize_db
 	@./bin/initialize_test_db
+	@echo "  > Done."
+
+go-populate-seeds:
+	@echo "  > Populating the canned data into the db..."
+	@./bin/populate_seeds
 	@echo "  > Done."
 
 go-test:
@@ -68,6 +79,11 @@ go-compile-subscriber:
 	@echo "  > Compiling the instruction of the workers which have subscribed the dedicated queue..."
 	@go build -o ./bin/ ./cmd/consume
 	@echo "  > Done."
+
+go-compile-seeds-population:
+	@echo "  > Compiling the instruction of the population of the seeds..."
+	@go build -o ./bin/ ./cmd/populate_seeds
+	@echo " > Done."
 
 go-tidy:
 	@echo "  > Tidying the dependencies from the \`go.mod\` file..."

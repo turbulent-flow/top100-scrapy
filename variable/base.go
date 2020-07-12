@@ -26,8 +26,10 @@ var (
 	minPoolConns = os.Getenv("MIN_POOL_CONNECTIONS")
 	DBURL = buildDBURL()
 	MigrationURL = buildMigrationURL()
+	PopulationURL = buildPopulationURL()
 	TestDBURL  = os.Getenv("TEST_DB_DSN")
-	FixturesURI = os.Getenv("FIXTURES_URI")
+	FixturesURI = buildFixturesURI()
+	TestFixturesURI = buildTestFixturesURI()
 	AWSregion = os.Getenv("AWS_S3_REGION")
     BucketName = os.Getenv("AWS_S3_BUCKET_NAME")
     AWSaccessId = os.Getenv("AWS_ACCESS_KEY_ID")
@@ -68,4 +70,16 @@ func buildMigrationURL() (migrationURL string) {
 		migrationURL = fmt.Sprintf("%s?sslmode=require", os.Getenv("DATABASE_URL"))
 	}
 	return migrationURL
+}
+
+func buildPopulationURL() (PopulationURL string) {
+	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", dbUser, dbPassword, dbHost, dbPort, dbName, sslMode)
+}
+
+func buildTestFixturesURI() (uri string) {
+	return fmt.Sprintf("%s/test/fixtures", AppURI)
+}
+
+func buildFixturesURI() (uri string) {
+	return fmt.Sprintf("%s/fixtures", AppURI)
 }

@@ -40,7 +40,7 @@ func InitTable(name string, db *pgxpool.Pool) error {
 
 // InitHTTPrecorder returns the HTML document injected by the recorder.
 func InitHTTPrecorder(cassette string, url string) (doc *goquery.Document) {
-	cassettePath := fmt.Sprintf("%s/crawler/%s", variable.FixturesURI, cassette)
+	cassettePath := fmt.Sprintf("%s/crawler/%s", variable.TestFixturesURI, cassette)
 	r, err := recorder.New(cassettePath)
 	if err != nil {
 		logger.Error("Could not instantiate a recorder, error: %v", err)

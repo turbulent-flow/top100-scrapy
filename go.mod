@@ -7,7 +7,7 @@ go 1.14
 
 require (
 	github.com/DATA-DOG/go-txdb v0.1.3 // indirect
-	github.com/LiamYabou/top100-pkg v0.0.2
+	github.com/LiamYabou/top100-pkg v0.0.3
 	github.com/PuerkitoBio/goquery v1.5.1
 	github.com/alexflint/go-filemutex v1.1.0 // indirect
 	github.com/andybalholm/cascadia v1.2.0 // indirect
@@ -19,10 +19,8 @@ require (
 	github.com/go-redis/redis v6.15.8+incompatible // indirect
 	github.com/gofrs/uuid v3.3.0+incompatible // indirect
 	github.com/golang-migrate/migrate/v4 v4.11.0
-	github.com/google/go-cmp v0.5.0 // indirect
 	github.com/jackc/pgconn v1.6.1
 	github.com/jackc/pgx/v4 v4.7.1
-	github.com/jackc/puddle v1.1.1 // indirect
 	github.com/khaiql/dbcleaner v2.3.0+incompatible // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/lib/pq v1.7.0
@@ -41,7 +39,6 @@ require (
 	golang.org/x/crypto v0.0.0-20200709230013-948cd5f35899 // indirect
 	golang.org/x/net v0.0.0-20200707034311-ab3426394381 // indirect
 	golang.org/x/sys v0.0.0-20200625212154-ddb9806d33ae // indirect
-	golang.org/x/text v0.3.3 // indirect
 	google.golang.org/genproto v0.0.0-20200711021454-869866162049 // indirect
 	google.golang.org/grpc v1.30.0 // indirect
 	google.golang.org/protobuf v1.25.0 // indirect
