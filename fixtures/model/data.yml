@@ -1,0 +1,19 @@
+categories:
+  - id: 0
+    name: "-"
+    url: "-"
+    path: "00"
+
+  - name: Any Department
+    url: https://www.amazon.com/Best-Sellers/zgbs
+    path: "01"
+    parent_id: 0
+  
+schedule_tasks:
+  - name: enqueue_categories_insertion
+    recorded_key: last_category_id
+    recorded_value: 0
+
+  - name: enqueue_products_insertion
+    recorded_key: last_category_id
+    recorded_value: 1

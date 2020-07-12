@@ -3,7 +3,7 @@ package model
 import (
 	"fmt"
 	"strings"
-	"github.com/LiamYabou/top100-scrapy/v2/preference"
+	"github.com/LiamYabou/top100-scrapy/preference"
 	"context"
 )
 

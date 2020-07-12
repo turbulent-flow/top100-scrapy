@@ -1,9 +1,9 @@
 package model_test
 
 import (
-	"github.com/LiamYabou/top100-scrapy/v2/pkg/model"
-	"github.com/LiamYabou/top100-scrapy/v2/preference"
-	"github.com/LiamYabou/top100-scrapy/v2/test"
+	"github.com/LiamYabou/top100-scrapy/pkg/model"
+	"github.com/LiamYabou/top100-scrapy/preference"
+	"github.com/LiamYabou/top100-scrapy/test"
 )
 
 func (m *modelSuite) TestBulkilyInsertPcategories() {
