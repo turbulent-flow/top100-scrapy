@@ -16,7 +16,7 @@ populate: go-populate-seeds
 test: go-migrate-test-db go-test
 
 ## compile: compile the instructions located the `./cmd` directory into the `./bin` directory.
-compile: go-tidy go-compile-migration go-compile-testdb-migration \
+compile: go-tidy go-compile-migration \
 		 go-compile-producer-of-categories-insertion \
          go-compile-producer-of-products-insertion go-compile-subscriber
 

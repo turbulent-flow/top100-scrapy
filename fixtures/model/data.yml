@@ -4,19 +4,16 @@ categories:
     url: "-"
     path: "00"
 
-  - id: 1
-    name: Any Department
+  - name: Any Department
     url: https://www.amazon.com/Best-Sellers/zgbs
     path: "01"
     parent_id: 0
   
 schedule_tasks:
-  - id: 1
-    name: enqueue_categories_insertion
+  - name: enqueue_categories_insertion
     recorded_key: last_category_id
     recorded_value: 0
 
-  - id: 2
-    name: enqueue_products_insertion
+  - name: enqueue_products_insertion
     recorded_key: last_category_id
     recorded_value: 1
