@@ -1,15 +1,6 @@
 
 # About this project
-Top100 is a project that presents the top 100 categories in this world. At present, you can browser the top 100 products of the best sellers on Amazon with http://staging.amazon.top100.technology.
-
-## Architecture
-The current version is V1.0:
-![The Architecture of Top100 - V1.0](https://user-images.githubusercontent.com/20299847/87216391-e346a500-c371-11ea-81d4-fa641eb3b893.jpg)
-
-The improved version V1.1 has not released yet:
-![The Architecture of Top100 - V1.1](https://user-images.githubusercontent.com/20299847/87216410-0a04db80-c372-11ea-9b06-580fb864eafb.jpg)
-
-These [microservices](https://medium.com/hashmapinc/the-what-why-and-how-of-a-microservices-architecture-4179579423a9) based on the [CQRS](https://martinfowler.com/bliki/CQRS.html) pattern expose the interface which protocol is [AMQP](https://en.wikipedia.org/wiki/Advanced_Message_Queuing_Protocol) to connect to the outside service. The independent service uses the [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call) over the Rabbitmq. We use the [Jsend](https://github.com/omniti-labs/jsend) as a specification to handle the json response from the various servises.
+The explanation of the architecture can be found [here](https://github.com/LiamYabou/top100-scrapy/wiki/About-this-project).
 
 ## Top100 Scrapy
 The top100-scrapy is a microservice of the Top100 project. It scrapes various entries form the popular websites.
