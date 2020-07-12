@@ -15,10 +15,14 @@ populate: go-populate-seeds
 ## test: run all the test of the project.
 test: go-migrate-test-db go-test
 
-## compile: compile the instructions located the `./cmd` directory into the `./bin` directory.
+## compile: compile the most common instructions located the `./cmd` directory into the `./bin` directory.
 compile: go-tidy go-compile-migration \
 		 go-compile-producer-of-categories-insertion \
          go-compile-producer-of-products-insertion go-compile-subscriber
+
+## compile-remaining-cmd: compile the remaining instructions except the above ones.
+compile-remaining-cmd: go-compile-testdb-migration go-compile-db-initialization \
+					   go-compile-test-db-initialization go-compile-seeds-population
 
 go-migrate:
 	@echo "  > Processing the migration..."
