@@ -1,6 +1,7 @@
-
 # About this project
-The explanation of the architecture can be found [here](https://github.com/LiamYabou/top100-scrapy/wiki/About-this-project).
+Top100 is a project that presents the top 100 categories in this world. At present, you can browser the top 100 products of the best sellers on Amazon with http://staging.amazon.top100.technology.
+
+The explanation of the architecture can be found [here](https://github.com/LiamYabou/top100-scrapy/wiki/Architecture).
 
 ## Top100 Scrapy
 The top100-scrapy is a microservice of the Top100 project. It scrapes various entries form the popular websites.
