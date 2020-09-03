@@ -5,21 +5,13 @@ import (
 	"os"
 	"sync"
 	"time"
-	"net/http"
-	"strings"
 	"github.com/LiamYabou/top100-scrapy/pkg/crawler"
 	"github.com/LiamYabou/top100-pkg/logger"
 	"github.com/LiamYabou/top100-scrapy/pkg/model"
-	"github.com/LiamYabou/top100-scrapy/pkg/kit"
 	"github.com/LiamYabou/top100-scrapy/preference"
-	"github.com/LiamYabou/top100-scrapy/variable"
 	"github.com/streadway/amqp"
 	"github.com/jackc/pgconn"
 	"github.com/panjf2000/ants/v2"
-	"github.com/aws/aws-sdk-go/aws/credentials"
-    "github.com/aws/aws-sdk-go/aws"
-    "github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 )
 
 // The palce that you can subscribe the queue to receive the messages with the instance of the worker,
@@ -202,15 +194,6 @@ func performProductImagesInsertion(delivery amqp.Delivery, opts *preference.Opti
 	categoryID := args.CategoryID
 	rank := args.Rank
 	imageURL := args.ImageURL
-	var config *aws.Config
-    config = &aws.Config{
-        Region: aws.String(variable.AWSregion),
-        Credentials: credentials.NewStaticCredentials(variable.AWSaccessId, variable.AWSaccessSecret, ""),
-	}
-	// The session uses the above config.
-	sess := session.Must(session.NewSession(config))
-	// Creat an uploader with the seeesion and the default options.
-	uploader := s3manager.NewUploader(sess)
 	if imageURL == crawler.UnavailableProduct {
 		if err := delivery.Ack(false); err != nil { // Acknowledge a message maunally.
 			logger.Error("Failed to acknowledge a message.", err)
@@ -218,40 +201,7 @@ func performProductImagesInsertion(delivery amqp.Delivery, opts *preference.Opti
 		fmt.Println("Done")
 		return
 	}
-	var resp *http.Response
-	var err error
-	var httpCallbackFunc = func() (err error) {
-		c := &http.Client{Transport: variable.HTTPclientPreconfigs}
-		resp, err = c.Get(imageURL)
-		return
-	}
-	err = kit.Retry(5, 2 * time.Second, httpCallbackFunc)
-	if err != nil {
-		logger.Error("Could not request the image url successfully.", err)
-	}
-	defer resp.Body.Close()
-	// Upload the data stream to the s3 bucket
-	fileName := kit.BuildRandomStrings(16)
-	fileExtesion := ".jpg"
-	filePath := fmt.Sprintf("images/%s%s", fileName, fileExtesion)
-	var result *s3manager.UploadOutput
-	var s3CallbackFunc = func() (err error) {
-		result, err = uploader.Upload(&s3manager.UploadInput{
-			Bucket: aws.String(variable.BucketName),
-			Key: aws.String(filePath),
-			Body: resp.Body,
-			ContentType: aws.String("image/jpeg"),
-			CacheControl: aws.String("max-age=31536000,public"),
-		})
-		return
-	}
-	err = kit.Retry(5, 2 * time.Second, s3CallbackFunc)
-	if err != nil {
-		logger.Error("Could not upload the file into the s3 bucket.", err)
-	}
-	oldStr := fmt.Sprintf("%s/", variable.S3BucketEndpoint)
-	imagePath := strings.ReplaceAll(result.Location, oldStr, "")
-	err = model.UpdateImageURL(categoryID, rank, imagePath, opts)
+	err := model.UpdateImageURL(categoryID, rank, imageURL, opts)
 	if err != nil {
 		logger.Error("Failed to update the image url into the DB.", err)
 	}
