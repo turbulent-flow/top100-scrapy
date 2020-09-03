@@ -11,6 +11,7 @@ require (
 	github.com/PuerkitoBio/goquery v1.5.1
 	github.com/alexflint/go-filemutex v1.1.0 // indirect
 	github.com/andybalholm/cascadia v1.2.0 // indirect
+	github.com/aws/aws-sdk-go v1.33.5
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/containerd/continuity v0.0.0-20200413184840-d3ef23f19fbb // indirect
 	github.com/dnaeon/go-vcr v1.0.1
